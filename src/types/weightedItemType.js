@@ -1,22 +1,37 @@
 import { keyBy, getOr } from "lodash/fp";
 
 export default class WeightedItemType {
-    constructor(name, description, weighted_attributes){
+    constructor(id, name, description, weightedAttributes){
+        this.id = id
         this.name = name
         this.description = description
-        this.weighted_attributes = weighted_attributes
+        this.weightedAttributes = weightedAttributes
+        this.prevIdx = -1
+        this.currIdx = -1
+        this.score = -1
     }
 
-    score(weights){
+    updateScore(weights){        
         let score = 0
-        const weighted_attributes_as_object = keyBy("key", this.weighted_attributes)
+        const weightedAttributesSsObject = keyBy("key", this.weightedAttributes)
         weights.forEach(weight => {
-            score += getOr(0, `${weight.key}.value`, weighted_attributes_as_object) * weight.value
+            score += getOr(0, `${weight.key}.value`, weightedAttributesSsObject) * weight.value
         });
+        this.score = score
         return score
     }
 
-    static scoreToColor(score){
+    isIndexChanged(){
+        const result =  this.prevIdx !== this.currIdx && this.prevIdx !== -1
+        return result
+    }
 
+    syncIndex(){
+        this.prevIdx = this.currIdx
+    }
+
+    setIndex(index){
+        this.prevIdx = this.currIdx
+        this.currIdx = index
     }
 }

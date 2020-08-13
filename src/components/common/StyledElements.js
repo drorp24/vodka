@@ -49,7 +49,7 @@ border-bottom-right-radius: ${({ borderBottomRightRadius }) => borderBottomRight
 // Colors and Fonts attributes logicaly named from theme
 
 export const cssThemedAttributes = css`
-background-color: ${({ theme, backgroundThemedColor }) => theme[backgroundThemedColor]};
+background-color: ${({ theme, backgroundthemedcolor }) => theme[backgroundthemedcolor]};
 color: ${({ theme, themedColor }) => theme[themedColor]};
 `;
 

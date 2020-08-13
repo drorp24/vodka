@@ -1,5 +1,6 @@
 import React from 'react';
-import { Slider } from "react-semantic-ui-range";
+import Slider from "rc-slider"
+import 'rc-slider/assets/index.css'
 import {Label as LabelSem, Divider} from 'semantic-ui-react';
 import "semantic-ui-css/semantic.min.css";
 import {get, getOr} from 'lodash/fp'
@@ -17,15 +18,13 @@ export default function Weight({weight, onChange}) {
         onChange(weight.key, newValue)
     }
 
-    const settings = { min, max, step, onChange: handleSliderChange}
-
     return (
         <FlexRows margin="5px">
             <FlexColumns marginBottom="5px" justifyContent="space-between">
                 <Label styleType="l3" marginLeft="10px">{weight.displayName()}</Label>
                 <LabelSem color="black" circular>{weight.value}</LabelSem>
-            </FlexColumns>            
-            <Slider value={weight.value} settings={settings} color="black"/>
+            </FlexColumns>
+            <Slider value={weight.value} min={min} max={max} step={step} onChange={handleSliderChange} trackStyle={{"background-color": "black"}}/>
             <Divider color="black"/>
         </FlexRows>        
     )
