@@ -7,7 +7,7 @@ import {SET_WEIGHT} from "../actions/actionTypes"
 const initialState = {
     items: [
         new WeightedItemType(1, "Jems", "nice israeli beer", [new KeyValueType("alcohol_content", 5.3), new KeyValueType("bitterness", 0.4), new KeyValueType("clarity", 1.3), new KeyValueType("aroma", 1.3)]),
-        new WeightedItemType(2, "Bazelet","golan heights beer",[new KeyValueType("alcohol_content", 5.2), new KeyValueType("bitterness", 0.3), new KeyValueType("clarity", 1.0), , new KeyValueType("aroma", 1)]),
+        new WeightedItemType(2, "Bazelet","golan heights beer",[new KeyValueType("alcohol_content", 5.2), new KeyValueType("bitterness", 0.3), new KeyValueType("clarity", 1.0), new KeyValueType("aroma", 1)]),
         new WeightedItemType(3, "Paulaner", "german monastery beer",[new KeyValueType("alcohol_content", 5.5), new KeyValueType("bitterness", 0.1), new KeyValueType("clarity", 1.2), new KeyValueType("aroma", 1.5)]),
         new WeightedItemType(4, "Leffe", "the magic of belgium",[new KeyValueType("alcohol_content", 6.0), new KeyValueType("bitterness", 0.4), new KeyValueType("clarity", 2), new KeyValueType("aroma", 2)]),
         new WeightedItemType(6, "Franziskaner", "ultimate bavarian",[new KeyValueType("alcohol_content", 4), new KeyValueType("bitterness", 0.1), new KeyValueType("clarity", 1.2), new KeyValueType("aroma", 0.5)]),

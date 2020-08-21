@@ -21,7 +21,7 @@ function App() {
               <Map/>
             </Sidebar.Pusher>
           </Sidebar.Pushable>
-          <Div width="33%">
+          <Div width="25%">
             <WeightedItems/>
           </Div>          
         </FlexColumns>

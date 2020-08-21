@@ -1,4 +1,4 @@
-import {SET_WEIGHT, TOGGLE_WEIGHTED_ITEM as SELECT_WEIGHTED_ITEM, TOGGLE_SIDE_BAR} from "./actionTypes"
+import {SET_WEIGHT, SELECT_WEIGHTED_ITEM, TOGGLE_SIDE_BAR} from "./actionTypes"
 
 function makeActionCreator(type, ...argNames) {
     return function (...args) {

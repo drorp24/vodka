@@ -10,7 +10,8 @@ import rootReducer from "./redux/reducers/rootReducer"
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={createStore(rootReducer)}>
+    <Provider store={createStore(rootReducer,
+      window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())}>
       <App/>
     </Provider>    
   </React.StrictMode>,
