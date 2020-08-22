@@ -32,10 +32,7 @@ font-weight: bold;
 `;
 
 export const l4 = css`
-color: ${primaryColor};
-font-size: 30px;
 font-weight: bold;
-font-family: sans-serif;
 `;
 
 export const primaryBtn = css`
