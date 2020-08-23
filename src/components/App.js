@@ -17,7 +17,7 @@ function App() {
         <FlexColumns height="100%">
           <Sidebar.Pushable as={Div} width="100%" height="100%">
             <SideBar/>
-            <Sidebar.Pusher style={{height: "100%"}}>
+            <Sidebar.Pusher>
               <Map/>
             </Sidebar.Pusher>
           </Sidebar.Pushable>

@@ -9,7 +9,7 @@ import WeightedItemExplained from './WeightedItemExplained'
 const SideBar =  ({sideBarOpen}) => {
     return (
       <Sidebar visible={sideBarOpen} animation='overlay' as={Div} vertical width="very wide">
-        <FlexRows padding="10px 5px" height="100%" width="100%">
+        <FlexRows padding="10px 5px" height="100%" width="100%" backgroundthemedcolor="secondaryColor" borderRight="1px solid lightGray">
           <Weights/>
           <WeightedItemExplained/>
         </FlexRows>

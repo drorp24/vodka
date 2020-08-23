@@ -40,7 +40,7 @@ const WeightedItemExplained = ({selected_id, weightedItems, weights}) => {
             }
             </FlexRows>            
             {
-                renderRow(["Total", null, null, parseInt(selectedWeightedItem.score)])
+                renderRow(["Total", null, null, parseInt(selectedWeightedItem.score)], true)
             }
         </FlexRows>
     )
