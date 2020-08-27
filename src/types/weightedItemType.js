@@ -1,7 +1,7 @@
 import { keyBy, getOr } from "lodash/fp";
 
 export default class WeightedItemType {
-    constructor(id, name, description, weightedAttributes){
+    constructor(id, name, description, lat, lng, weightedAttributes){
         this.id = id
         this.name = name
         this.description = description
@@ -9,6 +9,7 @@ export default class WeightedItemType {
         this.prevIdx = -1
         this.currIdx = -1
         this.score = -1
+        this.position = [lat, lng]
     }
 
     updateScore(weights){        

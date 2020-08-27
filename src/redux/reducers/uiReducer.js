@@ -14,7 +14,7 @@ export default function ui(ui = initialState, action) {
         case SELECT_WEIGHTED_ITEM: {            
             return flow(
                 set('selectedWeightedItemID', action.payload.id),
-                set('sideBarOpen', true)
+                // set('sideBarOpen', true)
             )(ui)
         }
         default:
