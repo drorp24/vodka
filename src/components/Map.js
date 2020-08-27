@@ -56,7 +56,7 @@ class Map extends React.Component {
                 {
                   map(weightedItem => 
                   <Marker position={weightedItem.position} icon={this.getMarkerIcon(weightedItem.id)}>
-                    <Popup>{weightedItem.name} <br/> score: {weightedItem.score}</Popup>
+                    <Popup>{weightedItem.name} <br/> score: {parseInt(weightedItem.score)} <br/> order: {weightedItem.currIdx + 1}</Popup>
                   </Marker> , 
                   this.props.weightedItems)
                 }
