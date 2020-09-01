@@ -21,7 +21,7 @@ const initialState = {
     ]    
 }
 
-export default function weightedItems(weightedItems = initialState, action) {
+export default function domainItems(domainItems = initialState, action) {
     switch (action.type) {
         case SET_WEIGHT:{
             const weights = map(weightTypeInstance => {
@@ -29,18 +29,18 @@ export default function weightedItems(weightedItems = initialState, action) {
                     return new WeightType(action.payload.key, action.payload.value, weightTypeInstance.min, weightTypeInstance.max)
                 }
                 return weightTypeInstance
-            }, weightedItems.weights)
+            }, domainItems.weights)
 
             return {
-                items: sortWeightedItemsHelper(weights, weightedItems.items),
+                items: sortWeightedItemsHelper(weights, domainItems.items),
                 weights
             }
         }        
         default:
             {
                 return {
-                    items: sortWeightedItemsHelper(weightedItems.weights, weightedItems.items),
-                    weights: weightedItems.weights
+                    items: sortWeightedItemsHelper(domainItems.weights, domainItems.items),
+                    weights: domainItems.weights
                 }
             }            
     }

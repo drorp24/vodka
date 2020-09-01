@@ -5,7 +5,7 @@ import {Div, Label} from './common/StyledElements';
 import {map, find, capitalize, replace, flow} from 'lodash/fp'
 
 
-const WeightedItemExplained = ({selected_id, weightedItems, weights}) => {
+const WeightedItemExplained = ({selected_id, domainItems, weights}) => {
     const renderRow = (columns, header=false) => {
         return (
             <FlexColumns justifyContent="space-between">
@@ -19,7 +19,7 @@ const WeightedItemExplained = ({selected_id, weightedItems, weights}) => {
     if(!selected_id){
         return null
     }
-    const selectedWeightedItem = find({id: selected_id}, weightedItems)
+    const selectedWeightedItem = find({id: selected_id}, domainItems)
     const attributesWeighted = map(attribute => ({
         ...attribute,
         weight: find({key: attribute.key}, weights)
@@ -48,8 +48,8 @@ const WeightedItemExplained = ({selected_id, weightedItems, weights}) => {
 
 const mapStateToProps = state => ({
     selected_id: state.ui.selectedWeightedItemID,
-    weightedItems: state.weightedItems.items,
-    weights: state.weightedItems.weights
+    domainItems: state.domainItems.items,
+    weights: state.domainItems.weights
 })
 
 export default connect(mapStateToProps, {})(WeightedItemExplained);

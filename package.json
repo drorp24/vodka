@@ -16,6 +16,7 @@
     "react-redux": "^7.2.1",
     "react-scripts": "3.4.1",
     "react-semantic-ui-range": "^0.7.0",
+    "react-virtualized": "^9.22.2",
     "redux": "^4.0.5",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^1.1.1",

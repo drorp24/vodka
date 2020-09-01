@@ -19,7 +19,7 @@ const Weights = ({weights, setWeightAction}) => {
 }
 
 const mapStateToProps = state => ({
-    weights: state.weightedItems.weights
+    weights: state.domainItems.weights
 })
 
 export default connect(mapStateToProps, {setWeightAction: setWeight})(Weights);

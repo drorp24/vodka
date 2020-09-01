@@ -4,17 +4,17 @@ import { List, Transition} from 'semantic-ui-react'
 import {map} from "lodash/fp"
 import WeightedItem from './WeightedItem'
 
-const WeightedItems = ({weightedItems}) => (
+const WeightedItems = ({domainItems}) => (
     <Transition.Group as={List} duration={200} selection size="large" divided verticalAlign='middle'>
         {
-            map(weightedItem => 
-                <WeightedItem key={weightedItem.name} weightedItem={weightedItem}/> , weightedItems)
+            map(domainItem => 
+                <WeightedItem key={domainItem.name} weightedItem={domainItem}/> , domainItems)
         }
     </Transition.Group>    
   )
 
   const mapStateToProps = state => ({
-    weightedItems: state.weightedItems.items
+    domainItems: state.domainItems.items
   })
 
   export default connect(mapStateToProps)(WeightedItems);

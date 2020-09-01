@@ -39,7 +39,7 @@ class Map extends React.Component {
       if(!this.props.selected_id){
         return [this.state.lat, this.state.lng]
       }
-      const selectedItem = find({id: this.props.selected_id}, this.props.weightedItems)
+      const selectedItem = find({id: this.props.selected_id}, this.props.domainItems)
       return selectedItem.position
     }
   
@@ -58,7 +58,7 @@ class Map extends React.Component {
                   <Marker position={weightedItem.position} icon={this.getMarkerIcon(weightedItem.id)}>
                     <Popup>{weightedItem.name} <br/> score: {parseInt(weightedItem.score)} <br/> order: {weightedItem.currIdx + 1}</Popup>
                   </Marker> , 
-                  this.props.weightedItems)
+                  this.props.domainItems)
                 }
             </LeafletMap>
         </Div>
@@ -68,7 +68,7 @@ class Map extends React.Component {
 
 
   const mapStateToProps = state => ({
-    weightedItems: state.weightedItems.items,
+    domainItems: state.domainItems.items,
     selected_id: state.ui.selectedWeightedItemID,
   })
 
