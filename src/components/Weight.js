@@ -21,7 +21,7 @@ export default function Weight({weight, onChange}) {
     return (
         <FlexRows margin="5px">
             <FlexColumns marginBottom="5px" justifyContent="space-between">
-                <Label styleType="l3" marginLeft="10px">{weight.displayName()}</Label>
+                <Label styleType="label3" marginLeft="10px">{weight.displayName()}</Label>
                 <LabelSem color="black" circular>{weight.value}</LabelSem>
             </FlexColumns>
             <Slider value={weight.value} min={min} max={max} step={step} onChange={handleSliderChange} trackStyle={{"background-color": "black"}}/>

@@ -6,11 +6,13 @@ import {SET_WEIGHT} from "../actions/actionTypes"
 
 const sortWeightedItemsHelper = (_weights, _weightedItems) => {
     const items = sortBy(weightedItem => -weightedItem.updateScore(_weights), _weightedItems)
+    const newItems = []
     for (let index = 0; index < items.length; index++) {
         const weightedItem = items[index];
         weightedItem.setIndex(index)
+        newItems.push(DomainItemType.copyDomainItem(weightedItem))
     }
-    return items
+    return newItems
 }
 
 const weights = [

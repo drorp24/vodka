@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components';
 
 // Layout and non colored/fonted attributes
-
 export const cssNonThemedAttributes = css`
 height: ${({ height }) => height};
 min-height: ${({ minHeight }) => minHeight};
@@ -34,23 +33,11 @@ align-items: ${({ alignItems }) => alignItems};
 justify-content: ${({ justifyContent }) => justifyContent};
 align-content: ${({ alignContent }) => alignContent};
 white-space: ${({ whiteSpace }) => whiteSpace};
-border: ${({ border }) => border};
-border-top: ${({ borderTop }) => borderTop};
-border-right: ${({ borderRight }) => borderRight};
-border-bottom: ${({ borderBottom }) => borderBottom};
-border-left: ${({ borderLeft }) => borderLeft};
-border-radius: ${({ borderRadius }) => borderRadius};
-border-top-left-radius: ${({ borderTopLeftRadius }) => borderTopLeftRadius};
-border-top-right-radius: ${({ borderTopRightRadius }) => borderTopRightRadius};
-border-bottom-left-radius: ${({ borderBottomLeftRadius }) => borderBottomLeftRadius};
-border-bottom-right-radius: ${({ borderBottomRightRadius }) => borderBottomRightRadius};
 `;
 
-// Colors and Fonts attributes logicaly named from theme
-
+// Colors and Fonts attributes logicaly named and taken from active theme
 export const cssThemedAttributes = css`
-background-color: ${({ theme, backgroundthemedcolor }) => theme[backgroundthemedcolor]};
-color: ${({ theme, themedColor }) => theme[themedColor]};
+background-color: ${({ theme, themedbackgroundcolor }) => theme[themedbackgroundcolor]};
 `;
 
 // Basic HTML elemetns allowing set css attributes as properties and includes potential theme key
@@ -59,14 +46,7 @@ export const Div = styled.div`
 ${cssNonThemedAttributes}
 ${cssThemedAttributes}
 ${({ theme, styleType }) => theme[styleType]};
-background-color: ${({ backgroundColor }) => backgroundColor};
 `;
-
-// const Input = styled.input`
-// ${cssNonThemedAttributes}
-// ${cssThemedAttributes}
-// ${({ theme, styleType }) => theme[styleType]};
-// `;
 
 export const Label = styled.label`
 ${cssNonThemedAttributes}

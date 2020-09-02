@@ -1,4 +1,5 @@
 import React from 'react';
+import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import {Div} from './common/StyledElements';
 import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet'
@@ -46,13 +47,13 @@ class Map extends React.Component {
     render() {
       
       return (
-        <Div height="92vh">
+        <Div height="calc(100vh - 60px)">
             <LeafletMap style={{"height": "100%"}}  center={this.getCenter()} zoom={this.state.zoom}>
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <CoordinatesControl position="bottomright"/>
+                <CoordinatesControl position="bottomleft"/>
                 {
                   map(weightedItem => 
                   <Marker position={weightedItem.position} icon={this.getMarkerIcon(weightedItem.id)}>

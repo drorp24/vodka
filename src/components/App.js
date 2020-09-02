@@ -2,7 +2,8 @@ import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import {Sidebar} from 'semantic-ui-react'
 import * as defaultTheme from './common/themes/defaultTheme'
-import WeightedItems from "./WeightedItems"
+// import WeightedItems from "./WeightedItems"
+import DomainItems from './DomainItems'
 import {FlexColumns, FlexRows} from "./common/CommonComponents"
 import {Div} from "./common/StyledElements"
 import TopBar from './TopBar';
@@ -22,7 +23,8 @@ function App() {
             </Sidebar.Pusher>
           </Sidebar.Pushable>
           <Div width="25%">
-            <WeightedItems/>
+            <DomainItems/>
+            {/* <WeightedItems/> */}
           </Div>          
         </FlexColumns>
       </FlexRows>      

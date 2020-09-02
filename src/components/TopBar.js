@@ -12,7 +12,7 @@ const TopBar = ({sideBarOpen, toggleSideBarAction}) => {
                 <Button circular color="black" icon={sideBarOpen ? 'angle double left' : 'angle double right'}
                     onClick={() => toggleSideBarAction()}/>
             </Div>            
-            <Label styleType="l1">Top bar here</Label>
+            <Label styleType="label1">Top bar here</Label>
         </FlexColumns>
     )
 }

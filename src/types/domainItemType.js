@@ -12,6 +12,14 @@ export default class DomainItemType {
         this.position = [lat, lng]
     }
 
+    static copyDomainItem(domainItem) {
+        const newDomainItem = new DomainItemType(domainItem.id, domainItem.name, domainItem.description, domainItem.position[0], domainItem.position[1], domainItem.weightedAttributes)
+        newDomainItem.prevIdx = domainItem.prevIdx
+        newDomainItem.currIdx = domainItem.currIdx
+        newDomainItem.score = domainItem.score
+        return newDomainItem
+    }
+
     updateScore(weights){        
         let score = 0
         const weightedAttributesObject = keyBy("key", this.weightedAttributes)
