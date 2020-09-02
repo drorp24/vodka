@@ -10,6 +10,8 @@ const StyledFlexRowsContainer = styled(FlexRows)`
 *,*:focus,*:hover{
     outline:none;
 }
+border-left: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
+border-right: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
 `
 
 const DomainItems = ({domainItems}) => {

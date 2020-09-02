@@ -1,19 +1,23 @@
 import React from 'react';
 import { connect } from "react-redux"
 import {Button} from 'semantic-ui-react';
+import styled from 'styled-components';
 import {FlexColumns} from './common/CommonComponents';
-import {Label, Div} from './common/StyledElements';
+import {Div} from './common/StyledElements';
 import {toggleSideBar} from '../redux/actions/actions'
+
+export const TopBarContainer = styled(FlexColumns)`
+    border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
+`;
 
 const TopBar = ({sideBarOpen, toggleSideBarAction}) => {
     return (
-        <FlexColumns minHeight="60px"  alignItems="center" >   
+        <TopBarContainer minHeight="60px"  alignItems="center">
             <Div marginLeft="20px" width="40%">
                 <Button circular color="black" icon={sideBarOpen ? 'angle double left' : 'angle double right'}
                     onClick={() => toggleSideBarAction()}/>
-            </Div>            
-            <Label styleType="label1">Top bar here</Label>
-        </FlexColumns>
+            </Div>
+        </TopBarContainer>
     )
 }
 

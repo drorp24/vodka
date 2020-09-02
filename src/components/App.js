@@ -13,7 +13,7 @@ import Map from './Map'
 function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
-      <FlexRows height="100%">
+      <FlexRows height="100%" themedbackgroundcolor="windowBackground">
         <TopBar/>        
         <FlexColumns height="100%">
           <Sidebar.Pushable as={Div} width="100%" height="100%">
@@ -22,7 +22,7 @@ function App() {
               <Map/>
             </Sidebar.Pusher>
           </Sidebar.Pushable>
-          <Div width="25%">
+          <Div width="33%">
             <DomainItems/>
             {/* <WeightedItems/> */}
           </Div>          

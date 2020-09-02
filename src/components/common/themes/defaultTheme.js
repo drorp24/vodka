@@ -1,9 +1,10 @@
 import { css } from 'styled-components';
 
 // colors
-export const temporarySignalColor = `rgba(0, 0, 0, 0.3)`
-export const borderColor = "lightgray"
+export const temporarySignalColor = `rgba(101, 100, 96, 0.8)`
+export const borderColor = "rgba(216, 221, 215, 1)"
 export const backgroudHoverColor = "lightgray"
+export const windowBackground = "rgba(234, 235, 230, 1)"
 
 
 // labels full styles

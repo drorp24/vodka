@@ -16,10 +16,10 @@ const sortWeightedItemsHelper = (_weights, _weightedItems) => {
 }
 
 const weights = [
-    new WeightType("alcohol_content", 80, 0, 100),
+    new WeightType("alcohol_content", 50, 0, 100),
     new WeightType("bitterness", 50, 0, 100),
-    new WeightType("clarity", 40, 0, 100),
-    new WeightType("aroma", 25, 0, 100)
+    new WeightType("clarity", 50, 0, 100),
+    new WeightType("aroma", 50, 0, 100)
 ]
 
 const items = sortWeightedItemsHelper(weights,
