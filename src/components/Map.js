@@ -7,6 +7,7 @@ import { CoordinatesControl } from 'react-leaflet-coordinates'
 import { connect } from "react-redux"
 import {map} from "lodash/fp"
 import { find } from 'lodash/fp';
+import {handleMapClicked} from '../redux/actions/actions'
 
 class Map extends React.Component {
     constructor(props) {
@@ -16,6 +17,7 @@ class Map extends React.Component {
             lng: 35.0343,
             zoom: 10,
           }
+        this.mapRef = React.createRef();
     }
 
     getMarkerIcon = (id) => {
@@ -43,12 +45,19 @@ class Map extends React.Component {
       const selectedItem = find({id: this.props.selected_id}, this.props.domainItems)
       return selectedItem.position
     }
+
+    handleClick = () => {
+      const map = this.mapRef.current
+      if (map != null) {
+        this.props.handleMapClickedAction()
+      }
+    }
   
     render() {
       
       return (
         <Div height="calc(100vh - 60px)">
-            <LeafletMap style={{"height": "100%"}}  center={this.getCenter()} zoom={this.state.zoom}>
+            <LeafletMap onClick={this.handleClick} ref={this.mapRef} style={{"height": "100%"}}  center={this.getCenter()} zoom={this.state.zoom}>
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -73,4 +82,4 @@ class Map extends React.Component {
     selected_id: state.ui.selectedWeightedItemID,
   })
 
-  export default connect(mapStateToProps)(Map);
+  export default connect(mapStateToProps, {handleMapClickedAction: handleMapClicked})(Map);

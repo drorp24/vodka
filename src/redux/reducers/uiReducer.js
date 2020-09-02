@@ -1,5 +1,5 @@
 import {set, flow} from 'lodash/fp'
-import {TOGGLE_SIDE_BAR, DOMAIN_ITEM_PRESSED} from "../actions/actionTypes"
+import {TOGGLE_SIDE_BAR, DOMAIN_ITEM_PRESSED, MAP_CLICKED} from "../actions/actionTypes"
 
 const initialState = {
     sideBarOpen: false,
@@ -10,10 +10,14 @@ export default function ui(ui = initialState, action) {
     switch (action.type) {
         case TOGGLE_SIDE_BAR:{
             return set('sideBarOpen', !ui.sideBarOpen, ui)
-        }            
-        case DOMAIN_ITEM_PRESSED: {            
+        }
+        case MAP_CLICKED:{
+            return set('sideBarOpen', false, ui)
+        }
+        case DOMAIN_ITEM_PRESSED: { 
             return flow(
-                set('selectedWeightedItemID', action.payload.id)
+                set('selectedWeightedItemID', action.payload.id),
+                set('sideBarOpen', false)
             )(ui)
         }
         default:
