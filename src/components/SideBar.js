@@ -4,14 +4,12 @@ import {Sidebar} from 'semantic-ui-react'
 import {Div} from "./common/StyledElements"
 import Weights from './Weights'
 import {FlexRows} from './common/CommonComponents';
-import WeightedItemExplained from './WeightedItemExplained'
 
 const SideBar =  ({sideBarOpen}) => {
     return (
-      <Sidebar visible={sideBarOpen} animation='overlay' as={Div} vertical width="very wide">
+      <Sidebar visible={sideBarOpen} animation='push' as={Div} vertical width="wide">
         <FlexRows padding="10px 5px" height="100%" width="100%" themedbackgroundcolor="windowBackground">
           <Weights/>
-          <WeightedItemExplained/>
         </FlexRows>
       </Sidebar>
     )

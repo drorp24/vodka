@@ -15,7 +15,6 @@ font-weight: bold;
 
 export const label3 = css`
 font-size: 16px;
-font-weight: bold;
 `;
 
 export const label4 = css`

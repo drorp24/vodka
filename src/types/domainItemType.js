@@ -10,6 +10,7 @@ export default class DomainItemType {
         this.currIdx = -1
         this.score = -1
         this.position = [lat, lng]
+        this.expanded = false
     }
 
     static copyDomainItem(domainItem) {

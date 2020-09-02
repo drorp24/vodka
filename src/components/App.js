@@ -14,7 +14,7 @@ function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <FlexRows height="100%" themedbackgroundcolor="windowBackground">
-        <TopBar/>        
+        <TopBar/> 
         <FlexColumns height="100%">
           <Sidebar.Pushable as={Div} width="100%" height="100%">
             <SideBar/>
@@ -22,9 +22,8 @@ function App() {
               <Map/>
             </Sidebar.Pusher>
           </Sidebar.Pushable>
-          <Div width="33%">
+          <Div width="40%">
             <DomainItems/>
-            {/* <WeightedItems/> */}
           </Div>          
         </FlexColumns>
       </FlexRows>      

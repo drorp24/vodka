@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from "react-redux"
 import {FlexRows, FlexColumns} from './common/CommonComponents';
-import {Div, Label} from './common/StyledElements';
+import {Div} from './common/StyledElements';
 import {map, find, capitalize, replace, flow} from 'lodash/fp'
 
 
-const WeightedItemExplained = ({selected_id, domainItems, weights}) => {
+const WeightedItemExplained = ({domainItem, weights}) => {
     const renderRow = (columns, header=false) => {
         return (
             <FlexColumns justifyContent="space-between">
@@ -16,17 +16,12 @@ const WeightedItemExplained = ({selected_id, domainItems, weights}) => {
             </FlexColumns>
         )
     }
-    if(!selected_id){
-        return null
-    }
-    const selectedWeightedItem = find({id: selected_id}, domainItems)
     const attributesWeighted = map(attribute => ({
         ...attribute,
         weight: find({key: attribute.key}, weights)
-    }), selectedWeightedItem.weightedAttributes)
+    }), domainItem.weightedAttributes)
     return (
-        <FlexRows marginTop="20px">
-            <Label marginBottom="10px" styleType="label3">{selectedWeightedItem.name} explained (#{selectedWeightedItem.currIdx + 1}):</Label>
+        <FlexRows marginTop="20px" padding="10px">
             <FlexRows>
             {
                 renderRow(["Attribute", "Value", "Weight", "Contribution"], true)
@@ -40,15 +35,13 @@ const WeightedItemExplained = ({selected_id, domainItems, weights}) => {
             }
             </FlexRows>            
             {
-                renderRow(["Total", null, null, parseInt(selectedWeightedItem.score)], true)
+                renderRow(["Total", null, null, parseInt(domainItem.score)], true)
             }
         </FlexRows>
     )
 }
 
 const mapStateToProps = state => ({
-    selected_id: state.ui.selectedWeightedItemID,
-    domainItems: state.domainItems.items,
     weights: state.domainItems.weights
 })
 

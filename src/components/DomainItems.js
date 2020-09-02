@@ -14,26 +14,45 @@ border-left: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
 border-right: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
 `
 
-const DomainItems = ({domainItems}) => {
-    const rowRenderer = ({index, isScrolling, key, style}) => {
-        const domainItem = domainItems[index]
-        return <DomainItem key={domainItem.id} domainItem={domainItem}/>
+class DomainItems extends React.Component {
+
+    constructor(props){
+        super(props)
+        this.listRef = React.createRef();
     }
-    return (
+
+    rowRenderer = ({index, isScrolling, key, style}) => {
+        const domainItem = this.props.domainItems[index]
+        return <DomainItem key={domainItem.id} domainItem={domainItem}/>        
+    }
+
+
+    calcRowHeight = ({index}) => {
+        return this.props.domainItems[index].expanded ? 240 : 60
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        this.listRef.current.recomputeRowHeights()
+    }
+
+    render() {
+        return (
             <StyledFlexRowsContainer height="100%" width="100%">
                 <AutoSizer>
                     {({width, height}) => (
-                    <List
-                        height={height}
-                        rowCount={domainItems.length}
-                        rowHeight={60}
-                        rowRenderer={rowRenderer}
-                        width={width}
-                    />
+                        <List
+                            ref={this.listRef}
+                            height={height}
+                            rowCount={this.props.domainItems.length}
+                            rowHeight={this.calcRowHeight}
+                            rowRenderer={this.rowRenderer}
+                            width={width}
+                        />
                     )}
                 </AutoSizer>
             </StyledFlexRowsContainer>
         )
+    } 
 }
 
 const mapStateToProps = state => ({

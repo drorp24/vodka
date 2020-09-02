@@ -1,4 +1,4 @@
-import {SET_WEIGHT, SELECT_WEIGHTED_ITEM, TOGGLE_SIDE_BAR} from "./actionTypes"
+import {SET_WEIGHT, DOMAIN_ITEM_PRESSED, TOGGLE_SIDE_BAR} from "./actionTypes"
 
 function makeActionCreator(type, ...argNames) {
     return function (...args) {
@@ -12,5 +12,5 @@ function makeActionCreator(type, ...argNames) {
   }
 
   export const setWeight = makeActionCreator(SET_WEIGHT, 'key', 'value')
-  export const selectWeightedItem = makeActionCreator(SELECT_WEIGHTED_ITEM, 'id')
+  export const handleDomainItemPressed = makeActionCreator(DOMAIN_ITEM_PRESSED, 'id')
   export const toggleSideBar = makeActionCreator(TOGGLE_SIDE_BAR)

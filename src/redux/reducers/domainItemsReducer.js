@@ -2,7 +2,7 @@ import DomainItemType from "../../types/domainItemType"
 import KeyValueType from "../../types/keyValueType"
 import WeightType from "../../types/weightType"
 import {sortBy, map, getOr} from 'lodash/fp'
-import {SET_WEIGHT} from "../actions/actionTypes"
+import {SET_WEIGHT, DOMAIN_ITEM_PRESSED} from "../actions/actionTypes"
 
 const sortWeightedItemsHelper = (_weights, _weightedItems) => {
     const items = sortBy(weightedItem => -weightedItem.updateScore(_weights), _weightedItems)
@@ -35,8 +35,8 @@ const items = sortWeightedItemsHelper(weights,
 const initialState = {items, weights}
 
 
-const actionHandlers = {
-    SET_WEIGHT: (state, action) => {
+const actionHandlers = {}
+actionHandlers[SET_WEIGHT] = (state, action) => {
         const weights = map(weightTypeInstance => {
             if(weightTypeInstance.key === action.payload.key){
                 return new WeightType(action.payload.key, action.payload.value, weightTypeInstance.min, weightTypeInstance.max)
@@ -48,6 +48,22 @@ const actionHandlers = {
             items: sortWeightedItemsHelper(weights, state.items),
             weights
         }
+    }
+
+actionHandlers[DOMAIN_ITEM_PRESSED] = (state, action) => {
+    const items = map(
+        (domainItem) => {
+            if(domainItem.id === action.payload.id){
+                const newDomainItem  = DomainItemType.copyDomainItem(domainItem)
+                newDomainItem.expanded = !domainItem.expanded
+                return newDomainItem
+            }
+            return domainItem
+        },
+        state.items)
+    return {
+        ...state,
+        items
     }
 }
 

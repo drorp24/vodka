@@ -4,9 +4,18 @@ import {Label as LabelSem} from 'semantic-ui-react';
 import styled from 'styled-components';
 import {FlexColumns, FlexRows} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
-import {selectWeightedItem} from '../redux/actions/actions'
+import {handleDomainItemPressed} from '../redux/actions/actions'
+import DomainItemExplained from './DomainItemExplained'
 
-export const DomainItemContainer = styled(FlexColumns)`
+export const DomainItemFlexColumns = styled(FlexColumns)`
+    border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
+    :hover  {
+        cursor: pointer;
+        background-color: ${({ theme }) => `${theme["backgroudHoverColor"]}`};
+      }
+`;
+
+export const DomainItemExpandedFlexRows = styled(FlexRows)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
     :hover  {
         cursor: pointer;
@@ -23,12 +32,19 @@ class DomainItem extends React.Component {
     }
 
     onItemClick = (event, data) => {
-        this.props.selectWeightedItemAction(this.props.domainItem.id)
+        this.props.handleDomainItemPressedAction(this.props.domainItem.id)
     }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.domainItem.isIndexChanged()) {            
+            this.setState({
+                backgroundColor: "temporarySignalColor"
+            })
+        }
+      }
 
     render() {
         if(this.props.domainItem.isIndexChanged()){
-            this.state.backgroundColor = "temporarySignalColor"
             setTimeout(() => {
                 this.props.domainItem.syncIndex()
                 this.setState({
@@ -37,15 +53,31 @@ class DomainItem extends React.Component {
             }, 2000);
         }
         return (
-            <DomainItemContainer height="60px" themedbackgroundcolor={this.state.backgroundColor} alignItems="center" padding="10px" themedHover="defaultMouseHover"  onClick={this.onItemClick}>
-                <FlexRows flexBasis="90%" >
-                    <Div  styleType="label3">{this.props.domainItem.name}</Div>
-                    <Div>{this.props.domainItem.description}</Div>
-                </FlexRows>
-                <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
-            </DomainItemContainer>
+            this.props.domainItem.expanded ?
+                (
+                    <DomainItemExpandedFlexRows height="240px">
+                        <FlexColumns themedbackgroundcolor={this.state.backgroundColor} alignItems="center" padding="10px" themedHover="defaultMouseHover" onClick={this.onItemClick}>
+                            <FlexRows flexBasis="90%" >
+                                <Div styleType="label3">{this.props.domainItem.name}</Div>
+                                <Div>{this.props.domainItem.description}</Div>
+                            </FlexRows>
+                            <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
+                        </FlexColumns>
+                        <DomainItemExplained domainItem={this.props.domainItem}/>
+                    </DomainItemExpandedFlexRows>                    
+                )
+              :
+                (
+                    <DomainItemFlexColumns height="60px" themedbackgroundcolor={this.state.backgroundColor} alignItems="center" padding="10px" themedHover="defaultMouseHover"  onClick={this.onItemClick}>
+                        <FlexRows flexBasis="90%" >
+                            <Div styleType="label3">{this.props.domainItem.name}</Div>
+                            <Div>{this.props.domainItem.description}</Div>
+                        </FlexRows>
+                        <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
+                    </DomainItemFlexColumns>
+                )
         )
     }
 }
 
-export default connect(null, {selectWeightedItemAction: selectWeightedItem})(DomainItem);
+export default connect(null, {handleDomainItemPressedAction: handleDomainItemPressed})(DomainItem);
