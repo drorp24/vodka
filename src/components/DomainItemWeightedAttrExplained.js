@@ -1,11 +1,15 @@
 import React from 'react';
 import { connect } from "react-redux"
+import styled from 'styled-components';
 import {FlexRows, FlexColumns} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
 import {map, find, capitalize, replace, flow} from 'lodash/fp'
 
+export const StyledContanier = styled(FlexRows)`
+    :hover  { cursor: auto}
+`;
 
-const WeightedItemExplained = ({domainItem, weights}) => {
+const DomainItemWeightedAttrExplained = ({domainItem, weights}) => {
     const renderRow = (columns, header=false) => {
         return (
             <FlexColumns justifyContent="space-between">
@@ -21,7 +25,7 @@ const WeightedItemExplained = ({domainItem, weights}) => {
         weight: find({key: attribute.key}, weights)
     }), domainItem.weightedAttributes)
     return (
-        <FlexRows marginTop="20px" padding="10px">
+        <StyledContanier padding="10px">
             <FlexRows>
             {
                 renderRow(["Attribute", "Value", "Weight", "Contribution"], true)
@@ -37,7 +41,7 @@ const WeightedItemExplained = ({domainItem, weights}) => {
             {
                 renderRow(["Total", null, null, parseInt(domainItem.score)], true)
             }
-        </FlexRows>
+        </StyledContanier>
     )
 }
 
@@ -45,4 +49,4 @@ const mapStateToProps = state => ({
     weights: state.domainItems.weights
 })
 
-export default connect(mapStateToProps, {})(WeightedItemExplained);
+export default connect(mapStateToProps, {})(DomainItemWeightedAttrExplained);

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import {FlexColumns, FlexRows} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
 import {handleDomainItemPressed} from '../redux/actions/actions'
-import DomainItemExplained from './DomainItemExplained'
+import DomainItemWeightedAttrExplained from './DomainItemWeightedAttrExplained'
 
 export const DomainItemFlexColumns = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
@@ -55,20 +55,20 @@ class DomainItem extends React.Component {
         return (
             this.props.domainItem.expanded ?
                 (
-                    <DomainItemExpandedFlexRows height="240px">
-                        <FlexColumns themedbackgroundcolor={this.state.backgroundColor} alignItems="center" padding="10px" themedHover="defaultMouseHover" onClick={this.onItemClick}>
+                    <DomainItemExpandedFlexRows height="230px">
+                        <FlexColumns themedbackgroundcolor={this.state.backgroundColor} alignItems="center" padding="10px"  onClick={this.onItemClick}>
                             <FlexRows flexBasis="90%" >
                                 <Div styleType="label3">{this.props.domainItem.name}</Div>
                                 <Div>{this.props.domainItem.description}</Div>
                             </FlexRows>
                             <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
                         </FlexColumns>
-                        <DomainItemExplained domainItem={this.props.domainItem}/>
+                        <DomainItemWeightedAttrExplained domainItem={this.props.domainItem}/>
                     </DomainItemExpandedFlexRows>                    
                 )
               :
                 (
-                    <DomainItemFlexColumns height="60px" themedbackgroundcolor={this.state.backgroundColor} alignItems="center" padding="10px" themedHover="defaultMouseHover"  onClick={this.onItemClick}>
+                    <DomainItemFlexColumns height="60px" themedbackgroundcolor={this.state.backgroundColor} alignItems="center" padding="10px"  onClick={this.onItemClick}>
                         <FlexRows flexBasis="90%" >
                             <Div styleType="label3">{this.props.domainItem.name}</Div>
                             <Div>{this.props.domainItem.description}</Div>
