@@ -20,3 +20,7 @@ font-size: 16px;
 export const label4 = css`
 font-weight: bold;
 `;
+
+export const labelDefaultText = css`
+color: gray;
+`;
