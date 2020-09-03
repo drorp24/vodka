@@ -55,8 +55,8 @@ class DomainItem extends React.Component {
         return (
             this.props.domainItem.expanded ?
                 (
-                    <DomainItemExpandedFlexRows height="230px">
-                        <FlexColumns themedbackgroundcolor={this.state.backgroundColor} alignItems="center" padding="10px"  onClick={this.onItemClick}>
+                    <DomainItemExpandedFlexRows height="230px" themedbackgroundcolor={this.state.backgroundColor}>
+                        <FlexColumns  alignItems="center" padding="10px"  onClick={this.onItemClick}>
                             <FlexRows flexBasis="90%" >
                                 <Div styleType="label3">{this.props.domainItem.name}</Div>
                                 <Div>{this.props.domainItem.description}</Div>

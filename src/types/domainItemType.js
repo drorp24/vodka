@@ -18,6 +18,7 @@ export default class DomainItemType {
         newDomainItem.prevIdx = domainItem.prevIdx
         newDomainItem.currIdx = domainItem.currIdx
         newDomainItem.score = domainItem.score
+        newDomainItem.expanded = domainItem.expanded
         return newDomainItem
     }
 
