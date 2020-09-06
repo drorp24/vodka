@@ -1,6 +1,7 @@
+import LoadingSuccessFailureActionType from '../../types/loadingSuccessFailureActionType';
+
 // Weight action types
-export const ADD_WEIGHT = "ADD_WEIGHT"
-export const REMOVE_WEIGHT = "REMOVE_WEIGHT"
+export const LOAD_WEIGHTS = "LOAD_WEIGHTS"
 export const SET_WEIGHT = "SET_WEIGHT"
 
 // Domain items action types
@@ -11,3 +12,8 @@ export const MAP_CLICKED = "MAP_CLICKED"
 
 // UI actions
 export const TOGGLE_SIDE_BAR = "TOGGLE_SIDE_BAR"
+
+// function to create loading / success / failure action types
+export const makeLoadSuccessFailureActionType = (actionType) => {
+  return new LoadingSuccessFailureActionType(actionType)
+}
