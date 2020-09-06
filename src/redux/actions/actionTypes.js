@@ -5,6 +5,7 @@ export const LOAD_WEIGHTS = "LOAD_WEIGHTS"
 export const SET_WEIGHT = "SET_WEIGHT"
 
 // Domain items action types
+export const LOAD_DOMAIN_ITEMS = "LOAD_DOMAIN_ITEMS"
 export const DOMAIN_ITEM_PRESSED = "DOMAIN_ITEM_PRESSED"
 
 // Map action types
