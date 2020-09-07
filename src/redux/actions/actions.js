@@ -1,4 +1,11 @@
-import { SET_WEIGHT, LOAD_DOMAIN_ITEMS, DOMAIN_ITEM_PRESSED, TOGGLE_SIDE_BAR, MAP_CLICKED, LOAD_WEIGHTS } from "./actionTypes"
+import { 
+  SET_WEIGHT, 
+  LOAD_DOMAIN_ITEMS, 
+  DOMAIN_ITEM_PRESSED, 
+  TOGGLE_SIDE_BAR, 
+  MAP_CLICKED, 
+  LOAD_WEIGHTS,
+  SWITCH_THEME } from "./actionTypes"
 
 function makeActionCreator(type, ...argNames) {
   return function(...args) {
@@ -20,3 +27,4 @@ export const loadDomainItems = makeActionCreator(LOAD_DOMAIN_ITEMS, 'meta', 'bod
 export const handleDomainItemPressed = makeActionCreator(DOMAIN_ITEM_PRESSED, 'id')
 export const toggleSideBar = makeActionCreator(TOGGLE_SIDE_BAR)
 export const handleMapClicked = makeActionCreator(MAP_CLICKED)
+export const switchTheme = makeActionCreator(SWITCH_THEME, 'id')

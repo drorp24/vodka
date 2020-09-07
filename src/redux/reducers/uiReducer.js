@@ -1,15 +1,23 @@
 import {set, flow} from 'lodash/fp'
-import {TOGGLE_SIDE_BAR, DOMAIN_ITEM_PRESSED, MAP_CLICKED} from "../actions/actionTypes"
+import {
+    TOGGLE_SIDE_BAR, 
+    DOMAIN_ITEM_PRESSED, 
+    MAP_CLICKED,
+    SWITCH_THEME} from "../actions/actionTypes"
 
 const initialState = {
     sideBarOpen: false,
-    selectedWeightedItemID: null
+    selectedWeightedItemID: null,
+    themeId: "defaultTheme"
 }
 
 export default function ui(ui = initialState, action) {
     switch (action.type) {
         case TOGGLE_SIDE_BAR:{
             return set('sideBarOpen', !ui.sideBarOpen, ui)
+        }
+        case SWITCH_THEME:{
+            return set('themeId', action.payload.id, ui)
         }
         case MAP_CLICKED:{
             return set('sideBarOpen', false, ui)

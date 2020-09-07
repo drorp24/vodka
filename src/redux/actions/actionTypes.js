@@ -13,6 +13,7 @@ export const MAP_CLICKED = "MAP_CLICKED"
 
 // UI actions
 export const TOGGLE_SIDE_BAR = "TOGGLE_SIDE_BAR"
+export const SWITCH_THEME = "SWITCH_THEME"
 
 // function to create loading / success / failure action types
 export const makeLoadSuccessFailureActionType = (actionType) => {

@@ -1,18 +1,24 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
-import {Sidebar} from 'semantic-ui-react'
+import { Sidebar } from 'semantic-ui-react'
+import { connect } from "react-redux"
 import * as defaultTheme from './common/themes/defaultTheme'
-// import WeightedItems from "./WeightedItems"
+import * as darkTheme from './common/themes/darkTheme'
 import DomainItems from './DomainItems'
-import {FlexColumns, FlexRows} from "./common/CommonComponents"
-import {Div} from "./common/StyledElements"
+import { FlexColumns, FlexRows } from "./common/CommonComponents"
+import { Div } from "./common/StyledElements"
 import TopBar from './TopBar';
 import SideBar from './SideBar'
 import Map from './Map'
 
-function App() {
+const themes = {
+  defaultTheme,
+  darkTheme
+}
+
+function App({themeId}) {
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={themes[themeId]}>
       <FlexRows height="100%" themedbackgroundcolor="windowBackground">
         <TopBar/> 
         <FlexColumns height="100%">
@@ -27,8 +33,12 @@ function App() {
           </Div>          
         </FlexColumns>
       </FlexRows>      
-    </ThemeProvider>        
-  );
+    </ThemeProvider>
+    );
 }
 
-export default App;
+const mapStateToProps = state => ({
+  themeId: state.ui.themeId
+})
+
+export default connect(mapStateToProps)(App);
