@@ -17,7 +17,7 @@ const TopBar = ({themeId, sideBarOpen, toggleSideBarAction, theme, switchThemeAc
                 <Button color={theme["topbarSliderButton"]} circular icon={sideBarOpen ? 'angle double left' : 'angle double right'}
                     onClick={() => toggleSideBarAction()}/>
                 <Div marginLeft="20px">
-                <Button color={theme["themeButtonColor"]} icon onClick={() => switchThemeAction(themeId === "defaultTheme" ? 'darkTheme' : 'defaultTheme')}>
+                <Button circular  size="medium" color={theme["themeButtonColor"]} icon onClick={() => switchThemeAction(themeId === "defaultTheme" ? 'darkTheme' : 'defaultTheme')}>
                     <Icon name={themeId === "defaultTheme" ? 'moon' : 'sun'}/>
                 </Button>
                 </Div>
