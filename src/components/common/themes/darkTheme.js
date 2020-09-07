@@ -10,7 +10,7 @@ export const sliderRail = "gray"
 export const topbarSliderButton = 'grey'
 export const weightLabel = 'grey'
 export const sliderHandle = '#767676'
-
+export const themeButtonColor = 'grey'
 
 
 // labels full styles

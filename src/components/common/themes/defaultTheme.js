@@ -10,6 +10,7 @@ export const sliderRail = "lightgray"
 export const topbarSliderButton = 'black'
 export const weightLabel = 'black'
 export const sliderHandle = '#1b1c1d'
+export const themeButtonColor = 'black'
 
 
 // labels full styles
