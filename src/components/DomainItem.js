@@ -52,24 +52,23 @@ class DomainItem extends React.Component {
         })
       }, 2000);
     }
-    const domainItemHeight = this.props.domainItem.weightedAttributes.length * 30 + 60
     return (
     this.props.domainItem.expanded ?
       (
-      <DomainItemExpandedFlexRows height={domainItemHeight} themedbackgroundcolor={this.state.backgroundColor}>
-                        <FlexColumns  alignItems="center" padding="10px"  onClick={this.onItemClick}>
-                            <FlexRows flexBasis="90%" >
-                                <Div styleType="label3">{this.props.domainItem.name}</Div>
-                                <Div styleType="labelDefaultText">{this.props.domainItem.description}</Div>
-                            </FlexRows>
-                            <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
-                        </FlexColumns>
-                        <DomainItemWeightedAttrExplained domainItem={this.props.domainItem}/>
-                    </DomainItemExpandedFlexRows>
+      <DomainItemExpandedFlexRows style={this.props.style} themedbackgroundcolor={this.state.backgroundColor}>
+              <FlexColumns  alignItems="center" padding="10px"  onClick={this.onItemClick}>
+                  <FlexRows flexBasis="90%" >
+                      <Div styleType="label3">{this.props.domainItem.name}</Div>
+                      <Div styleType="labelDefaultText">{this.props.domainItem.description}</Div>
+                  </FlexRows>
+                  <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
+              </FlexColumns>
+              <DomainItemWeightedAttrExplained domainItem={this.props.domainItem}/>
+          </DomainItemExpandedFlexRows>
       )
       :
       (
-      <DomainItemFlexColumns height="60px" themedbackgroundcolor={this.state.backgroundColor} alignItems="center" padding="10px"  onClick={this.onItemClick}>
+      <DomainItemFlexColumns style={this.props.style} themedbackgroundcolor={this.state.backgroundColor} alignItems="center" padding="10px"  onClick={this.onItemClick}>
                         <FlexRows flexBasis="90%" >
                             <Div styleType="label3">{this.props.domainItem.name}</Div>
                             <Div styleType="labelDefaultText">{this.props.domainItem.description}</Div>

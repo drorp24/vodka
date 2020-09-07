@@ -46,10 +46,11 @@ class DomainItems extends React.Component {
   }
 
   render() {
+
     return (
       <StyledFlexRowsContainer height="100%" width="100%">
-                <AutoSizer>
-                    {({width, height}) => (
+          <AutoSizer>
+              {({width, height}) => (
         <List
         ref={this.listRef}
         height={height}
@@ -59,8 +60,8 @@ class DomainItems extends React.Component {
         width={width}
         />
       )}
-                </AutoSizer>
-            </StyledFlexRowsContainer>
+          </AutoSizer>
+      </StyledFlexRowsContainer>
     )
   }
 }
