@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from "react-redux"
 import { isEmpty } from 'lodash/fp'
+import 'react-virtualized/styles.css';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import List from 'react-virtualized/dist/commonjs/List';
 import { FlexRows } from './common/CommonComponents';
@@ -36,7 +37,8 @@ class DomainItems extends React.Component {
 
 
   calcRowHeight = ({index}) => {
-    return this.props.domainItems[index].expanded ? 230 : 60
+    const domainItem = this.props.domainItems[index]
+    return this.props.domainItems[index].expanded ? domainItem.weightedAttributes.length * 30 + 60 : 60
   }
 
   componentDidUpdate(prevProps, prevState) {
