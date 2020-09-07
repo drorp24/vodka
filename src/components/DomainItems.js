@@ -38,7 +38,7 @@ class DomainItems extends React.Component {
 
   calcRowHeight = ({index}) => {
     const domainItem = this.props.domainItems[index]
-    return this.props.domainItems[index].expanded ? domainItem.weightedAttributes.length * 30 + 60 : 60
+    return this.props.domainItems[index].expanded ? domainItem.weightedAttributes.length * 40 + 60 : 60
   }
 
   componentDidUpdate(prevProps, prevState) {
