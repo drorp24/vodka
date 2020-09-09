@@ -83,6 +83,7 @@ class Map extends React.Component {
       this.props.domainItems.forEach(domainItem => {
         const marker = new PruneCluster.Marker(domainItem.position[0], domainItem.position[1]);
         marker.data.icon = this.getMarkerIcon(domainItem.id)
+        marker.data.popup = `${domainItem.name} <br/> score: ${parseInt(domainItem.score)} <br/> order: ${domainItem.currIdx + 1}`
         this.pruneCluster.RegisterMarker(marker);
       });
       this.leafletDataLayer = this.leafletMapInstance.addLayer(this.pruneCluster);
