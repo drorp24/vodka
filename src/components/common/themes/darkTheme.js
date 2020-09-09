@@ -5,11 +5,11 @@ export const temporarySignalColor = `rgba(200, 200, 200, 0.3)`
 export const borderColor = "darkgray"
 export const backgroudHoverColor = "darkgray"
 export const windowBackground = "rgba(0, 0, 0, 0.85)"
-export const sliderTarck = "white"
-export const sliderRail = "gray"
+export const sliderTarck = "#90caf9"
+export const sliderRail = "#455969"
+export const sliderHandle = '#90caf9'
 export const topbarSliderButton = 'grey'
 export const weightLabel = 'grey'
-export const sliderHandle = '#767676'
 export const themeButtonColor = 'grey'
 
 
@@ -31,6 +31,6 @@ font-weight: bold;
 `;
 
 export const labelDefaultText = css`
-color: white;
+color: #fff;
 color: gray;
 `;
