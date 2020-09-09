@@ -2,8 +2,8 @@ import { css } from 'styled-components';
 
 // colors
 export const temporarySignalColor = `rgba(200, 200, 200, 0.3)`
-export const borderColor = "darkgray"
-export const backgroudHoverColor = "darkgray"
+export const borderColor = "#2d3339"
+export const backgroudHoverColor = "#455969"
 export const windowBackground = "rgba(0, 0, 0, 0.85)"
 export const sliderTarck = "#455969"
 export const sliderHandle = '#455969'

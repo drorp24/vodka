@@ -1,4 +1,4 @@
-import {set, flow} from 'lodash/fp'
+import {set, flow, getOr} from 'lodash/fp'
 import {
     TOGGLE_SIDE_BAR, 
     DOMAIN_ITEM_PRESSED, 
@@ -8,7 +8,7 @@ import {
 const initialState = {
     sideBarOpen: false,
     selectedWeightedItemID: null,
-    themeId: "defaultTheme"
+    themeId: getOr("defaultTheme", "startupTheme", window.__myapp)
 }
 
 export default function ui(ui = initialState, action) {
