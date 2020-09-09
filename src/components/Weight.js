@@ -8,26 +8,49 @@ import { FlexRows, FlexColumns, SemanticSlider } from './common/CommonComponents
 import { Label } from './common/StyledElements';
 
 
-const Weight = ({weight, onChange, theme}) => {
-  const min = getOr(0, "min", weight)
-  const max = getOr(0, "max", weight)
-  let step = get("step", weight)
-  step = isNaN(step) ? 1 : step
+class Weight extends React.Component {
 
-  const handleSliderChange = (newValue) => {
-    onChange(weight.key, newValue)
+  constructor(props) {
+    super(props)
+    this.state = {
+      stateValue: null
+    }
+  }
+  
+  handleSliderDoneChanging = (newValue) => {
+    this.props.onChange(this.props.weight.key, newValue)
   }
 
-  return (
-    <FlexRows margin="5px">
-            <FlexColumns marginBottom="5px" justifyContent="space-between">
-                <Label styleType="label3" marginLeft="10px">{weight.displayName()}</Label>
-                <LabelSem color={theme["weightLabel"]} circular>{weight.value}</LabelSem>
-            </FlexColumns>
-            <SemanticSlider value={weight.value} min={min} max={max} step={step} onChange={handleSliderChange}/>
-            <Divider color="black"/>
+  handleSliderChanging = (newValue) => {
+    this.setState({
+      stateValue: newValue
+    })
+  }
+
+  getValue = () => {
+    if(this.state.stateValue !== null && this.state.stateValue !== this.props.weight.value){
+      return this.state.stateValue
+    }
+    return this.props.weight.value
+  }
+
+  render(){
+    const min = getOr(0, "min", this.props.weight)
+    const max = getOr(0, "max", this.props.weight)
+    let step = get("step", this.props.weight)
+    step = isNaN(step) ? 1 : step
+
+    return (
+      <FlexRows margin="5px">
+          <FlexColumns marginBottom="5px" justifyContent="space-between">
+              <Label styleType="label3" marginLeft="10px">{this.props.weight.displayName()}</Label>
+              <LabelSem color={this.props.theme["weightLabel"]} circular>{this.getValue()}</LabelSem>
+          </FlexColumns>
+          <SemanticSlider value={this.getValue()} min={min} max={max} step={step} onChange={this.handleSliderChanging} onAfterChange={this.handleSliderDoneChanging}/>
+          <Divider color="black"/>
         </FlexRows>
-  )
+    )
+  }
 }
 
 export default withTheme(Weight)
