@@ -8,9 +8,9 @@ export const windowBackground = "rgba(234, 235, 230, 1)"
 export const sliderTarck = "rgba(0, 0, 0, 0.7)"
 export const sliderHandle = "rgba(0, 0, 0, 1)"
 export const sliderRail = "lightgray"
-export const topbarSliderButton = "rgba(0, 0, 0, 0.7)"
-export const weightLabel = "rgba(0, 0, 0, 0.7)"
-export const changeThemeButtonColor = "rgba(0, 0, 0, 0.7)"
+export const topbarSliderButton = "black"
+export const weightLabel = "black"
+export const changeThemeButtonColor = "black"
 
 
 // labels full styles
