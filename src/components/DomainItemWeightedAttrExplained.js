@@ -13,10 +13,10 @@ const DomainItemWeightedAttrExplained = ({domainItem, weights}) => {
   const renderRow = (columns, header = false) => {
     return (
       <FlexColumns justifyContent="space-between">
-                <Div styleType={header ? "label4" : "labelDefaultText"} width="40%" marginBottom="5px">{columns[0]}</Div>
-                <Div styleType={header ? "label4" : "labelDefaultText"} width="20%" borderLeft={columns[1] ? "1px solid lightgray" : null}  marginBottom="5px" paddingLeft="5px">{columns[1]}</Div>
-                <Div styleType={header ? "label4" : "labelDefaultText"} width="20%" borderLeft={columns[2] ? "1px solid lightgray" : null}  marginBottom="5px" paddingLeft="5px">{columns[2]}</Div>
-                <Div styleType={header ? "label4" : "labelDefaultText"} width="20%" borderLeft={columns[3] ? "1px solid lightgray" : null}  marginBottom="5px" paddingLeft="5px">{columns[3]}</Div>                
+                <Div styleType={header ? "labelDefaultText" : "labelDefaultDisabled"} width="40%" marginBottom="5px">{columns[0]}</Div>
+                <Div styleType={header ? "labelDefaultText" : "labelDefaultDisabled"} width="20%" borderLeft={columns[1] ? "1px solid lightgray" : null}  marginBottom="5px" paddingLeft="5px">{columns[1]}</Div>
+                <Div styleType={header ? "labelDefaultText" : "labelDefaultDisabled"} width="20%" borderLeft={columns[2] ? "1px solid lightgray" : null}  marginBottom="5px" paddingLeft="5px">{columns[2]}</Div>
+                <Div styleType={header ? "labelDefaultText" : "labelDefaultDisabled"} width="20%" borderLeft={columns[3] ? "1px solid lightgray" : null}  marginBottom="5px" paddingLeft="5px">{columns[3]}</Div>                
             </FlexColumns>
     )
   }
