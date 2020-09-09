@@ -5,12 +5,12 @@ export const temporarySignalColor = `rgba(200, 200, 200, 0.3)`
 export const borderColor = "darkgray"
 export const backgroudHoverColor = "darkgray"
 export const windowBackground = "rgba(0, 0, 0, 0.85)"
-export const sliderTarck = "#90caf9"
-export const sliderRail = "#455969"
-export const sliderHandle = '#90caf9'
-export const topbarSliderButton = 'grey'
-export const weightLabel = 'grey'
-export const themeButtonColor = 'grey'
+export const sliderTarck = "#455969"
+export const sliderHandle = '#455969'
+export const sliderRail = "#2d3339"
+export const topbarSliderButton = '#5c5c5c'
+export const weightLabel = '#5c5c5c'
+export const themeButtonColor = '#5c5c5c'
 
 
 // labels full styles
