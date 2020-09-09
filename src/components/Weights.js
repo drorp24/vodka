@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from "react-redux"
-import { map, isEmpty } from 'lodash/fp'
+import { map, isEmpty, set } from 'lodash/fp'
 import { FlexRows } from './common/CommonComponents';
 import Weight from './Weight'
-import { setWeight, loadWeights } from '../redux/actions/actions'
+import { weightUpdated, loadWeights } from '../redux/actions/actions'
 import AsyncRESTMeta from '../types/asyncRESTMeta';
 
 
@@ -15,7 +15,18 @@ class Weights extends React.Component {
       this.props.loadWeightsAction(new AsyncRESTMeta("/weights", "GET"))
   }
 
-  renderWeight = (weight) => (<Weight key={weight.key} weight={weight} onChange={this.props.setWeightAction}/>)
+  handleWeightUpdate = (key, value) => {
+    const weights = map((weight) => {
+      if(key !== weight.key) return weight
+      return set('value', value, weight)
+    }, this.props.weights)
+    const getItemsReqBody = {
+      weights
+    }
+    this.props.weightUpdatedAction(new AsyncRESTMeta("/items", "POST"), getItemsReqBody)
+  }
+
+  renderWeight = (weight) => (<Weight key={weight.key} weight={weight} onChange={this.handleWeightUpdate}/>)
 
   render() {
     return (
@@ -34,6 +45,6 @@ const mapStateToProps = state => ({
 })
 
 export default connect(mapStateToProps, {
-  setWeightAction: setWeight,
+  weightUpdatedAction: weightUpdated,
   loadWeightsAction: loadWeights
 })(Weights);

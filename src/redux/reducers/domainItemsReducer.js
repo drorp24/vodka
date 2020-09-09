@@ -2,17 +2,19 @@ import DomainItemType from "../../types/domainItemType"
 import KeyValueType from "../../types/keyValueType"
 import WeightType from "../../types/weightType"
 import { sortBy, map, getOr } from 'lodash/fp'
-import { SET_WEIGHT, LOAD_DOMAIN_ITEMS, DOMAIN_ITEM_PRESSED, LOAD_WEIGHTS, makeLoadSuccessFailureActionType } from "../actions/actionTypes"
+import { WEIGHT_UPDATED, LOAD_DOMAIN_ITEMS, DOMAIN_ITEM_PRESSED, LOAD_WEIGHTS } from "../actions/actionTypes"
+import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 
-const sortWeightedItemsHelper = (_weights, _weightedItems) => {
-  const items = sortBy(weightedItem => -weightedItem.updateScore(_weights), _weightedItems)
-  const newItems = []
-  for (let index = 0; index < items.length; index++) {
-    const weightedItem = items[index];
-    weightedItem.setIndex(index)
-    newItems.push(DomainItemType.copyDomainItem(weightedItem))
-  }
-  return newItems
+const convertToDomainItems = (items, weights) => {
+  return map((item) => {
+    const domainItem = new DomainItemType(item.id, item.name, item.description, item.position, item.weightedAttributes)
+    domainItem.updateScore(weights)
+    return domainItem    
+  }, items)
+}
+
+const convertToWeights = (weights) => {
+  return map(weight => new WeightType(weight.key, weight.value, weight.min, weight.max), weights)
 }
 
 const initialState = {
@@ -23,7 +25,7 @@ const initialState = {
 
 const actionHandlers = {}
 
-const loadWeightsTriple = makeLoadSuccessFailureActionType(LOAD_WEIGHTS)
+const loadWeightsTriple = new LoadingSuccessFailureActionType(LOAD_WEIGHTS)
 actionHandlers[loadWeightsTriple.success] = (state, action) => {
   const weights = map(weight => new WeightType(weight.key, weight.value, weight.min, weight.max), action.payload)
   return {
@@ -32,29 +34,21 @@ actionHandlers[loadWeightsTriple.success] = (state, action) => {
   }
 }
 
-const loadDomainItemsTriple = makeLoadSuccessFailureActionType(LOAD_DOMAIN_ITEMS)
+const loadDomainItemsTriple = new LoadingSuccessFailureActionType(LOAD_DOMAIN_ITEMS)
 actionHandlers[loadDomainItemsTriple.success] = (state, action) => {
-  const items = sortWeightedItemsHelper(state.weights, map(domainItem => new DomainItemType(domainItem.id, domainItem.name, domainItem.description, domainItem.position,
-    map((weightedAttribute) => new KeyValueType(weightedAttribute.key, weightedAttribute.value),
-      domainItem.weightedAttributes)),
-    action.payload))
+  const weights = convertToWeights(action.payload.weights)
   return {
-    ...state,
-    items
+    weights,
+    items: convertToDomainItems(action.payload.items, weights)
   }
 }
 
-actionHandlers[SET_WEIGHT] = (state, action) => {
-  const weights = map(weightTypeInstance => {
-    if (weightTypeInstance.key === action.payload.key) {
-      return new WeightType(action.payload.key, action.payload.value, weightTypeInstance.min, weightTypeInstance.max)
-    }
-    return weightTypeInstance
-  }, state.weights)
-
+const weightUpdatedTriple = new LoadingSuccessFailureActionType(WEIGHT_UPDATED)
+actionHandlers[weightUpdatedTriple.success] = (state, action) => {
+  const weights = convertToWeights(action.payload.weights)
   return {
-    items: sortWeightedItemsHelper(weights, state.items),
-    weights
+    weights,
+    items: convertToDomainItems(action.payload.items, weights)
   }
 }
 

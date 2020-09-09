@@ -2,14 +2,14 @@
 // import mime from 'rest/interceptor/mime'
 import { getOr, omit } from 'lodash/fp'
 import { AsyncRESTMetaType } from '../../types/asyncRESTMeta';
-import { makeLoadSuccessFailureActionType } from '../actions/actionTypes'
+import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 
 // const client = rest.wrap(mime);
 const serverHost = getOr(null, '__myapp.server_host_url', window)
 
-const asyncRESTCall = store => next => action => {
-  const actionTypeTriple = makeLoadSuccessFailureActionType(action.type)
+const asyncRESTCall = store => next => action => {  
   if (getOr(undefined, 'payload.meta.type', action) === AsyncRESTMetaType) {
+    const actionTypeTriple = new LoadingSuccessFailureActionType(action.type)
     const {dispatch} = store
     const route = getOr(null, 'payload.meta.route', action)
     if (route === null) {

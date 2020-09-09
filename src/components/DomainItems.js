@@ -27,7 +27,7 @@ class DomainItems extends React.Component {
 
   componentDidMount() {
     if (isEmpty(this.props.domainItems) || this.props.domainItems.length < 1)
-      this.props.loadDomainItemsAction(new AsyncRESTMeta("/items", "POST", {}))
+      this.props.loadDomainItemsAction(new AsyncRESTMeta("/items", "POST"), {})
   }
 
   rowRenderer = ({index, isScrolling, key, style}) => {
@@ -67,7 +67,8 @@ class DomainItems extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  domainItems: state.domainItems.items
+  domainItems: state.domainItems.items,
+  weights: state.domainItems.weights
 })
 
 export default connect(mapStateToProps, {
