@@ -13,14 +13,14 @@ const asyncRESTCall = store => next => action => {
     const {dispatch} = store
     const route = getOr(null, 'payload.meta.route', action)
     if (route === null) {
-      successOrFailure(`action: ${action.type.loading}, missing route: ${JSON.stringify(action.payload)}`, dispatch, actionTypeTriple.failure)
+      successOrFailure(`action: ${action.type.loading}, missing route: ${JSON.stringify(action.payload)}`, dispatch, actionTypeTriple.failure, action)
     }
     const method = getOr(null, 'payload.meta.method', action)
     if (route === null) {
-      successOrFailure(`action: ${action.type.loading}, missing method (GET/POST...): ${JSON.stringify(action.payload)}`, dispatch, actionTypeTriple.failure)
+      successOrFailure(`action: ${action.type.loading}, missing method (GET/POST...): ${JSON.stringify(action.payload)}`, dispatch, actionTypeTriple.failure, action)
     }
     if (serverHost === null) {
-      successOrFailure(`action: ${action.type.loading}, missin host (from config.js), can't resolve path`, dispatch, actionTypeTriple.failure)
+      successOrFailure(`action: ${action.type.loading}, missin host (from config.js), can't resolve path`, dispatch, actionTypeTriple.failure, action)
     }
     const path = `${serverHost}${action.payload.meta.route}`
     const body = getOr(undefined, 'payload.body', action)
@@ -39,19 +39,20 @@ const asyncRESTCall = store => next => action => {
       },
       body: JSON.stringify(body)
     }).then((response) => {
-      successOrFailure(response, dispatch, actionTypeTriple.success)
+      successOrFailure(response, dispatch, actionTypeTriple.success, action)
     }, (response) => {
-      successOrFailure(response, dispatch, actionTypeTriple.failure)
+      successOrFailure(response, dispatch, actionTypeTriple.failure, action)
     })
   }
   return next(action)
 }
 
-const successOrFailure = (payload, dispatch, type) => {
+const successOrFailure = (payload, dispatch, type, previousAction) => {
   payload.json().then((result) => {
     dispatch({
       type,
-      payload: result
+      payload: result,
+      previousAction
     })
   })
 }

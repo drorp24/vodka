@@ -3,10 +3,10 @@ import 'leaflet/dist/leaflet.css'
 import 'prunecluster-exportable/dist/LeafletStyleSheet.css'
 import L from 'leaflet'
 import {Div} from './common/StyledElements';
-import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet'
+import { Map as LeafletMap, TileLayer } from 'react-leaflet'
 import { CoordinatesControl } from 'react-leaflet-coordinates'
 import { connect } from "react-redux"
-import {map, getOr} from "lodash/fp"
+import {getOr} from "lodash/fp"
 import { find } from 'lodash/fp';
 import {handleMapClicked} from '../redux/actions/actions'
 import { PruneCluster, PruneClusterForLeaflet } from 'prunecluster-exportable/dist'
@@ -109,7 +109,7 @@ class Map extends React.Component {
 
   const mapStateToProps = state => ({
     domainItems: state.domainItems.items,
-    selected_id: state.ui.selectedWeightedItemID,
+    selected_id: state.ui.selectedDomainItemID,
   })
 
   export default connect(mapStateToProps, {handleMapClickedAction: handleMapClicked})(Map);
