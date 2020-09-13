@@ -1,17 +1,23 @@
-import {set, flow, getOr} from 'lodash/fp'
+import {set, flow, getOr, concat, remove, find, isNil} from 'lodash/fp'
 import {
     WEIGHT_UPDATED,
     TOGGLE_SIDE_BAR, 
     DOMAIN_ITEM_PRESSED, 
     MAP_CLICKED,
-    SWITCH_THEME} from "../actions/actionTypes"
+    SWITCH_THEME,
+    SELECT_DOMAIN_ITEM_FOR_COMPARISON,
+    TOGGLE_COMPARE_DOMAIN_ITEMS_MODE} from "../actions/actionTypes"
+
+import {COMPARE_DOMAIN_ITMES_OFF} from '../../types/compareDomainItemsEnum';
 
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 
 const initialState = {
     sideBarOpen: false,
     selectedDomainItemID: null,
-    themeId: getOr("defaultTheme", "startupTheme", window.__myapp)
+    themeId: getOr("defaultTheme", "startupTheme", window.__myapp),
+    compareDomainItemsMode: COMPARE_DOMAIN_ITMES_OFF,
+    selectedDomainItemsIdsForCmp: []
 }
 
 export default function ui(ui = initialState, action) {
@@ -34,6 +40,28 @@ export default function ui(ui = initialState, action) {
         }
         case weightUpdatedTriple.success: {
             return set('selectedDomainItemID', null, ui)
+        }
+        case SELECT_DOMAIN_ITEM_FOR_COMPARISON: {
+            const idFromAlreadySelectedIdx = find((id) => id === action.payload.id, ui.selectedDomainItemsIdsForCmp)
+            if(!isNil(idFromAlreadySelectedIdx)){
+                return {
+                    ...ui,
+                    selectedDomainItemsIdsForCmp: remove(id => id === action.payload.id, ui.selectedDomainItemsIdsForCmp)
+                }
+            }
+            else{
+                return {
+                    ...ui,
+                    selectedDomainItemsIdsForCmp: concat([action.payload.id], ui.selectedDomainItemsIdsForCmp)
+                }
+            }
+        }
+        case TOGGLE_COMPARE_DOMAIN_ITEMS_MODE: {
+            return flow(
+                set('compareDomainItemsMode', action.payload.mode),
+                set('selectedDomainItemsIdsForCmp', ui.compareDomainItemsMode === COMPARE_DOMAIN_ITMES_OFF ? [] : ui.selectedDomainItemsIdsForCmp),
+                set('sideBarOpen', false)
+            )(ui)
         }
         default:
             return ui

@@ -9,6 +9,7 @@ import { FlexRows } from './common/CommonComponents';
 import DomainItem from './DomainItem'
 import AsyncRESTMeta from '../types/asyncRESTMeta';
 import { loadDomainItems } from '../redux/actions/actions'
+import DomainItemsTools from './DomainItemsTools'
 
 const StyledFlexRowsContainer = styled(FlexRows)`
 *,*:focus,*:hover{
@@ -49,17 +50,18 @@ class DomainItems extends React.Component {
 
     return (
       <StyledFlexRowsContainer height="100%" width="100%">
+          <DomainItemsTools/>
           <AutoSizer>
               {({width, height}) => (
-        <List
-        ref={this.listRef}
-        height={height}
-        rowCount={this.props.domainItems.length}
-        rowHeight={this.calcRowHeight}
-        rowRenderer={this.rowRenderer}
-        width={width}
-        />
-      )}
+            <List
+              ref={this.listRef}
+              height={height - 40}
+              rowCount={this.props.domainItems.length}
+              rowHeight={this.calcRowHeight}
+              rowRenderer={this.rowRenderer}
+              width={width}
+            />
+          )}
           </AutoSizer>
       </StyledFlexRowsContainer>
     )

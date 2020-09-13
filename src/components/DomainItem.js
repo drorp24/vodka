@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect } from "react-redux"
-import { Label as LabelSem } from 'semantic-ui-react';
+import { Label as LabelSem, Icon } from 'semantic-ui-react';
 import styled from 'styled-components';
 import { FlexColumns, FlexRows } from './common/CommonComponents';
 import { Div } from './common/StyledElements';
-import { handleDomainItemPressed } from '../redux/actions/actions'
+import { handleDomainItemPressed, selectDomainItemForComparison } from '../redux/actions/actions'
 import DomainItemWeightedAttrExplained from './DomainItemWeightedAttrExplained'
+import {COMPARE_DOMAIN_ITMES_OFF, COMPARE_DOMAIN_ITMES_SELECT} from '../types/compareDomainItemsEnum';
 
 export const DomainItemFlexColumns = styled(FlexColumns)`
     border-bottom: ${({theme}) => `1px solid ${theme["borderColor"]}`};
@@ -26,10 +27,16 @@ export const DomainItemExpandedFlexRows = styled(FlexRows)`
 class DomainItem extends React.Component {
 
   onItemClick = (event, data) => {
-    this.props.handleDomainItemPressedAction(this.props.domainItem.id)
+    if(this.props.compareDomainItemsMode === COMPARE_DOMAIN_ITMES_OFF){
+      this.props.handleDomainItemPressedAction(this.props.domainItem.id)      
+    }
+    else {
+      this.props.selectDomainItemForComparisonAction(this.props.domainItem.id)
+    }    
   }
 
   render() {
+    const selectedForComparison = this.props.selectedDomainItemsIdsForCmp.indexOf(this.props.domainItem.id) !== -1
     let backgroundColor = null
     if (this.props.domainItem.isIndexChanged()) {
       backgroundColor = "temporarySignalColor"
@@ -54,18 +61,28 @@ class DomainItem extends React.Component {
       )
       :
       (
-        <DomainItemFlexColumns position="relative" style={this.props.style} themedbackgroundcolor={backgroundColor} alignItems="center" padding="10px"  onClick={this.onItemClick}>
+        <DomainItemFlexColumns position="relative" style={this.props.style} themedbackgroundcolor={backgroundColor} alignItems="center" padding="10px"  onClick={this.props.compareDomainItemsMode === COMPARE_DOMAIN_ITMES_OFF ? this.onItemClick: null}>
             <Div flexBasis="90%" display="grid">
-                <Div styleType="label2">{this.props.domainItem.name}</Div>
-                <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>                
+                <Div styleType={this.props.compareDomainItemsMode !== COMPARE_DOMAIN_ITMES_OFF ? "label2disabled" : "label2"}>{this.props.domainItem.name}</Div>
+                <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>
             </Div>
             <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
+            <Div position="absolute" visibility={this.props.compareDomainItemsMode !== COMPARE_DOMAIN_ITMES_OFF ? "visible" : "collapse"}>
+              <Icon disabled={this.props.compareDomainItemsMode !== COMPARE_DOMAIN_ITMES_SELECT} onClick={this.onItemClick} size="large" 
+                    name={selectedForComparison ? "check circle outline" : "circle outline"}/>
+            </Div>
         </DomainItemFlexColumns>
       )
     )
   }
 }
 
-export default connect(null, {
-  handleDomainItemPressedAction: handleDomainItemPressed
+const mapStateToProps = state => ({
+  compareDomainItemsMode: state.ui.compareDomainItemsMode,
+  selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp
+})
+
+export default connect(mapStateToProps, {
+  handleDomainItemPressedAction: handleDomainItemPressed,
+  selectDomainItemForComparisonAction: selectDomainItemForComparison
 })(DomainItem);

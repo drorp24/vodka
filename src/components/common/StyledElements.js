@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 // Layout and non colored/fonted attributes
 export const cssNonThemedAttributes = css`
+visibility: ${({ visibility }) => visibility};
 height: ${({ height }) => height};
 min-height: ${({ minHeight }) => minHeight};
 max-height: ${({ maxHeight }) => maxHeight};

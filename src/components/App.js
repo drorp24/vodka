@@ -10,13 +10,15 @@ import { Div } from "./common/StyledElements"
 import TopBar from './TopBar';
 import SideBar from './SideBar'
 import Map from './Map'
+import CompareDomainItems from './CompareDomainItems'
+import {COMPARE_DOMAIN_ITMES_OFF} from '../types/compareDomainItemsEnum';
 
 const themes = {
   defaultTheme,
   darkTheme
 }
 
-function App({themeId}) {
+function App({themeId, compareDomainItemsMode}) {
   return (
     <ThemeProvider theme={themes[themeId]}>
       <FlexRows height="100%" themedbackgroundcolor="windowBackground">
@@ -25,7 +27,7 @@ function App({themeId}) {
           <Sidebar.Pushable as={Div} width="100%" height="100%">
             <SideBar/>
             <Sidebar.Pusher>
-              <Map/>
+              {compareDomainItemsMode !==  COMPARE_DOMAIN_ITMES_OFF ? <CompareDomainItems/> : <Map/>}
             </Sidebar.Pusher>
           </Sidebar.Pushable>
           <Div width="40%">
@@ -37,8 +39,9 @@ function App({themeId}) {
     );
 }
 
-const mapStateToProps = state => ({
-  themeId: state.ui.themeId
+const mapStateToProps = state => ({  
+  themeId: state.ui.themeId,
+  compareDomainItemsMode: state.ui.compareDomainItemsMode
 })
 
 export default connect(mapStateToProps)(App);

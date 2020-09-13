@@ -23,6 +23,12 @@ export const label2 = css`
 font-size: 16px;
 `;
 
+export const label2disabled = css`
+font-size: 16px;
+color: gray;
+`;
+
+
 export const labelDefaultText = css`
 `;
 
