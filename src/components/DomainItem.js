@@ -55,20 +55,24 @@ class DomainItem extends React.Component {
                       <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>
                   </Div>
                   <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
+                  <Div position="absolute" visibility={this.props.compareDomainItemsMode !== COMPARE_DOMAIN_ITMES_OFF ? "visible" : "collapse"}>
+                    <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.props.compareDomainItemsMode !== COMPARE_DOMAIN_ITMES_SELECT} size="large" 
+                          name={selectedForComparison ? "check circle outline" : "circle outline"}/>
+                  </Div>
               </FlexColumns>
               <DomainItemWeightedAttrExplained domainItem={this.props.domainItem}/>
           </DomainItemExpandedFlexRows>
       )
       :
       (
-        <DomainItemFlexColumns position="relative" style={this.props.style} themedbackgroundcolor={backgroundColor} alignItems="center" padding="10px"  onClick={this.props.compareDomainItemsMode === COMPARE_DOMAIN_ITMES_OFF ? this.onItemClick: null}>
+        <DomainItemFlexColumns position="relative" style={this.props.style} themedbackgroundcolor={backgroundColor} alignItems="center" padding="10px"  onClick={this.onItemClick}>
             <Div flexBasis="90%" display="grid">
                 <Div styleType={this.props.compareDomainItemsMode !== COMPARE_DOMAIN_ITMES_OFF ? "label2disabled" : "label2"}>{this.props.domainItem.name}</Div>
                 <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>
             </Div>
             <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
             <Div position="absolute" visibility={this.props.compareDomainItemsMode !== COMPARE_DOMAIN_ITMES_OFF ? "visible" : "collapse"}>
-              <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.props.compareDomainItemsMode !== COMPARE_DOMAIN_ITMES_SELECT} onClick={this.onItemClick} size="large" 
+              <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.props.compareDomainItemsMode !== COMPARE_DOMAIN_ITMES_SELECT} size="large" 
                     name={selectedForComparison ? "check circle outline" : "circle outline"}/>
             </Div>
         </DomainItemFlexColumns>
