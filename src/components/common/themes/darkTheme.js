@@ -8,6 +8,7 @@ export const windowBackground = "rgba(0, 0, 0, 0.85)"
 export const sliderTarck = "#455969"
 export const sliderHandle = '#455969'
 export const sliderRail = "#2d3339"
+export const selectForCompareColor = 'orange'
 // export const topbarSliderButton = 'grey'
 // export const weightLabel = 'grey'
 // export const changeThemeButtonColor = 'grey'
@@ -23,6 +24,11 @@ font-weight: bold;
 export const label2 = css`
 color: white;
 font-size: 16px;
+`;
+
+export const label2disabled = css`
+font-size: 16px;
+color: gray;
 `;
 
 export const labelDefaultText = css`

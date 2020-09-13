@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux"
 import { Label as LabelSem, Icon } from 'semantic-ui-react';
-import styled from 'styled-components';
+import styled, {withTheme} from 'styled-components';
 import { FlexColumns, FlexRows } from './common/CommonComponents';
 import { Div } from './common/StyledElements';
 import { handleDomainItemPressed, selectDomainItemForComparison } from '../redux/actions/actions'
@@ -68,7 +68,7 @@ class DomainItem extends React.Component {
             </Div>
             <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
             <Div position="absolute" visibility={this.props.compareDomainItemsMode !== COMPARE_DOMAIN_ITMES_OFF ? "visible" : "collapse"}>
-              <Icon disabled={this.props.compareDomainItemsMode !== COMPARE_DOMAIN_ITMES_SELECT} onClick={this.onItemClick} size="large" 
+              <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.props.compareDomainItemsMode !== COMPARE_DOMAIN_ITMES_SELECT} onClick={this.onItemClick} size="large" 
                     name={selectedForComparison ? "check circle outline" : "circle outline"}/>
             </Div>
         </DomainItemFlexColumns>
@@ -85,4 +85,4 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   handleDomainItemPressedAction: handleDomainItemPressed,
   selectDomainItemForComparisonAction: selectDomainItemForComparison
-})(DomainItem);
+})(withTheme(DomainItem));

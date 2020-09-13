@@ -10,7 +10,7 @@ export const DomainItemsToolsContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
 `;
 
-const DomainItemsTools = ({compareDomainItemsMode, toggleCompareDomainItemsModeAction}) => {
+const DomainItemsTools = ({compareDomainItemsMode, toggleCompareDomainItemsModeAction, theme}) => {
     const onCompareClick = () => {
         const requiredCompareDomainItemsMode = compareDomainItemsMode === COMPARE_DOMAIN_ITMES_OFF ? COMPARE_DOMAIN_ITMES_SELECT : COMPARE_DOMAIN_ITMES_OFF
         toggleCompareDomainItemsModeAction(requiredCompareDomainItemsMode)
@@ -18,7 +18,7 @@ const DomainItemsTools = ({compareDomainItemsMode, toggleCompareDomainItemsModeA
 
     return (
         <DomainItemsToolsContainer height="40px" alignItems="center" marginLeft="10px">
-            <ButtonSemantic onClick={onCompareClick} size="small" color="black">
+            <ButtonSemantic onClick={onCompareClick} size="small" color={theme["compareDomainItemsButtonColor"]}>
                 {
                     compareDomainItemsMode === COMPARE_DOMAIN_ITMES_OFF ? "Compare" : "Exit"
                 }

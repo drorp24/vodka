@@ -11,6 +11,7 @@ export const sliderRail = "lightgray"
 export const topbarSliderButton = "black"
 export const weightLabel = "black"
 export const changeThemeButtonColor = "black"
+export const compareDomainItemsButtonColor = "black"
 
 
 // labels full styles
