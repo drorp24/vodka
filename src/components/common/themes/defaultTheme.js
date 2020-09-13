@@ -28,4 +28,7 @@ export const labelDefaultText = css`
 
 export const labelDefaultDisabled = css`
 color: gray;
+text-overflow: ellipsis;
+overflow: hidden;
+white-space: nowrap;
 `;

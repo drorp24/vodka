@@ -41,12 +41,12 @@ class DomainItem extends React.Component {
     return (
     this.props.domainItem.expanded ?
       (
-      <DomainItemExpandedFlexRows style={this.props.style} themedbackgroundcolor={backgroundColor}>
+        <DomainItemExpandedFlexRows position="relative" style={this.props.style} themedbackgroundcolor={backgroundColor}>
               <FlexColumns  alignItems="center" padding="10px"  onClick={this.onItemClick}>
-                  <FlexRows flexBasis="90%" >
+                  <Div flexBasis="90%" display="grid">
                       <Div styleType="label2">{this.props.domainItem.name}</Div>
                       <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>
-                  </FlexRows>
+                  </Div>
                   <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
               </FlexColumns>
               <DomainItemWeightedAttrExplained domainItem={this.props.domainItem}/>
@@ -54,13 +54,13 @@ class DomainItem extends React.Component {
       )
       :
       (
-      <DomainItemFlexColumns style={this.props.style} themedbackgroundcolor={backgroundColor} alignItems="center" padding="10px"  onClick={this.onItemClick}>
-                        <FlexRows flexBasis="90%" >
-                            <Div styleType="label2">{this.props.domainItem.name}</Div>
-                            <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>
-                        </FlexRows>
-                        <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
-                    </DomainItemFlexColumns>
+        <DomainItemFlexColumns position="relative" style={this.props.style} themedbackgroundcolor={backgroundColor} alignItems="center" padding="10px"  onClick={this.onItemClick}>
+            <Div flexBasis="90%" display="grid">
+                <Div styleType="label2">{this.props.domainItem.name}</Div>
+                <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>                
+            </Div>
+            <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
+        </DomainItemFlexColumns>
       )
     )
   }
