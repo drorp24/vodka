@@ -24,38 +24,24 @@ export const DomainItemExpandedFlexRows = styled(FlexRows)`
 `;
 
 class DomainItem extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      backgroundColor: null
-    }
-  }
 
   onItemClick = (event, data) => {
     this.props.handleDomainItemPressedAction(this.props.domainItem.id)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.domainItem.isIndexChanged()) {
-      this.setState({
-        backgroundColor: "temporarySignalColor"
-      })
-    }
-  }
-
   render() {
+    let backgroundColor = null
     if (this.props.domainItem.isIndexChanged()) {
+      backgroundColor = "temporarySignalColor"
       setTimeout(() => {
         this.props.domainItem.syncIndex()
-        this.setState({
-          backgroundColor: null
-        })
+        this.setState({})
       }, 2000);
     }
     return (
     this.props.domainItem.expanded ?
       (
-      <DomainItemExpandedFlexRows style={this.props.style} themedbackgroundcolor={this.state.backgroundColor}>
+      <DomainItemExpandedFlexRows style={this.props.style} themedbackgroundcolor={backgroundColor}>
               <FlexColumns  alignItems="center" padding="10px"  onClick={this.onItemClick}>
                   <FlexRows flexBasis="90%" >
                       <Div styleType="label2">{this.props.domainItem.name}</Div>
@@ -68,7 +54,7 @@ class DomainItem extends React.Component {
       )
       :
       (
-      <DomainItemFlexColumns style={this.props.style} themedbackgroundcolor={this.state.backgroundColor} alignItems="center" padding="10px"  onClick={this.onItemClick}>
+      <DomainItemFlexColumns style={this.props.style} themedbackgroundcolor={backgroundColor} alignItems="center" padding="10px"  onClick={this.onItemClick}>
                         <FlexRows flexBasis="90%" >
                             <Div styleType="label2">{this.props.domainItem.name}</Div>
                             <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>

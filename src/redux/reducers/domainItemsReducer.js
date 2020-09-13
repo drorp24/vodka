@@ -5,15 +5,13 @@ import { WEIGHT_UPDATED, LOAD_DOMAIN_ITEMS, DOMAIN_ITEM_PRESSED, LOAD_WEIGHTS } 
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 
 const convertToDomainItems = (state, items, weights) => {
-  const domainItemsMapById = keyBy("id", state.items)
+  const oldDomainItemsMapById = keyBy("id", state.items)
   const mapWithIdx = map.convert({'cap': false})
   return mapWithIdx((item, idx) => {
     const domainItem = new DomainItemType(item.id, item.name, item.description, item.position, item.weightedAttributes)
     domainItem.updateScore(weights)
-    const previousDomainItem = getOr(null, domainItem.id, domainItemsMapById)
-    if(previousDomainItem !== null){
-      domainItem.prevIdx = previousDomainItem.currIdx      
-    }
+    const previousDomainItem = getOr(null, domainItem.id, oldDomainItemsMapById)
+    domainItem.prevIdx = previousDomainItem !== null ? previousDomainItem.currIdx : idx
     domainItem.currIdx = idx
     return domainItem
   }, items)

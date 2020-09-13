@@ -33,7 +33,7 @@ export default class DomainItemType {
   }
 
   isIndexChanged() {
-    const result = this.prevIdx !== this.currIdx && this.prevIdx !== -1
+    const result = this.prevIdx !== this.currIdx
     return result
   }
 
