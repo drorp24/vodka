@@ -11,7 +11,6 @@ import TopBar from './TopBar';
 import SideBar from './SideBar'
 import Map from './Map'
 import CompareDomainItems from './CompareDomainItems'
-import {COMPARE_DOMAIN_ITMES_OFF} from '../types/compareDomainItemsEnum';
 
 const themes = {
   defaultTheme,
@@ -27,7 +26,7 @@ function App({themeId, compareDomainItemsMode}) {
           <Sidebar.Pushable as={Div} width="100%" height="100%">
             <SideBar/>
             <Sidebar.Pusher>
-              {compareDomainItemsMode !==  COMPARE_DOMAIN_ITMES_OFF ? <CompareDomainItems/> : <Map/>}
+              {compareDomainItemsMode ? <CompareDomainItems/> : <Map/>}
             </Sidebar.Pusher>
           </Sidebar.Pushable>
           <Div width="40%">

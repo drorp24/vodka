@@ -7,7 +7,8 @@ import {
   LOAD_WEIGHTS,
   SWITCH_THEME,
   SELECT_DOMAIN_ITEM_FOR_COMPARISON,
-  TOGGLE_COMPARE_DOMAIN_ITEMS_MODE } from "./actionTypes"
+  TOGGLE_COMPARE_DOMAIN_ITEMS_MODE,
+  CLEAR_ALL_SELECTED_ITEMS_FOR_COMPARISON } from "./actionTypes"
 
 function makeActionCreator(type, ...argNames) {
   return function(...args) {
@@ -28,7 +29,8 @@ export const weightUpdated = makeActionCreator(WEIGHT_UPDATED, 'meta', 'body')
 export const loadWeights = makeActionCreator(LOAD_WEIGHTS, 'meta', 'body')
 export const handleDomainItemPressed = makeActionCreator(DOMAIN_ITEM_PRESSED, 'id')
 export const selectDomainItemForComparison = makeActionCreator(SELECT_DOMAIN_ITEM_FOR_COMPARISON, 'id')
+export const clearAllSelectedItemsForComparison = makeActionCreator(CLEAR_ALL_SELECTED_ITEMS_FOR_COMPARISON)
 export const toggleSideBar = makeActionCreator(TOGGLE_SIDE_BAR)
 export const handleMapClicked = makeActionCreator(MAP_CLICKED)
 export const switchTheme = makeActionCreator(SWITCH_THEME, 'id')
-export const toggleCompareDomainItemsMode = makeActionCreator(TOGGLE_COMPARE_DOMAIN_ITEMS_MODE, 'mode')
+export const toggleCompareDomainItemsMode = makeActionCreator(TOGGLE_COMPARE_DOMAIN_ITEMS_MODE)

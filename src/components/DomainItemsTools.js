@@ -3,32 +3,44 @@ import styled, {withTheme} from 'styled-components';
 import { connect } from "react-redux"
 import { Button as ButtonSemantic } from 'semantic-ui-react';
 import {FlexColumns} from './common/CommonComponents';
-import { toggleCompareDomainItemsMode } from '../redux/actions/actions'
-import {COMPARE_DOMAIN_ITMES_OFF, COMPARE_DOMAIN_ITMES_SELECT} from '../types/compareDomainItemsEnum';
+import { toggleCompareDomainItemsMode, clearAllSelectedItemsForComparison } from '../redux/actions/actions'
 
 export const DomainItemsToolsContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
 `;
 
-const DomainItemsTools = ({compareDomainItemsMode, toggleCompareDomainItemsModeAction, theme}) => {
+const DomainItemsTools = ({clearAllSelectedItemsForComparisonAction, selectedDomainItemsIdsForCmp, compareDomainItemsMode, toggleCompareDomainItemsModeAction, theme}) => {
     const onCompareClick = () => {
-        const requiredCompareDomainItemsMode = compareDomainItemsMode === COMPARE_DOMAIN_ITMES_OFF ? COMPARE_DOMAIN_ITMES_SELECT : COMPARE_DOMAIN_ITMES_OFF
-        toggleCompareDomainItemsModeAction(requiredCompareDomainItemsMode)
+        toggleCompareDomainItemsModeAction()
+    }
+    const onClearSelectedClick = () => {
+        clearAllSelectedItemsForComparisonAction()
     }
 
     return (
         <DomainItemsToolsContainer height="40px" alignItems="center" marginLeft="10px">
             <ButtonSemantic onClick={onCompareClick} size="small" color={theme["compareDomainItemsButtonColor"]}>
                 {
-                    compareDomainItemsMode === COMPARE_DOMAIN_ITMES_OFF ? "Compare" : "Exit"
+                    compareDomainItemsMode  ? "Exit" : "Compare"
                 }
             </ButtonSemantic>
+            {
+                selectedDomainItemsIdsForCmp.length > 0 ? 
+                <ButtonSemantic  onClick={onClearSelectedClick} size="small" color={theme["compareDomainItemsButtonColor"]}>
+                    Clear Selected
+                </ButtonSemantic> : null
+            }
         </DomainItemsToolsContainer>
     )
 }
 
 const mapStateToProps = state => ({
-    compareDomainItemsMode: state.ui.compareDomainItemsMode
+    compareDomainItemsMode: state.ui.compareDomainItemsMode,
+    selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp
 })
 
-export default connect(mapStateToProps, {toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode})(withTheme(DomainItemsTools));
+export default connect(mapStateToProps, 
+    {
+        toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode,
+        clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison
+    })(withTheme(DomainItemsTools));

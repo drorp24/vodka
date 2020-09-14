@@ -1,4 +1,4 @@
-import {set, flow, getOr, concat, remove, find, isNil} from 'lodash/fp'
+import {set, flow, concat, remove, find, isNil} from 'lodash/fp'
 import {
     WEIGHT_UPDATED,
     TOGGLE_SIDE_BAR, 
@@ -6,17 +6,17 @@ import {
     MAP_CLICKED,
     SWITCH_THEME,
     SELECT_DOMAIN_ITEM_FOR_COMPARISON,
-    TOGGLE_COMPARE_DOMAIN_ITEMS_MODE} from "../actions/actionTypes"
-
-import {COMPARE_DOMAIN_ITMES_OFF} from '../../types/compareDomainItemsEnum';
+    TOGGLE_COMPARE_DOMAIN_ITEMS_MODE,
+    CLEAR_ALL_SELECTED_ITEMS_FOR_COMPARISON} from "../actions/actionTypes"
 
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
+import {startupTheme} from '../../configLoader';
 
 const initialState = {
     sideBarOpen: false,
     selectedDomainItemID: null,
-    themeId: getOr("defaultTheme", "startupTheme", window.__myapp),
-    compareDomainItemsMode: COMPARE_DOMAIN_ITMES_OFF,
+    themeId: startupTheme,
+    compareDomainItemsMode: false,
     selectedDomainItemsIdsForCmp: []
 }
 
@@ -57,11 +57,15 @@ export default function ui(ui = initialState, action) {
             }
         }
         case TOGGLE_COMPARE_DOMAIN_ITEMS_MODE: {
-            return flow(
-                set('compareDomainItemsMode', action.payload.mode),
-                set('selectedDomainItemsIdsForCmp', ui.compareDomainItemsMode === COMPARE_DOMAIN_ITMES_OFF ? [] : ui.selectedDomainItemsIdsForCmp),
+            const newState = flow(
+                set('selectedDomainItemsIdsForCmp', ui.compareDomainItemsMode ? [] : ui.selectedDomainItemsIdsForCmp),
+                set('compareDomainItemsMode', !ui.compareDomainItemsMode),
                 set('sideBarOpen', false)
             )(ui)
+            return newState
+        }
+        case CLEAR_ALL_SELECTED_ITEMS_FOR_COMPARISON: {
+            return set('selectedDomainItemsIdsForCmp', [], ui)
         }
         default:
             return ui

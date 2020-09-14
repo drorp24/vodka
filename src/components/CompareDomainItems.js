@@ -1,17 +1,18 @@
 import React from 'react';
+import {withTheme} from 'styled-components';
 import { connect } from "react-redux"
 import { Button as ButtonSemantic } from 'semantic-ui-react';
-import Radar from 'react-d3-radar';
-import {filter, map, set, startCase} from 'lodash/fp'
-import {COMPARE_DOMAIN_ITMES_SELECT, COMPARE_DOMAIN_ITMES_VIEW} from '../types/compareDomainItemsEnum';
+import { ResponsiveRadar } from '@nivo/radar'
+import {filter, map, set, remove , find, flow, concat} from 'lodash/fp'
 import {FlexRows} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
 import { toggleCompareDomainItemsMode } from '../redux/actions/actions'
+import {max_items_to_compare} from '../configLoader';
 
-const CompareDomainItems = ({compareDomainItemsMode, selectedDomainItemsIdsForCmp, toggleCompareDomainItemsModeAction, domainItems}) => {
+const CompareDomainItems = ({theme, compareDomainItemsMode, selectedDomainItemsIdsForCmp, toggleCompareDomainItemsModeAction, domainItems}) => {
 
     const handleCompareClicked = () => {
-        toggleCompareDomainItemsModeAction(COMPARE_DOMAIN_ITMES_VIEW)
+        toggleCompareDomainItemsModeAction()
     }
     
     const renderSelect = () => {
@@ -19,7 +20,7 @@ const CompareDomainItems = ({compareDomainItemsMode, selectedDomainItemsIdsForCm
         return (
             <FlexRows alignItems="center" justifyContent="center" width="100%" height="calc(100vh - 60px)">
                 <Div styleType="label1" marginBottom="20px">
-                {selectedDomainItemsIdsForCmp.length > 0 ? `${selectedDomainItemsIdsForCmp.length} items selected for comparison` : "Please select between 2 - 3 items to compare"}
+                {`Please select up to ${max_items_to_compare} items to compare`}
                 </Div>
                 <ButtonSemantic disabled={!cmpPossible} onClick={handleCompareClicked} color="green">Compare</ButtonSemantic>
             </FlexRows>
@@ -28,29 +29,79 @@ const CompareDomainItems = ({compareDomainItemsMode, selectedDomainItemsIdsForCm
 
     const renderView = () => {
         const selectedDomainItems = filter((domainItem) => selectedDomainItemsIdsForCmp.indexOf(domainItem.id) !== -1, domainItems)        
-        let variables = []
-        const sets = []
-        for (let index = 0; index < selectedDomainItems.length; index++) {
-            const domainItem = selectedDomainItems[index];
-            if(variables.length < 1){
-                variables = map((weightedAttribute) => ({key: weightedAttribute.key, label: startCase(weightedAttribute.key) }), domainItem.weightedAttributes)
-            }
-            let values = {}
-            for (let innerIndex = 0; innerIndex < domainItem.weightedAttributes.length; innerIndex++) {
-                const weightedAttribute = domainItem.weightedAttributes[innerIndex]
-                values = set(weightedAttribute.key, weightedAttribute.value, values)
-            }            
-            const setX = {
-                key: domainItem.id,
-                label: domainItem.name,
-                values
-            }
-            sets.push(setX)            
-        }
+        let keys = map((domainItem) => domainItem.name, selectedDomainItems)
+        let data = [
+            {"attribute": "age", "david": 2, "alberta": 3},
+            {"attribute": "wellness", "david": 1, "alberta": 1.5},
+            {"attribute": "crimes", "david": 4, "alberta": 2}
+        ]
+        selectedDomainItems.forEach(domainItem => {
+            domainItem.weightedAttributes.forEach(weightedAttribute => {
+                let attributeSet = find({"attribute": weightedAttribute.key} ,data)
+                if(!attributeSet){
+                    attributeSet = {"attribute": weightedAttribute.key}
+                }
+                attributeSet = set(domainItem.name, weightedAttribute.value, attributeSet)
+                data = flow(
+                    remove({"attribute": weightedAttribute.key}),
+                    concat(attributeSet)
+                )(data)
+
+            });            
+        });
         
         return (
-            <FlexRows alignItems="center" justifyContent="center" width="100%" height="calc(100vh - 60px)">
-                <Radar
+            <FlexRows style={{stroke: theme["radarStroke"]}} alignItems="center" justifyContent="center" width="100%" height="calc(100vh - 60px)">
+                <ResponsiveRadar
+                data={data}
+                keys={keys}
+                indexBy="attribute"
+                maxValue="auto"
+                margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
+                curve="linearClosed"
+                borderWidth={2}
+                borderColor={{ from: 'color' }}
+                gridLevels={5}
+                gridShape="circular"
+                gridLabelOffset={36}
+                enableDots={true}
+                dotSize={10}
+                dotColor={{ theme: 'background' }}
+                dotBorderWidth={2}
+                dotBorderColor={{ from: 'color' }}
+                enableDotLabel={true}
+                dotLabel="value"
+                dotLabelYOffset={-12}
+                colors={{ scheme: 'nivo' }}
+                fillOpacity={0.25}
+                blendMode="multiply"
+                animate={true}
+                motionStiffness={90}
+                motionDamping={15}
+                isInteractive={true}
+                legends={[
+                    {
+                        anchor: 'top-left',
+                        direction: 'column',
+                        translateX: -50,
+                        translateY: -40,
+                        itemWidth: 80,
+                        itemHeight: 20,
+                        itemTextColor: '#999',
+                        symbolSize: 12,
+                        symbolShape: 'circle',
+                        effects: [
+                            {
+                                on: 'hover',
+                                style: {
+                                    itemTextColor: '#000'
+                                }
+                            }
+                        ]
+                    }
+                ]}
+                />
+                {/* <Radar
                     color="white"
                     width={500}
                     height={500}
@@ -60,17 +111,16 @@ const CompareDomainItems = ({compareDomainItemsMode, selectedDomainItemsIdsForCm
                     data={{
                     variables,
                     sets                  
-                    }}/>
+                    }}/> */}
             </FlexRows>
         )
     }
-    if(compareDomainItemsMode === COMPARE_DOMAIN_ITMES_SELECT){
+    if(selectedDomainItemsIdsForCmp.length < 1){
         return renderSelect()
     }
-    else if(compareDomainItemsMode === COMPARE_DOMAIN_ITMES_VIEW){
+    else {
         return renderView()
     }
-    return null
 }
 
 const mapStateToProps = state => ({
@@ -79,4 +129,4 @@ const mapStateToProps = state => ({
     domainItems: state.domainItems.items
 })
 
-export default connect(mapStateToProps, {toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode})(CompareDomainItems);
+export default connect(mapStateToProps, {toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode})(withTheme(CompareDomainItems));
