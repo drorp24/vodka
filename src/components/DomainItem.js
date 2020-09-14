@@ -30,7 +30,7 @@ class DomainItem extends React.Component {
     if(this.props.compareDomainItemsMode === COMPARE_DOMAIN_ITMES_OFF){
       this.props.handleDomainItemPressedAction(this.props.domainItem.id)      
     }
-    else {
+    else if(this.props.compareDomainItemsMode === COMPARE_DOMAIN_ITMES_SELECT){
       this.props.selectDomainItemForComparisonAction(this.props.domainItem.id)
     }    
   }

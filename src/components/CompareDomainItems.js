@@ -19,7 +19,7 @@ const CompareDomainItems = ({compareDomainItemsMode, selectedDomainItemsIdsForCm
         return (
             <FlexRows alignItems="center" justifyContent="center" width="100%" height="calc(100vh - 60px)">
                 <Div styleType="label1" marginBottom="20px">
-                {cmpPossible ? `${selectedDomainItemsIdsForCmp.length} items selected for comparison` : "Please select between 2 - 3 items to compare"}
+                {selectedDomainItemsIdsForCmp.length > 0 ? `${selectedDomainItemsIdsForCmp.length} items selected for comparison` : "Please select between 2 - 3 items to compare"}
                 </Div>
                 <ButtonSemantic disabled={!cmpPossible} onClick={handleCompareClicked} color="green">Compare</ButtonSemantic>
             </FlexRows>
