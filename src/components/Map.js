@@ -21,7 +21,13 @@ class Map extends React.Component {
           }
         this.leafletMapInstance = null
         this.pruneCluster = null
-        this.leafletDataLayer = null
+        this.leafletDataLayer = null        
+    }
+
+    componentDidUpdate(){
+      if(this.leafletMapInstance){
+        this.renderData()
+      }
     }
 
     getMarkerIcon = (id) => {
@@ -65,6 +71,7 @@ class Map extends React.Component {
 
     whenReadyCB = (obj) => {
       this.leafletMapInstance = obj.target
+      this.renderData()
     }
 
     renderData = () => {
@@ -87,6 +94,7 @@ class Map extends React.Component {
         this.pruneCluster.RegisterMarker(marker);
       });
       this.leafletDataLayer = this.leafletMapInstance.addLayer(this.pruneCluster);
+      this.pruneCluster.ProcessView();
     }
   
     render() {
@@ -99,7 +107,6 @@ class Map extends React.Component {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <CoordinatesControl position="bottomleft"/>
-                {this.leafletMapInstance ? this.renderData() : null}
             </LeafletMap>
         </Div>
       )
@@ -110,6 +117,7 @@ class Map extends React.Component {
   const mapStateToProps = state => ({
     domainItems: state.domainItems.items,
     selected_id: state.ui.selectedDomainItemID,
+    compareDomainItemsMode: state.ui.compareDomainItemsMode
   })
 
   export default connect(mapStateToProps, {handleMapClickedAction: handleMapClicked})(Map);
