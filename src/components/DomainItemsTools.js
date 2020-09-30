@@ -2,7 +2,7 @@ import React from 'react';
 import styled, {withTheme} from 'styled-components';
 import { connect } from "react-redux"
 import { Button as ButtonSemantic, Search } from 'semantic-ui-react';
-import {flow, map, take, getOr, isEmpty} from 'lodash/fp'
+import {map, take, getOr, isEmpty} from 'lodash/fp'
 import {FlexColumns} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
 import { 
@@ -16,6 +16,12 @@ import {
 export const DomainItemsToolsContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
 `;
+
+export const SearchStyled = styled(Search)`
+    .ui.icon.input {
+        min-width: 300px;
+    }
+`
 
 const DomainItemsTools = ({
     clearAllSelectedItemsForComparisonAction, 
@@ -78,16 +84,16 @@ const DomainItemsTools = ({
         return (
             <DomainItemsToolsContainer height="40px" alignItems="center" marginLeft="10px" justifyContent="space-between">
                 <Div marginRight="10px">
-                    <Search
+                    <SearchStyled
                         ref={ref}
                         onKeyPress={keyPress}
                         showNoResults={textFilterLoading ? false : true}
                         onResultSelect={handleSelection}
-                        onSearchChange={handleSearchChange}
-                        size="small"
+                        onSearchChange={handleSearchChange}                        
                         value={textFilterValue}
                         loading={textFilterLoading}
-                        results={getResults()}/>
+                        results={getResults()}
+                        size="small"/>
                 </Div>
                 <Div marginRight="10px">
                     <ButtonSemantic color={theme["topbarSliderButton"]} size="small" circular icon={compareDomainItemsMode  ? "log out" : "check"}
