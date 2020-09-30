@@ -68,32 +68,32 @@ class DomainItem extends React.Component {
     this.props.domainItem.expanded ?
       (
         <DomainItemExpandedFlexRows position="relative" style={this.props.style} themedbackgroundcolor={backgroundColor}>
-              <FlexColumns  alignItems="center" padding="10px"  onClick={this.onItemClick}>
+              <FlexColumns  alignItems="center" padding={this.props.compareDomainItemsMode ? "10px 10px 10px 5px" : "10px"}  onClick={this.onItemClick}>
+              {   this.props.compareDomainItemsMode ? <Div>
+                    <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.checkDisabled()} size="large" 
+                          name={selectedForComparison ? "check circle outline" : "circle outline"}/>
+                  </Div> : null}
                   <Div flexBasis="90%" display="grid">
                       <Div styleType="label2">{this.props.domainItem.name}</Div>
                       <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>
                   </Div>
-                  <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
-                  <Div position="absolute" visibility={this.props.compareDomainItemsMode ? "visible" : "collapse"}>
-                    <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.checkDisabled()} size="large" 
-                          name={selectedForComparison ? "check circle outline" : "circle outline"}/>
-                  </Div>
+                  <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>                  
               </FlexColumns>
-              <DomainItemWeightedAttrExplained domainItem={this.props.domainItem}/>
+              <DomainItemWeightedAttrExplained  domainItem={this.props.domainItem}/>
           </DomainItemExpandedFlexRows>
       )
       :
       (
-        <DomainItemFlexColumns position="relative" style={this.props.style} themedbackgroundcolor={backgroundColor} alignItems="center" padding="10px"  onClick={this.onItemClick}>
+        <DomainItemFlexColumns position="relative" style={this.props.style} themedbackgroundcolor={backgroundColor} alignItems="center" padding={this.props.compareDomainItemsMode ? "10px 10px 10px 5px" : "10px"}  onClick={this.onItemClick}>
+          {this.props.compareDomainItemsMode ? <Div>
+              <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.checkDisabled()} size="large" 
+                    name={selectedForComparison ? "check circle outline" : "circle outline"}/>
+            </Div> : null}
             <Div flexBasis="90%" display="grid">
                 <Div styleType={this.props.compareDomainItemsMode ? "label2disabled" : "label2"}>{this.props.domainItem.name}</Div>
                 <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>
             </Div>
-            <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>
-            <Div position="absolute" visibility={this.props.compareDomainItemsMode ? "visible" : "collapse"}>
-              <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.checkDisabled()} size="large" 
-                    name={selectedForComparison ? "check circle outline" : "circle outline"}/>
-            </Div>
+            <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>            
         </DomainItemFlexColumns>
       )
     )
