@@ -57,7 +57,9 @@ const DomainItemsTools = ({
         }
 
         const handleSelection = (e, data) => {
-            textFilterUpdateSelectionAction(null, getOr(data.value, "result.title", data))
+            const term = getOr(data.value, "result.title", data)
+            const itemId = getOr(null, "result.key", data)
+            textFilterUpdateSelectionAction(itemId, term)
         }
         
         const ref = React.useRef();

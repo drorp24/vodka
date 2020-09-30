@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from "react-redux"
-import { isEmpty, getOr, filter} from 'lodash/fp'
+import { isEmpty, getOr, filter, isNumber} from 'lodash/fp'
 import 'react-virtualized/styles.css';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import List from 'react-virtualized/dist/commonjs/List';
@@ -48,10 +48,10 @@ class DomainItems extends React.Component {
 
   setFilteredDomainItems = () => {
     const byId = getOr(null, "actualTextFilter.id", this.props)
-    if(!isEmpty(byId)){
+    if(isNumber(byId)){
       this.filteredDomainItems = filter((domainItem)=> {
         return domainItem.id === byId
-      },this.props.domainItem)
+      },this.props.domainItems)
       return
     }
     const byTerm = getOr(null, "actualTextFilter.term", this.props)
