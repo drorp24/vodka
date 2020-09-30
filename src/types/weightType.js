@@ -9,8 +9,8 @@ export default class WeightType {
     }
 
     displayName(){
-        return flow(
+        return flow([
             replace("_", " "),
-            capitalize)(this.key)
+            capitalize])(this.key)
     }
 }

@@ -33,9 +33,9 @@ export default function ui(ui = initialState, action) {
             return set('sideBarOpen', false, ui)
         }
         case DOMAIN_ITEM_PRESSED: { 
-            return flow(
+            return flow([
                 set('selectedDomainItemID', action.payload.id),
-                set('sideBarOpen', false)
+                set('sideBarOpen', false)]
             )(ui)
         }
         case weightUpdatedTriple.success: {
@@ -57,10 +57,10 @@ export default function ui(ui = initialState, action) {
             }
         }
         case TOGGLE_COMPARE_DOMAIN_ITEMS_MODE: {
-            const newState = flow(
+            const newState = flow([
                 set('selectedDomainItemsIdsForCmp', ui.compareDomainItemsMode ? [] : ui.selectedDomainItemsIdsForCmp),
                 set('compareDomainItemsMode', !ui.compareDomainItemsMode),
-                set('sideBarOpen', false)
+                set('sideBarOpen', false)]
             )(ui)
             return newState
         }

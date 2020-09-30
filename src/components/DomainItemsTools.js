@@ -64,6 +64,16 @@ const DomainItemsTools = ({
             }
         }
         
+        const getResults = () => {
+            let results = take(10, textFilterItems)
+            results = map(domainItem => ({
+                key:domainItem.id,
+                title: domainItem.name,
+                description: domainItem.description
+            }), results)
+            console.log(`result len: ${results.length}`)
+            return results
+        }
         
         return (
             <DomainItemsToolsContainer height="40px" alignItems="center" marginLeft="10px" justifyContent="space-between">
@@ -77,13 +87,7 @@ const DomainItemsTools = ({
                         size="small"
                         value={textFilterValue}
                         loading={textFilterLoading}
-                        results={flow(
-                            map(domainItem => ({
-                                title: domainItem.name,
-                                description: domainItem.description
-                            })),
-                            take(10)
-                        )(textFilterItems)}/>
+                        results={getResults()}/>
                 </Div>
                 <Div marginRight="10px">
                     <ButtonSemantic color={theme["topbarSliderButton"]} size="small" circular icon={compareDomainItemsMode  ? "log out" : "check"}

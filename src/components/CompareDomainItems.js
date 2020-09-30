@@ -42,9 +42,9 @@ const CompareDomainItems = ({theme, compareDomainItemsMode, selectedDomainItemsI
                     attributeSet = {"attribute": weightedAttribute.key}
                 }
                 attributeSet = set(domainItem.name, weightedAttribute.value, attributeSet)
-                data = flow(
+                data = flow([
                     remove({"attribute": weightedAttribute.key}),
-                    concat(attributeSet)
+                    concat(attributeSet)]
                 )(data)
 
             });            
