@@ -8,7 +8,11 @@ import {
   SWITCH_THEME,
   SELECT_DOMAIN_ITEM_FOR_COMPARISON,
   TOGGLE_COMPARE_DOMAIN_ITEMS_MODE,
-  CLEAR_ALL_SELECTED_ITEMS_FOR_COMPARISON } from "./actionTypes"
+  CLEAR_ALL_SELECTED_ITEMS_FOR_COMPARISON,
+  TEXT_FILTER_CLEAN,
+  TEXT_FILTER_START_SEARCH,
+  TEXT_FILTER_FINISH_SEARCH,
+  TEXT_FILTER_UPDATE_SELECTION } from "./actionTypes"
 
 function makeActionCreator(type, ...argNames) {
   return function(...args) {
@@ -34,3 +38,7 @@ export const toggleSideBar = makeActionCreator(TOGGLE_SIDE_BAR)
 export const handleMapClicked = makeActionCreator(MAP_CLICKED)
 export const switchTheme = makeActionCreator(SWITCH_THEME, 'id')
 export const toggleCompareDomainItemsMode = makeActionCreator(TOGGLE_COMPARE_DOMAIN_ITEMS_MODE)
+export const textFilterCleanSearch = makeActionCreator(TEXT_FILTER_CLEAN)
+export const textFilterStartSearch = makeActionCreator(TEXT_FILTER_START_SEARCH, 'textFilterValue')
+export const textFilterFinishSearch = makeActionCreator(TEXT_FILTER_FINISH_SEARCH, 'textFilterValue')
+export const textFilterUpdateSelection = makeActionCreator(TEXT_FILTER_UPDATE_SELECTION, 'id', 'textFilterValue')

@@ -1,7 +1,14 @@
 import DomainItemType from "../../types/domainItemType"
 import WeightType from "../../types/weightType"
-import { map, getOr, keyBy } from 'lodash/fp'
-import { WEIGHT_UPDATED, LOAD_DOMAIN_ITEMS, DOMAIN_ITEM_PRESSED, LOAD_WEIGHTS } from "../actions/actionTypes"
+import { map, getOr, keyBy, flow, set, filter } from 'lodash/fp'
+import { WEIGHT_UPDATED, 
+  LOAD_DOMAIN_ITEMS, 
+  DOMAIN_ITEM_PRESSED, 
+  LOAD_WEIGHTS,
+  TEXT_FILTER_CLEAN,  
+  TEXT_FILTER_START_SEARCH,
+  TEXT_FILTER_FINISH_SEARCH,
+  TEXT_FILTER_UPDATE_SELECTION } from "../actions/actionTypes"
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 
 const convertToDomainItems = (state, items, weights) => {
@@ -22,8 +29,15 @@ const convertToWeights = (weights) => {
 }
 
 const initialState = {
-  items: [],
-  weights: []
+  items: [],  
+  weights: [],
+  textFilterValue: "",
+  actualTextFilter: {
+    term: "",
+    id: ""
+  },
+  textFilterLoading: false,
+  textFilterItems:[]
 }
 
 
@@ -50,6 +64,7 @@ const weightUpdatedTriple = new LoadingSuccessFailureActionType(WEIGHT_UPDATED)
 actionHandlers[weightUpdatedTriple.success] = (state, action) => {
   const weights = convertToWeights(action.previousAction.payload.body.weights)
   return {
+    ...state,
     weights,
     items: convertToDomainItems(state, action.payload, weights)
   }
@@ -70,6 +85,46 @@ actionHandlers[DOMAIN_ITEM_PRESSED] = (state, action) => {
     ...state,
     items
   }
+}
+
+// follwing indicates the user type a serach term - a loading indicator appears
+actionHandlers[TEXT_FILTER_START_SEARCH] = (state, action) => {
+  return flow([
+    set("textFilterValue", action.payload.textFilterValue),
+    set("textFilterLoading", true)
+  ])(state)
+}
+
+actionHandlers[TEXT_FILTER_CLEAN] = (state, action) => {
+  return flow([
+    set("textFilterValue", ""),
+    set("textFilterLoading", false),
+    set("actualTextFilter", {id: "", term: ""})
+  ])(state)
+}
+
+actionHandlers[TEXT_FILTER_FINISH_SEARCH] = (state, action) => {
+  const textFilterItems = filter(
+    (domainItem) => {
+      return domainItem.name.toLowerCase().includes(action.payload.textFilterValue.toLowerCase())
+    }
+    ,state.items)
+  return flow([
+    set("textFilterValue", action.payload.textFilterValue),
+    set("textFilterLoading", false),
+    set("textFilterItems", textFilterItems)
+  ])(state)
+}
+
+actionHandlers[TEXT_FILTER_UPDATE_SELECTION] = (state, action) => {
+  const newState = set("textFilterValue", action.payload.textFilterValue, state)
+  if(action.payload.id){
+    return set("actualTextFilter", {id: action.payload.id, term: action.payload.textFilterValue}, newState)
+  }
+  else {
+    return set("actualTextFilter", {term: action.payload.textFilterValue}, newState)
+  }
+  
 }
 
 export default function domainItems(state = initialState, action) {

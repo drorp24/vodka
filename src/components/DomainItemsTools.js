@@ -1,46 +1,116 @@
 import React from 'react';
 import styled, {withTheme} from 'styled-components';
 import { connect } from "react-redux"
-import { Button as ButtonSemantic } from 'semantic-ui-react';
+import { Button as ButtonSemantic, Search } from 'semantic-ui-react';
+import {flow, map, take, getOr, isEmpty} from 'lodash/fp'
 import {FlexColumns} from './common/CommonComponents';
-import { toggleCompareDomainItemsMode, clearAllSelectedItemsForComparison } from '../redux/actions/actions'
+import {Div} from './common/StyledElements';
+import { 
+    toggleCompareDomainItemsMode, 
+    clearAllSelectedItemsForComparison,    
+    textFilterCleanSearch,
+    textFilterStartSearch,
+    textFilterFinishSearch,
+    textFilterUpdateSelection } from '../redux/actions/actions'
 
 export const DomainItemsToolsContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
 `;
 
-const DomainItemsTools = ({clearAllSelectedItemsForComparisonAction, selectedDomainItemsIdsForCmp, compareDomainItemsMode, toggleCompareDomainItemsModeAction, theme}) => {
-    const onCompareClick = () => {
-        toggleCompareDomainItemsModeAction()
-    }
-    const onClearSelectedClick = () => {
-        clearAllSelectedItemsForComparisonAction()
-    }
+const DomainItemsTools = ({
+    clearAllSelectedItemsForComparisonAction, 
+    selectedDomainItemsIdsForCmp, 
+    compareDomainItemsMode, 
+    toggleCompareDomainItemsModeAction,
+    textFilterCleanSearchAction,
+    textFilterStartSearchAction,
+    textFilterFinishSearchAction,
+    textFilterUpdateSelectionAction,
+    textFilterValue,
+    textFilterLoading,
+    textFilterItems,
+    theme}) => {
+        const onCompareClick = () => {
+            toggleCompareDomainItemsModeAction()
+        }
+        const onClearSelectedClick = () => {
+            clearAllSelectedItemsForComparisonAction()
+        }
 
-    return (
-        <DomainItemsToolsContainer height="40px" alignItems="center" marginLeft="10px">
-            <ButtonSemantic onClick={onCompareClick} size="small" color={theme["compareDomainItemsButtonColor"]}>
-                {
-                    compareDomainItemsMode  ? "Exit" : "Compare"
-                }
-            </ButtonSemantic>
-            {
-                selectedDomainItemsIdsForCmp.length > 0 ? 
-                <ButtonSemantic  onClick={onClearSelectedClick} size="small" color={theme["compareDomainItemsButtonColor"]}>
-                    Clear Selected
-                </ButtonSemantic> : null
+        const timeoutRef = React.useRef()
+        const handleSearchChange = (e, data) => {
+            clearTimeout(timeoutRef.current)
+            textFilterStartSearchAction(data.value)
+            timeoutRef.current = setTimeout(() => {
+            if (data.value.length === 0) {
+                textFilterCleanSearchAction()
+                return
             }
-        </DomainItemsToolsContainer>
-    )
+            textFilterFinishSearchAction(data.value)
+            }, 300)
+        }
+
+        const handleSelection = (e, data) => {
+            textFilterUpdateSelectionAction(null, getOr(data.value, "result.title", data))
+        }
+        
+        const ref = React.useRef();
+        const keyPress = (e) => {
+            if(e.charCode === 13 && !isEmpty(textFilterValue)){
+                if(ref){
+                    ref.current.close()                    
+                }
+                textFilterUpdateSelectionAction(null, textFilterValue)
+            }
+        }
+        
+        
+        return (
+            <DomainItemsToolsContainer height="40px" alignItems="center" marginLeft="10px" justifyContent="space-between">
+                <Div marginRight="10px">
+                    <Search
+                        ref={ref}
+                        onKeyPress={keyPress}
+                        showNoResults={textFilterLoading ? false : true}
+                        onResultSelect={handleSelection}
+                        onSearchChange={handleSearchChange}
+                        size="small"
+                        value={textFilterValue}
+                        loading={textFilterLoading}
+                        results={flow(
+                            map(domainItem => ({
+                                title: domainItem.name,
+                                description: domainItem.description
+                            })),
+                            take(10)
+                        )(textFilterItems)}/>
+                </Div>
+                <Div marginRight="10px">
+                    <ButtonSemantic color={theme["topbarSliderButton"]} size="small" circular icon={compareDomainItemsMode  ? "log out" : "check"}
+                            onClick={onCompareClick}/>
+                    {
+                        selectedDomainItemsIdsForCmp.length > 0 ? 
+                        <ButtonSemantic color={theme["topbarSliderButton"]} size="small" circular onClick={onClearSelectedClick} icon="erase"/> : null
+                    }
+                </Div>            
+            </DomainItemsToolsContainer>
+        )
 }
 
 const mapStateToProps = state => ({
     compareDomainItemsMode: state.ui.compareDomainItemsMode,
-    selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp
+    selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp,
+    textFilterValue: state.domainItems.textFilterValue,
+    textFilterLoading: state.domainItems.textFilterLoading,
+    textFilterItems: state.domainItems.textFilterItems
 })
 
 export default connect(mapStateToProps, 
     {
         toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode,
-        clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison
+        clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison,
+        textFilterCleanSearchAction: textFilterCleanSearch,
+        textFilterStartSearchAction :textFilterStartSearch,
+        textFilterFinishSearchAction: textFilterFinishSearch,
+        textFilterUpdateSelectionAction: textFilterUpdateSelection
     })(withTheme(DomainItemsTools));
