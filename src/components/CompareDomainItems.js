@@ -30,11 +30,7 @@ const CompareDomainItems = ({theme, compareDomainItemsMode, selectedDomainItemsI
     const renderView = () => {
         const selectedDomainItems = filter((domainItem) => selectedDomainItemsIdsForCmp.indexOf(domainItem.id) !== -1, domainItems)        
         let keys = map((domainItem) => domainItem.name, selectedDomainItems)
-        let data = [
-            {"attribute": "age", "david": 2, "alberta": 3},
-            {"attribute": "wellness", "david": 1, "alberta": 1.5},
-            {"attribute": "crimes", "david": 4, "alberta": 2}
-        ]
+        let data = []
         selectedDomainItems.forEach(domainItem => {
             domainItem.weightedAttributes.forEach(weightedAttribute => {
                 let attributeSet = find({"attribute": weightedAttribute.key} ,data)

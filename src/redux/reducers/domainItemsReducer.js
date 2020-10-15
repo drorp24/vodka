@@ -15,7 +15,7 @@ const convertToDomainItems = (state, items, weights) => {
   const oldDomainItemsMapById = keyBy("id", state.items)
   const mapWithIdx = map.convert({'cap': false})
   return mapWithIdx((item, idx) => {
-    const domainItem = new DomainItemType(item.id, item.name, item.description, item.position, item.weightedAttributes)
+    const domainItem = new DomainItemType(item.id, item.name, item.description, item.center, item.geogson, item.weightedAttributes)
     domainItem.updateScore(weights)
     const previousDomainItem = getOr(null, domainItem.id, oldDomainItemsMapById)
     domainItem.prevIdx = previousDomainItem !== null ? previousDomainItem.currIdx : idx

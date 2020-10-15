@@ -1,7 +1,7 @@
 import { keyBy, getOr } from "lodash/fp";
 
 export default class DomainItemType {
-  constructor(id, name, description, position, weightedAttributes) {
+  constructor(id, name, description, center, geogson, weightedAttributes) {
     this.id = id
     this.name = name
     this.description = description
@@ -9,12 +9,13 @@ export default class DomainItemType {
     this.prevIdx = -1
     this.currIdx = -1
     this.score = -1
-    this.position = position
+    this.center = center
+    this.geogson = geogson
     this.expanded = false
   }
 
   static copyDomainItem(domainItem) {
-    const newDomainItem = new DomainItemType(domainItem.id, domainItem.name, domainItem.description, domainItem.position, domainItem.weightedAttributes)
+    const newDomainItem = new DomainItemType(domainItem.id, domainItem.name, domainItem.description, domainItem.center, domainItem.geogson, domainItem.weightedAttributes)
     newDomainItem.prevIdx = domainItem.prevIdx
     newDomainItem.currIdx = domainItem.currIdx
     newDomainItem.score = domainItem.score
