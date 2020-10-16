@@ -94,7 +94,7 @@ class Map extends React.Component {
     calcMarkersCount = () => {
       const currZoom = this.getMapZoom()
       let topMarkersCount =  Math.round((currZoom - MIN_ZOOM) / ((MAX_ZOOM - MIN_ZOOM)/(this.props.domainItems.length)))      
-      this.topMarkersCount = topMarkersCount * ((Math.pow(currZoom, 7))/Math.pow(MAX_ZOOM, 7))
+      this.topMarkersCount = topMarkersCount * ((Math.pow(currZoom, 10))/Math.pow(MAX_ZOOM, 10))
       console.log(`top count for zoom: ${currZoom} is ${this.topMarkersCount}`)
     }
 
@@ -107,7 +107,7 @@ class Map extends React.Component {
       
       return (
         <Div height="calc(100vh - 60px)">
-            <LeafletMap maxZoom={MAX_ZOOM} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}}  center={this.getCenterOnRender()} zoom={this.getZoomOnRender()}>
+            <LeafletMap useFlyTo maxZoom={MAX_ZOOM} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}}  center={this.getCenterOnRender()} zoom={this.getZoomOnRender()}>
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
