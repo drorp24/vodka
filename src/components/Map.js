@@ -2,32 +2,40 @@ import React from 'react';
 import 'leaflet/dist/leaflet.css'
 import 'prunecluster-exportable/dist/LeafletStyleSheet.css'
 import L from 'leaflet'
+import _ from "../third_party/leaflet_conditional_layer"
 import {Div} from './common/StyledElements';
 import { Map as LeafletMap, TileLayer } from 'react-leaflet'
 import { CoordinatesControl } from 'react-leaflet-coordinates'
 import { connect } from "react-redux"
-import {getOr, find, map, set} from "lodash/fp"
+import {getOr, find, map, set, drop, flow, take, last} from "lodash/fp"
 import {handleMapClicked} from '../redux/actions/actions'
+
+const MAX_ZOOM = 18
+const MIN_ZOOM = 1
+const INITIAL_ZOOM_LEVEL = 11
 
 class Map extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            lat: 32.8092,
-            lng: 35.0343,
+            lat: 32.811,
+            lng: 34.982,
             zoom: 14,
           }
-        this.leafletMapInstance = null
-        this.leafletGeojsonLayer = null
+        this.leafletMap = null
+        this.layerGroup = L.layerGroup()
+        this.geojsonLayer = null
+        this.markersTopXLayer = null
+        this.topMarkersCount = 0
     }
 
     componentDidUpdate(){
-      if(this.leafletMapInstance){
-        this.renderData()
+      if(this.leafletMap){
+        this.refreshLayers()
       }
     }
     
-    getCenter(){
+    getCenterOnRender(){
       if(!this.props.selected_id){
         return [this.state.lat, this.state.lng]
       }
@@ -35,50 +43,71 @@ class Map extends React.Component {
       return selectedItem.center
     }
 
-    getZoom(){
-      if(!this.props.selected_id){
-        return this.state.zoom
+    getZoomOnRender(){
+      if(this.props.selected_id){
+        return MAX_ZOOM
       }
-      return 18
+      return INITIAL_ZOOM_LEVEL
     }
 
+    getMapZoom = () => {
+      if(this.leafletMap === null) return null
+      return this.leafletMap.getZoom()
+    }    
+
     handleClick() {
-      if (this.leafletMapInstance) {
+      if (this.leafletMap) {
         this.props.handleMapClickedAction()
       }
     }
 
     whenReadyCB = (obj) => {
-      this.leafletMapInstance = obj.target      
-      this.renderData()
+      this.leafletMap = obj.target
+      this.layerGroup.addTo(this.leafletMap)
+      this.refreshLayers()
     }
 
-    renderData() {
-      if(!getOr(null, 'length', this.props.domainItems)){
-        return null
-      }
-      const geoJsonItems = map((domainItem) => set("properties", {id: domainItem.id}, domainItem.geogson), this.props.domainItems)      
-      // remove previous datalayer      
-      if(this.leafletGeojsonLayer){
-        this.leafletMapInstance.removeLayer(this.leafletGeojsonLayer)
-      }
-      // add layer again
-      this.leafletGeojsonLayer = L.geoJSON(geoJsonItems, {
-        style: (feature) => {
-          return {color: getOr(null, "geometry.properties.id", feature) === this.props.selected_id ? "#ff0000" : "#000000"}
-        } 
-      })
-      this.leafletGeojsonLayer.addTo(this.leafletMapInstance)
-      geoJsonItems.forEach(geogson => {
-        this.leafletGeojsonLayer.addData(geogson)
-      });      
+    refreshLayers = () => {
+      this.calcMarkersCount()
+      this.layerGroup.clearLayers()
+      const geoJsonItems = flow([
+        take(this.topMarkersCount),
+        map((domainItem) => domainItem.geogson)        
+      ])(this.props.domainItems)
+      this.geojsonLayer = L.geoJSON(geoJsonItems)
+      const maxScore = getOr(0, "[0].score", this.props.domainItems)
+      const minScore = getOr(0, "score", last(this.props.domainItems))      
+      const markersArray = flow([
+        take(this.topMarkersCount),
+        map((domainItem) => {
+          let iconSize =  Math.round((domainItem.score - minScore) / ((maxScore - minScore)/(13)))        
+          iconSize += 18        
+          const iconUrl = domainItem.id === this.props.selected_id ? 'selected-map-marker.svg' : "map-marker.svg"
+          return L.marker(domainItem.center, {icon: L.icon({iconUrl, iconSize: [iconSize,iconSize],iconAnchor: [9, 9]})})
+        })
+      ])(this.props.domainItems)
+      this.markersTopXLayer = L.conditionalMarkers(markersArray, {maxMarkers: this.props.domainItems.length})      
+      this.layerGroup.addLayer(this.geojsonLayer)
+      this.layerGroup.addLayer(this.markersTopXLayer)
     }
-  
+
+    calcMarkersCount = () => {
+      const currZoom = this.getMapZoom()
+      let topMarkersCount =  Math.round((currZoom - MIN_ZOOM) / ((MAX_ZOOM - MIN_ZOOM)/(this.props.domainItems.length)))      
+      this.topMarkersCount = topMarkersCount * ((Math.pow(currZoom, 7))/Math.pow(MAX_ZOOM, 7))
+      console.log(`top count for zoom: ${currZoom} is ${this.topMarkersCount}`)
+    }
+
+    handleZoomEnd = (eventParams) => {      
+      this.refreshLayers()      
+    }
+
+    
     render() {
       
       return (
         <Div height="calc(100vh - 60px)">
-            <LeafletMap whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}}  center={this.getCenter()} zoom={this.getZoom()}>
+            <LeafletMap maxZoom={MAX_ZOOM} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}}  center={this.getCenterOnRender()} zoom={this.getZoomOnRender()}>
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -97,44 +126,3 @@ class Map extends React.Component {
   })
 
   export default connect(mapStateToProps, {handleMapClickedAction: handleMapClicked})(Map);
-
-
-  // getMarkerIcon = (id) => {
-    //   if(!this.mapMarkerIcon){
-    //     this.mapMarkerIcon = new L.Icon({
-    //       iconUrl: 'map-marker.svg',
-    //       iconSize: [18,18],
-    //       iconAnchor: [9, 9]
-    //     })
-    //   }
-    //   if(!this.SelectedItemMapMarkerIcon){
-    //     this.SelectedItemMapMarkerIcon = new L.Icon({
-    //       iconUrl: 'selected-map-marker.svg',
-    //       iconSize: [18,18],
-    //       iconAnchor: [9, 9]
-    //     })
-    //   }
-    //   return id === this.props.selected_id ? this.SelectedItemMapMarkerIcon : this.mapMarkerIcon
-    // }
-    // renderData = () => {
-    //   if(getOr(null, 'length', this.props.domainItems) === null){
-    //     return null
-    //   }
-    //   if(!this.pruneCluster){
-    //     this.pruneCluster = new PruneClusterForLeaflet();
-    //   }
-    //   // remove previous datalayer      
-    //   if(this.leafletDataLayer){
-    //     this.pruneCluster.RemoveMarkers()
-    //     this.leafletMapInstance.removeLayer(this.leafletDataLayer)        
-    //   }      
-    //   // add layer again
-    //   this.props.domainItems.forEach(domainItem => {
-    //     const marker = new PruneCluster.Marker(domainItem.center[0], domainItem.center[1]);
-    //     marker.data.icon = this.getMarkerIcon(domainItem.id)
-    //     marker.data.popup = `${domainItem.name} <br/> score: ${parseInt(domainItem.score)} <br/> order: ${domainItem.currIdx + 1}`
-    //     this.pruneCluster.RegisterMarker(marker);
-    //   });
-    //   this.leafletDataLayer = this.leafletMapInstance.addLayer(this.pruneCluster);
-    //   this.pruneCluster.ProcessView();
-    // }
