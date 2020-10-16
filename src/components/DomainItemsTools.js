@@ -79,7 +79,6 @@ const DomainItemsTools = ({
                 title: domainItem.name,
                 description: domainItem.description
             }), results)
-            console.log(`result len: ${results.length}`)
             return results
         }
         
