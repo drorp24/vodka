@@ -34,28 +34,13 @@ class Map extends React.Component {
         this.refreshLayers()
       }
     }
-    
-    getCenterOnRender(){
-      if(!this.props.selected_id){
-        return [this.state.lat, this.state.lng]
-      }
-      const selectedItem = find({id: this.props.selected_id}, this.props.domainItems)
-      return selectedItem.center
-    }
-
-    getZoomOnRender(){
-      if(this.props.selected_id){
-        return MAX_ZOOM
-      }
-      return INITIAL_ZOOM_LEVEL
-    }
 
     getMapZoom = () => {
       if(this.leafletMap === null) return null
       return this.leafletMap.getZoom()
     }    
 
-    handleClick() {
+    handleClick = () => {
       if (this.leafletMap) {
         this.props.handleMapClickedAction()
       }
@@ -76,14 +61,17 @@ class Map extends React.Component {
       ])(this.props.domainItems)
       this.geojsonLayer = L.geoJSON(geoJsonItems)
       const maxScore = getOr(0, "[0].score", this.props.domainItems)
-      const minScore = getOr(0, "score", last(this.props.domainItems))      
+      const minScore = getOr(0, "score", last(this.props.domainItems))
       const markersArray = flow([
         take(this.topMarkersCount),
         map((domainItem) => {
+          const selectedId = getOr(null, "selected_id.id", this.props)
           let iconSize =  Math.round((domainItem.score - minScore) / ((maxScore - minScore)/(13)))        
           iconSize += 18        
-          const iconUrl = domainItem.id === this.props.selected_id ? 'selected-map-marker.svg' : "map-marker.svg"
-          return L.marker(domainItem.center, {icon: L.icon({iconUrl, iconSize: [iconSize,iconSize],iconAnchor: [9, 9]})})
+          const iconUrl = domainItem.id === selectedId ? 'selected-map-marker.svg' : "map-marker.svg"
+          const marker = L.marker(domainItem.center, {icon: L.icon({iconUrl, iconSize: [iconSize,iconSize],iconAnchor: [9, 9]})})
+          marker.bindPopup(`${domainItem.name} <br/> score: ${parseInt(domainItem.score)} <br/> importance: ${domainItem.currIdx + 1}`)          
+          return marker
         })
       ])(this.props.domainItems)
       this.markersTopXLayer = L.conditionalMarkers(markersArray, {maxMarkers: this.props.domainItems.length})      
@@ -93,7 +81,7 @@ class Map extends React.Component {
 
     calcMarkersCount = () => {
       const currZoom = this.getMapZoom()
-      let topMarkersCount =  Math.round((currZoom - MIN_ZOOM) / ((MAX_ZOOM - MIN_ZOOM)/(this.props.domainItems.length)))      
+      let topMarkersCount =  Math.round((currZoom - MIN_ZOOM) / ((MAX_ZOOM - MIN_ZOOM)/(this.props.domainItems.length)))
       this.topMarkersCount = topMarkersCount * ((Math.pow(currZoom, 10))/Math.pow(MAX_ZOOM, 10))
       console.log(`top count for zoom: ${currZoom} is ${this.topMarkersCount}`)
     }
@@ -102,12 +90,21 @@ class Map extends React.Component {
       this.refreshLayers()      
     }
 
+    refreshMap = () => {
+      if(!this.leafletMap) return
+      const zoom = getOr(null, "selected_id.id", this.props) ? MAX_ZOOM : INITIAL_ZOOM_LEVEL
+      this.leafletMap.setZoom(zoom)      
+      const center = getOr(null, "selected_id.id", this.props) ? find({id: this.props.selected_id.id}, this.props.domainItems).center : 
+      [this.state.lat, this.state.lng]
+      this.leafletMap.flyTo(center)
+    }
+
     
     render() {
-      
+      this.refreshMap()
       return (
         <Div height="calc(100vh - 60px)">
-            <LeafletMap useFlyTo maxZoom={MAX_ZOOM} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}}  center={this.getCenterOnRender()} zoom={this.getZoomOnRender()}>
+            <LeafletMap maxZoom={MAX_ZOOM} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}} center={[this.state.lat, this.state.lng]} zoom={INITIAL_ZOOM_LEVEL}>
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

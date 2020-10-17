@@ -34,7 +34,7 @@ export default function ui(ui = initialState, action) {
         }
         case DOMAIN_ITEM_PRESSED: { 
             return flow([
-                set('selectedDomainItemID', action.payload.id),
+                set('selectedDomainItemID', {id: action.payload.id}),
                 set('sideBarOpen', false)]
             )(ui)
         }
