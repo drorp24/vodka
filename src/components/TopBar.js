@@ -7,7 +7,7 @@ import {Div} from './common/StyledElements';
 import {toggleSideBar, switchTheme} from '../redux/actions/actions'
 import Scenarios from './Scenarios'
 import ScenarioPlayer from './ScenarioPlayer'
-import DomainItemsTools from './DomainItemsTools'
+import DomainItemsSearch from './DomainItemsSearch'
 
 export const TopBarContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
@@ -41,7 +41,7 @@ const TopBar = ({themeId, sideBarOpen, toggleSideBarAction, theme, switchThemeAc
                     <ScenarioPlayer/>
                 </Div>
             </FlexColumns>
-            <DomainItemsTools/>
+            <DomainItemsSearch/>
         </TopBarContainer>
     )
 }

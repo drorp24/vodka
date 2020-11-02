@@ -1,97 +1,73 @@
 import React from 'react';
-import styled from 'styled-components';
 import { connect } from "react-redux"
-import { Search } from 'semantic-ui-react';
-import {map, take, getOr, isEmpty} from 'lodash/fp'
+import {Dropdown, Button} from 'semantic-ui-react';
+import styled, {withTheme} from 'styled-components';
+import {map, getOr} from 'lodash/fp'
 import {FlexColumns} from './common/CommonComponents';
+import {Div} from './common/StyledElements';
 import { 
-    textFilterCleanSearch,
-    textFilterStartSearch,
-    textFilterFinishSearch,
-    textFilterUpdateSelection } from '../redux/actions/actions'
+    toggleCompareDomainItemsMode, 
+    clearAllSelectedItemsForComparison,
+    selectPresetId
+} from '../redux/actions/actions'
 
+export const DomainItemsToolsContainer = styled(FlexColumns)`
+    border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
+`;
 
-export const SearchStyled = styled(Search)`
-    .ui.icon.input {
-        width: 50vh;
+export const DropdownContainer = styled(FlexColumns)`
+    border-right: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
+`;
+
+const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForCmp, compareDomainItemsMode, 
+    toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, 
+    selectPresetIdAction, theme}) => {
+    const onCompareClick = () => {
+        toggleCompareDomainItemsModeAction()
     }
-`
+    const onClearSelectedClick = () => {
+        clearAllSelectedItemsForComparisonAction()
+    }
 
-const DomainItemsTools = ({
-    textFilterCleanSearchAction,
-    textFilterStartSearchAction,
-    textFilterFinishSearchAction,
-    textFilterUpdateSelectionAction,
-    textFilterValue,
-    textFilterLoading,
-    textFilterItems}) => {        
+    const handlePresetSelected = (event, data) => {
+        selectPresetIdAction(getOr(null, "value", data))
+    }
 
-        const timeoutRef = React.useRef()
-        const handleSearchChange = (e, data) => {
-            clearTimeout(timeoutRef.current)
-            textFilterStartSearchAction(data.value)
-            timeoutRef.current = setTimeout(() => {
-            if (data.value.length === 0) {
-                textFilterCleanSearchAction()
-                return
-            }
-            textFilterFinishSearchAction(data.value)
-            }, 300)
-        }
-
-        const handleSelection = (e, data) => {
-            const term = getOr(data.value, "result.title", data)
-            const itemId = getOr(null, "result.key", data)
-            textFilterUpdateSelectionAction(itemId, term)
-        }
-        
-        const ref = React.useRef();
-        const keyPress = (e) => {
-            if(e.charCode === 13 && !isEmpty(textFilterValue)){
-                if(ref){
-                    ref.current.close()                    
+    return (
+        <DomainItemsToolsContainer alignItems="center" justifyContent="space-between">
+            <DropdownContainer minHeight="40px" alignItems="center" flexBasis="70%" justifyContent="space-between">
+                <Div marginLeft="10px" styleType="label3disabled">
+                    Choose preset:
+                </Div>
+                <Div marginRight="20px" styleType="label3disabled">
+                    <Dropdown
+                        options={presets}
+                        value={selectedPresetId}
+                        onChange={handlePresetSelected}
+                    />
+                </Div>
+            </DropdownContainer>
+            <Div marginRight="20px">
+                <Button color={theme["topbarSliderButton"]} size="small" circular icon={compareDomainItemsMode  ? "log out" : "check"}
+                        onClick={onCompareClick}/>
+                {
+                    selectedDomainItemsIdsForCmp.length > 0 ? 
+                    <Button color={theme["topbarSliderButton"]} size="small" circular onClick={onClearSelectedClick} icon="erase"/> : null
                 }
-                textFilterUpdateSelectionAction(null, textFilterValue)
-            }
-        }
-        
-        const getResults = () => {
-            let results = take(10, textFilterItems)
-            results = map(domainItem => ({
-                key:domainItem.id,
-                title: domainItem.name,
-                description: domainItem.description
-            }), results)
-            return results
-        }
-        
-        return (
-            <FlexColumns position="absolute" left="calc(50% - 30vh)" marginRight="10px" height="50px" alignItems="center" marginLeft="5px" justifyContent="space-between">
-                <SearchStyled
-                        placeholder="Search"
-                        ref={ref}
-                        onKeyPress={keyPress}
-                        showNoResults={textFilterLoading ? false : true}
-                        onResultSelect={handleSelection}
-                        onSearchChange={handleSearchChange}                        
-                        value={textFilterValue}
-                        loading={textFilterLoading}
-                        results={getResults()}
-                        size="small"/>
-            </FlexColumns>
-        )
+            </Div>
+        </DomainItemsToolsContainer>
+    )
 }
 
 const mapStateToProps = state => ({
-    textFilterValue: state.domainItems.textFilterValue,
-    textFilterLoading: state.domainItems.textFilterLoading,
-    textFilterItems: state.domainItems.textFilterItems
+    presets: map((preset)=>({key:preset.id, text:preset.name.length > 15 ? `${preset.name.substring(0,15)}...` : preset.name, value:preset.id}),state.domainItems.presets),
+    selectedPresetId: state.domainItems.selectedPresetId,
+    compareDomainItemsMode: state.ui.compareDomainItemsMode,
+    selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp
 })
 
-export default connect(mapStateToProps, 
-    {
-        textFilterCleanSearchAction: textFilterCleanSearch,
-        textFilterStartSearchAction :textFilterStartSearch,
-        textFilterFinishSearchAction: textFilterFinishSearch,
-        textFilterUpdateSelectionAction: textFilterUpdateSelection
-    })(DomainItemsTools);
+export default connect(mapStateToProps, {
+        toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode,
+        clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison,
+        selectPresetIdAction: selectPresetId
+})(withTheme(DomainItemsTools));
