@@ -20,3 +20,7 @@ export const MAP_CLICKED = "MAP_CLICKED"
 // UI actions
 export const TOGGLE_SIDE_BAR = "TOGGLE_SIDE_BAR"
 export const SWITCH_THEME = "SWITCH_THEME"
+
+// Simulation
+export const SELECT_SCENARIO = "SELECT_SCENARIO"
+export const SELECT_SCENARIO_STEP = "SELECT_SCENARIO_STEP"

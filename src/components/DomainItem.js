@@ -74,7 +74,7 @@ class DomainItem extends React.Component {
                           name={selectedForComparison ? "check circle outline" : "circle outline"}/>
                   </Div> : null}
                   <Div flexBasis="90%" display="grid">
-                      <Div styleType="label2">{this.props.domainItem.name}</Div>
+                      <Div styleType="label3">{this.props.domainItem.name}</Div>
                       <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>
                   </Div>
                   <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>                  
@@ -90,7 +90,7 @@ class DomainItem extends React.Component {
                     name={selectedForComparison ? "check circle outline" : "circle outline"}/>
             </Div> : null}
             <Div flexBasis="90%" display="grid">
-                <Div styleType={this.props.compareDomainItemsMode ? "label2disabled" : "label2"}>{this.props.domainItem.name}</Div>
+                <Div styleType={this.props.compareDomainItemsMode ? "label3disabled" : "label3"}>{this.props.domainItem.name}</Div>
                 <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>
             </Div>
             <LabelSem color="orange" circular>{parseInt(this.props.domainItem.score)}</LabelSem>            

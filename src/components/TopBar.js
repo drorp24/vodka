@@ -1,10 +1,12 @@
 import React from 'react';
 import { connect } from "react-redux"
 import styled, {withTheme} from 'styled-components';
-import {Button, Icon} from 'semantic-ui-react';
+import {Button, Icon, Popup} from 'semantic-ui-react';
 import {FlexColumns} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
 import {toggleSideBar, switchTheme} from '../redux/actions/actions'
+import Scenarios from './Scenarios'
+import ScenarioPlayer from './ScenarioPlayer'
 
 export const TopBarContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
@@ -12,16 +14,28 @@ export const TopBarContainer = styled(FlexColumns)`
 
 const TopBar = ({themeId, sideBarOpen, toggleSideBarAction, theme, switchThemeAction, compareDomainItemsMode}) => {
     return (
-        <TopBarContainer minHeight="60px"  alignItems="center">
-            <FlexColumns marginLeft="20px" width="40%">
+        <TopBarContainer minHeight="60px"  alignItems="center" marginLeft="20px">
                 <Button disabled={compareDomainItemsMode ? true : false} color={theme["topbarSliderButton"]} circular icon={sideBarOpen ? 'angle double left' : 'angle double right'}
-                    onClick={() => toggleSideBarAction()}/>
+                        onClick={() => toggleSideBarAction()}/>
                 <Div marginLeft="20px">
-                <Button circular  size="medium" color={theme["changeThemeButtonColor"]} icon onClick={() => switchThemeAction(themeId === "defaultTheme" ? 'darkTheme' : 'defaultTheme')}>
-                    <Icon name={themeId === "defaultTheme" ? 'moon' : 'sun'}/>
-                </Button>
+                    <Button circular  size="medium" color={theme["changeThemeButtonColor"]} icon onClick={() => switchThemeAction(themeId === "defaultTheme" ? 'darkTheme' : 'defaultTheme')}>
+                        <Icon name={themeId === "defaultTheme" ? 'moon' : 'sun'}/>
+                    </Button>
                 </Div>
-            </FlexColumns>
+                <Div marginLeft="20px" position="relative">
+                    <Popup
+                        style={{"overflow": "auto"}}
+                        position="bottom left"
+                        on='click'
+                        basic
+                        flowing
+                        trigger={<Button color={theme["topbarSliderButton"]} circular icon='file'/>}>
+                            <Scenarios/>
+                    </Popup>                    
+                </Div>
+                <Div marginLeft="20px">
+                        <ScenarioPlayer/>
+                </Div>
         </TopBarContainer>
     )
 }

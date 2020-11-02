@@ -22,12 +22,12 @@ font-size: 40px;
 font-weight: bold;
 `;
 
-export const label2 = css`
+export const label3 = css`
 color: white;
 font-size: 16px;
 `;
 
-export const label2disabled = css`
+export const label3disabled = css`
 font-size: 16px;
 color: gray;
 `;

@@ -12,7 +12,9 @@ import {
   TEXT_FILTER_CLEAN,
   TEXT_FILTER_START_SEARCH,
   TEXT_FILTER_FINISH_SEARCH,
-  TEXT_FILTER_UPDATE_SELECTION } from "./actionTypes"
+  TEXT_FILTER_UPDATE_SELECTION,
+  SELECT_SCENARIO,
+  SELECT_SCENARIO_STEP } from "./actionTypes"
 
 function makeActionCreator(type, ...argNames) {
   return function(...args) {
@@ -42,3 +44,5 @@ export const textFilterCleanSearch = makeActionCreator(TEXT_FILTER_CLEAN)
 export const textFilterStartSearch = makeActionCreator(TEXT_FILTER_START_SEARCH, 'textFilterValue')
 export const textFilterFinishSearch = makeActionCreator(TEXT_FILTER_FINISH_SEARCH, 'textFilterValue')
 export const textFilterUpdateSelection = makeActionCreator(TEXT_FILTER_UPDATE_SELECTION, 'id', 'textFilterValue')
+export const selectScenario = makeActionCreator(SELECT_SCENARIO, 'id')
+export const selectScenarioStep = makeActionCreator(SELECT_SCENARIO_STEP, 'step')

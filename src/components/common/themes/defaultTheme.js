@@ -21,10 +21,15 @@ font-weight: bold;
 `;
 
 export const label2 = css`
+font-size: 20px;
+`;
+
+export const label3 = css`
 font-size: 16px;
 `;
 
-export const label2disabled = css`
+
+export const label3disabled = css`
 font-size: 16px;
 color: gray;
 `;
@@ -39,3 +44,16 @@ text-overflow: ellipsis;
 overflow: hidden;
 white-space: nowrap;
 `;
+
+
+export const simPlayerLabel = css`
+color: #37bf56;
+`;
+
+export const simPlayerBorder = css`
+border: 1px solid #37bf56
+`
+
+export const simPlayerBorderDisabled = css`
+border: 1px solid #9bd7a5
+`
