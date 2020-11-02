@@ -10,7 +10,7 @@ const Scenarios = ({scenarios, selectedScenarioId}) => {
     return (
         <FlexRows>
             <FlexRows styleType="label2" alignItems="center">
-                <Label size="huge" color="green" basic>Scenarios</Label>
+                <Label size="huge" color="orange" basic>Scenarios</Label>
             </FlexRows>
             <Divider/>
             <FlexColumns flexWrap="wrap" maxWidth="650px" maxHeight="50vh">

@@ -34,15 +34,15 @@ const ScenarioPlayer = ({selectedScenarioId, scenarios, scenarioCurrentStepIdx, 
     return (
         <SimulationPlayerContainer visibility={!scenarioSelected ? "collapse" : "visible"} padding="5px" marginRight="15px" alignItems="center" styleType={scenarioSelected ? "simPlayerBorderDisabled": "simPlayerBorder"}>
             <Div styleType={!scenarioSelected ? "simPlayerLabelDisabled": "simPlayerLabel"} marginLeft="5px">Simulation: </Div>
-            <Div marginLeft="10px"><Label  pointing='right' color="green" >{currentText}</Label></Div>
+            <Div marginLeft="10px"><Label  pointing='right' color="orange" >{currentText}</Label></Div>
             <Div marginLeft="20px">
-                <Button size="tiny" icon labelPosition='left' basic color="green" disabled={prevDisabled} circular onClick={handlePrevRequest}>
+                <Button size="tiny" icon labelPosition='left' basic color="orange" disabled={prevDisabled} circular onClick={handlePrevRequest}>
                     <Icon name='angle left' />
                     {prevText}
                 </Button>
             </Div>
             <Div marginLeft="10px">
-                <Button disabled={nextDisabled} size="tiny" icon labelPosition='right' basic color="green"  circular onClick={handleNextRequest}>
+                <Button disabled={nextDisabled} size="tiny" icon labelPosition='right' basic color="orange"  circular onClick={handleNextRequest}>
                     <Icon name='angle right' />
                     {nextText}
                 </Button>

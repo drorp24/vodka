@@ -47,13 +47,13 @@ white-space: nowrap;
 
 
 export const simPlayerLabel = css`
-color: #37bf56;
+color: #f2711c;
 `;
 
 export const simPlayerBorder = css`
-border: 1px solid #37bf56
+border: 1px solid #f2711c
 `
 
 export const simPlayerBorderDisabled = css`
-border: 1px solid #9bd7a5
+border: 1px solid #f2711c
 `

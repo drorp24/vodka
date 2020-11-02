@@ -9,7 +9,7 @@ import { FlexRows } from './common/CommonComponents';
 import DomainItem from './DomainItem'
 import AsyncRESTMeta from '../types/asyncRESTMeta';
 import { loadDomainItems } from '../redux/actions/actions'
-import DomainItemsTools from './DomainItemsTools'
+import DomainItemsSelectPreset from './DomainItemsSelectPreset'
 
 const StyledFlexRowsContainer = styled(FlexRows)`
 *,*:focus,*:hover{
@@ -69,8 +69,8 @@ class DomainItems extends React.Component {
   render() {
     this.setFilteredDomainItems()
     return (
-      <StyledFlexRowsContainer height="100%" width="100%">
-          <DomainItemsTools/>
+      <StyledFlexRowsContainer height="100%" width="100%">        
+          <DomainItemsSelectPreset/>
           <AutoSizer>
               {({width, height}) => (
             <List

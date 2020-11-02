@@ -8,7 +8,8 @@ import { WEIGHT_UPDATED,
   TEXT_FILTER_CLEAN,  
   TEXT_FILTER_START_SEARCH,
   TEXT_FILTER_FINISH_SEARCH,
-  TEXT_FILTER_UPDATE_SELECTION } from "../actions/actionTypes"
+  TEXT_FILTER_UPDATE_SELECTION,
+  SELECT_PRESET } from "../actions/actionTypes"
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 
 const convertToDomainItems = (state, items, weights) => {
@@ -37,7 +38,11 @@ const initialState = {
     id: ""
   },
   textFilterLoading: false,
-  textFilterItems:[]
+  textFilterItems:[],
+  presets:[{id:1234, name:"best preset", description:"indeed the best preset ever"},
+           {id:4321, name:"lousy preset", description:"indeed the lousiest preset ever"},
+           {id:555, name:"harmless preset long name indeed", description:"indeed an harmless preset"}],
+  selectedPresetId: 1234
 }
 
 
@@ -125,6 +130,10 @@ actionHandlers[TEXT_FILTER_UPDATE_SELECTION] = (state, action) => {
     return set("actualTextFilter", {term: action.payload.textFilterValue}, newState)
   }
   
+}
+
+actionHandlers[SELECT_PRESET] = (state, action) => {
+    return set("selectedPresetId", action.payload.presetId, state)
 }
 
 export default function domainItems(state = initialState, action) {

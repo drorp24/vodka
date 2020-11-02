@@ -31,7 +31,7 @@ function Scenario({scenario, selected, selectScenarioAction}) {
         <StyledScenarioContainer width="200px">
             <FlexRows>
                 {/* <Button basic={!selected} color={selected ? "green" : "sdandard"} onClick={handleSelectScenario}> */}
-                <Button basic={!selected} color="green" onClick={handleSelectScenario}>
+                <Button basic={!selected} color="black" onClick={handleSelectScenario}>
                     <FlexRows alignItems="flex-start">
                         {
                             map((key) => renderAttr(key, scenario[key]), keys(scenario))
