@@ -15,7 +15,7 @@ import {
   TEXT_FILTER_UPDATE_SELECTION,
   SELECT_SCENARIO,
   SELECT_SCENARIO_STEP,
-  SELECT_PRESET } from "./actionTypes"
+  LOAD_DOMAIN_ITEMS_BY_PRESET } from "./actionTypes"
 
 function makeActionCreator(type, ...argNames) {
   return function(...args) {
@@ -47,4 +47,4 @@ export const textFilterFinishSearch = makeActionCreator(TEXT_FILTER_FINISH_SEARC
 export const textFilterUpdateSelection = makeActionCreator(TEXT_FILTER_UPDATE_SELECTION, 'id', 'textFilterValue')
 export const selectScenario = makeActionCreator(SELECT_SCENARIO, 'id')
 export const selectScenarioStep = makeActionCreator(SELECT_SCENARIO_STEP, 'step')
-export const selectPresetId = makeActionCreator(SELECT_PRESET, 'presetId')
+export const loadDomainItemsByPreset = makeActionCreator(LOAD_DOMAIN_ITEMS_BY_PRESET, 'meta', 'body')

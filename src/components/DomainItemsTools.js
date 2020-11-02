@@ -8,8 +8,9 @@ import {Div} from './common/StyledElements';
 import { 
     toggleCompareDomainItemsMode, 
     clearAllSelectedItemsForComparison,
-    selectPresetId
+    loadDomainItemsByPreset
 } from '../redux/actions/actions'
+import AsyncRESTMeta from '../types/asyncRESTMeta';
 
 export const DomainItemsToolsContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
@@ -21,7 +22,7 @@ export const DropdownContainer = styled(FlexColumns)`
 
 const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForCmp, compareDomainItemsMode, 
     toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, 
-    selectPresetIdAction, theme}) => {
+    loadDomainItemsByPresetAction, theme}) => {
     const onCompareClick = () => {
         toggleCompareDomainItemsModeAction()
     }
@@ -30,7 +31,8 @@ const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForC
     }
 
     const handlePresetSelected = (event, data) => {
-        selectPresetIdAction(getOr(null, "value", data))
+        const selectedPreset = getOr(null, "value", data)
+        loadDomainItemsByPresetAction(new AsyncRESTMeta("/items", "POST"), {preset_id:selectedPreset})
     }
 
     return (
@@ -69,5 +71,5 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
         toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode,
         clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison,
-        selectPresetIdAction: selectPresetId
+        loadDomainItemsByPresetAction: loadDomainItemsByPreset
 })(withTheme(DomainItemsTools));

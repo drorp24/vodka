@@ -3,12 +3,11 @@ import styled from 'styled-components';
 import { connect } from "react-redux"
 import { isEmpty, getOr, filter, isNumber} from 'lodash/fp'
 import 'react-virtualized/styles.css';
+import {Loader} from 'semantic-ui-react';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import List from 'react-virtualized/dist/commonjs/List';
-import { FlexRows } from './common/CommonComponents';
+import { FlexRows, FlexColumns } from './common/CommonComponents';
 import DomainItem from './DomainItem'
-import AsyncRESTMeta from '../types/asyncRESTMeta';
-import { loadDomainItems } from '../redux/actions/actions'
 import DomainItemsTools from './DomainItemsTools'
 
 const StyledFlexRowsContainer = styled(FlexRows)`
@@ -26,11 +25,6 @@ class DomainItems extends React.Component {
     this.listRef = React.createRef();
   }
 
-  componentDidMount() {
-    if (isEmpty(this.filteredDomainItems) || this.filteredDomainItems.length < 1)
-      this.props.loadDomainItemsAction(new AsyncRESTMeta("/items", "POST"), {})
-  }
-
   rowRenderer = ({index, isScrolling, key, style}) => {
     const domainItem = this.filteredDomainItems[index]
     return <DomainItem key={domainItem.id} domainItem={domainItem} style={style}/>
@@ -43,6 +37,7 @@ class DomainItems extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if(this.props.loadingItems) return
     this.listRef.current.recomputeRowHeights()
   }
 
@@ -67,22 +62,30 @@ class DomainItems extends React.Component {
   }
 
   render() {
-    this.setFilteredDomainItems()
+    if(!this.props.loadingItems){
+      this.setFilteredDomainItems()
+    }    
     return (
-      <StyledFlexRowsContainer height="100%" width="100%">        
+      <StyledFlexRowsContainer height="100%" width="100%">
           <DomainItemsTools/>
-          <AutoSizer>
-              {({width, height}) => (
-            <List
-              ref={this.listRef}
-              height={height - 40}
-              rowCount={this.filteredDomainItems.length}
-              rowHeight={this.calcRowHeight}
-              rowRenderer={this.rowRenderer}
-              width={width}
-            />
-          )}
-          </AutoSizer>
+          {
+            this.props.loadingItems ?
+            <FlexColumns height="100%" width="100%" alignItems="center" justifyContent="center">
+              <Loader active inline/>
+            </FlexColumns> : 
+            <AutoSizer>
+                {({width, height}) => (
+              <List
+                ref={this.listRef}
+                height={height - 40}
+                rowCount={this.filteredDomainItems.length}
+                rowHeight={this.calcRowHeight}
+                rowRenderer={this.rowRenderer}
+                width={width}
+              />
+            )}
+            </AutoSizer>
+          }          
       </StyledFlexRowsContainer>
     )
   }
@@ -91,9 +94,8 @@ class DomainItems extends React.Component {
 const mapStateToProps = state => ({
   domainItems: state.domainItems.items,
   weights: state.domainItems.weights,
-  actualTextFilter: state.domainItems.actualTextFilter
+  actualTextFilter: state.domainItems.actualTextFilter,
+  loadingItems: state.domainItems.loadingItems
 })
 
-export default connect(mapStateToProps, {
-  loadDomainItemsAction: loadDomainItems
-})(DomainItems);
+export default connect(mapStateToProps, {})(DomainItems);

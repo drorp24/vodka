@@ -26,7 +26,8 @@ const asyncRESTCall = store => next => action => {
     const body = getOr(undefined, 'payload.body', action)
 
     dispatch({
-      type: actionTypeTriple.loading, ...omit('payload.meta.type', action)
+      ...omit('payload.meta.type', action), 
+      type: actionTypeTriple.loading
     })
 
     fetch(path, {

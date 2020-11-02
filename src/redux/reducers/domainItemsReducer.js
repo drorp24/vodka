@@ -1,15 +1,14 @@
 import DomainItemType from "../../types/domainItemType"
 import WeightType from "../../types/weightType"
 import { map, getOr, keyBy, flow, set, filter } from 'lodash/fp'
-import { WEIGHT_UPDATED, 
-  LOAD_DOMAIN_ITEMS, 
+import { WEIGHT_UPDATED,
   DOMAIN_ITEM_PRESSED, 
   LOAD_WEIGHTS,
   TEXT_FILTER_CLEAN,  
   TEXT_FILTER_START_SEARCH,
   TEXT_FILTER_FINISH_SEARCH,
   TEXT_FILTER_UPDATE_SELECTION,
-  SELECT_PRESET } from "../actions/actionTypes"
+  LOAD_DOMAIN_ITEMS_BY_PRESET } from "../actions/actionTypes"
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 
 const convertToDomainItems = (state, items, weights) => {
@@ -30,6 +29,7 @@ const convertToWeights = (weights) => {
 }
 
 const initialState = {
+  loadingItems: false,
   items: [],  
   weights: [],
   textFilterValue: "",
@@ -42,7 +42,7 @@ const initialState = {
   presets:[{id:1234, name:"best preset", description:"indeed the best preset ever"},
            {id:4321, name:"lousy preset", description:"indeed the lousiest preset ever"},
            {id:555, name:"harmless preset long name indeed", description:"indeed an harmless preset"}],
-  selectedPresetId: 1234
+  selectedPresetId: null
 }
 
 
@@ -57,10 +57,16 @@ actionHandlers[loadWeightsTriple.success] = (state, action) => {
   }
 }
 
-const loadDomainItemsTriple = new LoadingSuccessFailureActionType(LOAD_DOMAIN_ITEMS)
-actionHandlers[loadDomainItemsTriple.success] = (state, action) => {  
+const loadDomainItemsTriple = new LoadingSuccessFailureActionType(LOAD_DOMAIN_ITEMS_BY_PRESET)
+actionHandlers[loadDomainItemsTriple.loading] = (state, action) => {  
+  return set("loadingItems", true, state)
+}
+
+actionHandlers[loadDomainItemsTriple.success] = (state, action) => {
   return {
     ...state,
+    selectedPresetId: action.previousAction.payload.body.preset_id,
+    loadingItems: false,
     items: convertToDomainItems(state, action.payload, state.weights)
   }
 }
@@ -130,10 +136,6 @@ actionHandlers[TEXT_FILTER_UPDATE_SELECTION] = (state, action) => {
     return set("actualTextFilter", {term: action.payload.textFilterValue}, newState)
   }
   
-}
-
-actionHandlers[SELECT_PRESET] = (state, action) => {
-    return set("selectedPresetId", action.payload.presetId, state)
 }
 
 export default function domainItems(state = initialState, action) {
