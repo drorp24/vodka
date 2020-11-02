@@ -39,3 +39,15 @@ color: white;
 export const labelDefaultDisabled = css`
 color: gray;
 `;
+
+export const simPlayerLabel = css`
+color: #37bf56;
+`;
+
+export const simPlayerBorder = css`
+border: 1px solid #37bf56
+`
+
+export const simPlayerBorderDisabled = css`
+border: 1px solid #9bd7a5
+`
