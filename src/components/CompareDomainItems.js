@@ -10,19 +10,13 @@ import { toggleCompareDomainItemsMode } from '../redux/actions/actions'
 import {max_items_to_compare} from '../configLoader';
 
 const CompareDomainItems = ({theme, compareDomainItemsMode, selectedDomainItemsIdsForCmp, toggleCompareDomainItemsModeAction, domainItems}) => {
-
-    const handleCompareClicked = () => {
-        toggleCompareDomainItemsModeAction()
-    }
     
-    const renderSelect = () => {
-        const cmpPossible = selectedDomainItemsIdsForCmp.length > 1 && selectedDomainItemsIdsForCmp.length < 4
+    const renderSelect = () => {        
         return (
             <FlexRows alignItems="center" justifyContent="center" width="100%" height="calc(100vh - 60px)">
                 <Div styleType="label1" marginBottom="20px">
                 {`Please select up to ${max_items_to_compare} items to compare`}
-                </Div>
-                <ButtonSemantic disabled={!cmpPossible} onClick={handleCompareClicked} color="green">Compare</ButtonSemantic>
+                </Div>                
             </FlexRows>
         )
     }
