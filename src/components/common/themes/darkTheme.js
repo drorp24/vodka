@@ -10,9 +10,8 @@ export const sliderHandle = '#455969'
 export const sliderRail = "#2d3339"
 export const selectForCompareColor = 'orange'
 export const radarStroke = 'gray'
-// export const topbarSliderButton = 'grey'
-// export const weightLabel = 'grey'
-// export const changeThemeButtonColor = 'grey'
+export const iconButtonColor = "#e0e1e2"
+export const iconButtonColorIcon = "rgba(0,0,0,.6)"
 
 
 // labels full styles

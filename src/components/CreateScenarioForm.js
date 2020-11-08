@@ -1,68 +1,124 @@
 import React from 'react';
 import { connect } from "react-redux"
-import {Button, Modal, Segment, Form} from 'semantic-ui-react';
+import {Button, Modal, Segment, Form, FormField, TextArea} from 'semantic-ui-react';
 import {withTheme} from 'styled-components';
-import { Map as LeafletMap, TileLayer } from 'react-leaflet'
-import { Div } from "./common/StyledElements"
+import {getOr, isEmpty, toNumber, values, flow, compact, isNaN} from 'lodash/fp'
+import {toggleCreateScenario, createScenario} from '../redux/actions/actions'
 
-const CreateScenarioForm = ({theme}) => {
-    const [open, setOpen] = React.useState(false)
-    return (
-        <Modal
-            size="large"
-            open={open}
-            onClose={() => setOpen(false)}
-            onOpen={() => setOpen(true)}
-            dimmer="blurring"
-            trigger={<Button color={theme["topbarSliderButton"]} circular icon='file'/>}>
-      <Modal.Header>Create Scenario</Modal.Header>
-      <Modal.Content scrolling>
-        <Form>
-            <Segment color="grey">
-                <Form.Group widths='equal'>
-                    <Form.Input label='Scenario Name' placeholder='Name' />                    
-                </Form.Group>
-            </Segment>
-            <Segment color="grey">
-                <Form.Group widths='equal'>
-                    <Form.Input label='Percentage from task db' placeholder='Percentage' />
-                    <Form.Input label='Radius from each task' placeholder='Radius' />
-                    <Form.Input label='Percentage of active tasks' placeholder='Active' />
-                </Form.Group>
-            </Segment>
-            <Segment color="grey">
-                <Form.Group inline>
-                    <label>North East</label>
-                    <Form.Input  placeholder='Latitude' />
-                    <Form.Input  placeholder='Longitude' />
-                </Form.Group>
-                <Form.Group inline>
-                    <label>South West</label>
-                    <Form.Input  placeholder='Latitude' />
-                    <Form.Input  placeholder='Longitude' />                    
-                </Form.Group>
-                <Div height="75vh" style={{"background-color": "red"}}>
-                        <LeafletMap style={{"height": "100%"}} center={[32.8, 34.98]} zoom={12}>
-                            <TileLayer
-                                attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            />
-                        </LeafletMap>
-                    </Div>
-            </Segment>
-        </Form>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button onClick={() => setOpen(false)} color={theme["topbarSliderButton"]}>
-          Create
-        </Button>
-      </Modal.Actions>
-    </Modal>
-    )
+const FORM_FIELDS = {
+    NAME: "name",
+    DESCRIPTION: "description",
+    STEPS: "steps",
+    SIG_TASKS_PERC: "sig_tasks_percentage",
+    SIG_NEIGH_PERC: "sig_neighbors_percentage",
+    RADIUS: "radius",
+    NEXT_STEP_SIG_TASKS_PERC: "next_step_sig_tasks_percentage"
 }
 
-const mapStateToProps = state => ({
-    
-})
+class CreateScenarioForm extends React.Component {
 
-export default connect(mapStateToProps, {})(withTheme(CreateScenarioForm));
+    constructor(props){
+        super(props)
+        this.fieldsValues = {}
+        this.errors = {}
+    }
+
+    renderSimpleField = (props) => {
+        const header = getOr("", "header", props)
+        const inputType = getOr("number", "inputType", props)
+        const min = getOr(null, "min", props)
+        const max = getOr(null, "max", props)
+        const error = getOr(null, "error", props)
+        const width = getOr(4, "width", props)
+        const required = getOr(false, "required", props)
+        const onChange = getOr(null, "onChange", props)
+        return (
+            <Form.Input
+                onChange={onChange}
+                error={error}
+                fluid
+                label={header} type={inputType} min={min} max={max} width={width} required={required}
+                />
+        )
+    }
+
+    _ifSetCheckInRange = (value, min, max) => {
+        if(value === null || value === undefined) return true
+        const valueAsNumber = toNumber(value)
+        if(isNaN(valueAsNumber)) return true
+        return valueAsNumber >= min && valueAsNumber <= max
+    }
+
+    onCreate = () => {
+        this.errors[FORM_FIELDS.NAME] = isEmpty(this.fieldsValues[FORM_FIELDS.NAME]) ? "Name field is mandatory" : null
+        this.errors[FORM_FIELDS.SIG_TASKS_PERC] = this._ifSetCheckInRange(this.fieldsValues[FORM_FIELDS.SIG_TASKS_PERC], 1, 100) ? null : "Valid between 1 - 100"
+        this.errors[FORM_FIELDS.SIG_NEIGH_PERC] = this._ifSetCheckInRange(this.fieldsValues[FORM_FIELDS.SIG_NEIGH_PERC], 1, 10) ? null : "Valid between 1 - 10"
+        this.errors[FORM_FIELDS.NEXT_STEP_SIG_TASKS_PERC] = this._ifSetCheckInRange(this.fieldsValues[FORM_FIELDS.NEXT_STEP_SIG_TASKS_PERC], 1, 100) ? null : "Valid between 1 - 100"
+        this.errors[FORM_FIELDS.RADIUS] = this._ifSetCheckInRange(this.fieldsValues[FORM_FIELDS.RADIUS], 1, 1000) ? null : "Valid between 1 - 1000 meters"
+        this.errors[FORM_FIELDS.STEPS] = this._ifSetCheckInRange(this.fieldsValues[FORM_FIELDS.STEPS], 1, 5) ? null : "Valid between 1 - 5 steps"
+        
+        this.setState({})
+        if(!isEmpty(flow([values, compact])(this.errors))){            
+            return
+        }
+        this.props.createScenarioAction()
+    }
+
+    onFieldChange = (fieldName, e) => {
+        const value = getOr(null, "target.value", e)
+        this.fieldsValues[fieldName] = value
+    }
+
+    render() {
+        return (
+            <Modal
+                size="large"
+                open={true}
+                dimmer="blurring">
+                <Modal.Header>Create Scenario</Modal.Header>
+                <Modal.Content scrolling>
+                    <Form>                    
+                        <Segment color="grey">
+                            {this.renderSimpleField({header:"Scenario Name", required: true, inputType: "text", 
+                                                    onChange: (value) => {this.onFieldChange(FORM_FIELDS.NAME, value)}, error: this.errors[FORM_FIELDS.NAME]})}
+                            <FormField>
+                                <label>Scenario Description</label>
+                                <TextArea/>
+                            </FormField>
+                            {this.renderSimpleField({header:"Scenario steps count", unitLabel: "steps", min: 1, max: 5,
+                                                     onChange: (value) => {this.onFieldChange(FORM_FIELDS.STEPS, value)}, error: this.errors[FORM_FIELDS.STEPS]})}
+                        </Segment>
+                        <Segment color="grey">
+                            <Form.Group>
+                                {this.renderSimpleField({header:"Sig tasks percentage", min: 1, max: 100,
+                                                    onChange: (value) => {this.onFieldChange(FORM_FIELDS.SIG_TASKS_PERC, value)}, error: this.errors[FORM_FIELDS.SIG_TASKS_PERC]})}
+                                {this.renderSimpleField({header:"Sig neighbors percentage", min: 1, max: 10,
+                                                onChange: (value) => {this.onFieldChange(FORM_FIELDS.SIG_NEIGH_PERC, value)}, error: this.errors[FORM_FIELDS.SIG_NEIGH_PERC]})}
+                                {this.renderSimpleField({header:"Radius detect neighbors", min: 1, max: 1000,
+                                                onChange: (value) => {this.onFieldChange(FORM_FIELDS.RADIUS, value)}, error: this.errors[FORM_FIELDS.RADIUS]})}
+                            </Form.Group>
+                            <Form.Group>
+                                {this.renderSimpleField({header:"Next step sig tasks percentage", min: 1, max: 100,
+                                                onChange: (value) => {this.onFieldChange(FORM_FIELDS.NEXT_STEP_SIG_TASKS_PERC, value)}, error: this.errors[FORM_FIELDS.NEXT_STEP_SIG_TASKS_PERC]})}
+                            </Form.Group>
+                        </Segment>
+                    </Form>
+                </Modal.Content>
+                <Modal.Actions>
+                <Button onClick={this.props.toggleCreateScenarioAction} color={this.props.theme["cancelButtonColor"]}>
+                    Cancel
+                    </Button>
+                    <Button onClick={this.onCreate} color={this.props.theme["createButtonColor"]}>
+                        Create
+                    </Button>
+                </Modal.Actions>
+            </Modal>
+        )
+    }
+}
+
+
+export default connect(null, {
+    toggleCreateScenarioAction: toggleCreateScenario,
+    createScenarioAction: createScenario
+})(withTheme(CreateScenarioForm));

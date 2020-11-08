@@ -1,6 +1,6 @@
 import {set, flow} from 'lodash/fp'
 import ScenarioType from "../../types/scenarioType"
-import { SELECT_SCENARIO, SELECT_SCENARIO_STEP
+import { SELECT_SCENARIO, SELECT_SCENARIO_STEP, CREATE_SCENARIO
     } from "../actions/actionTypes"
 
 
@@ -12,16 +12,11 @@ const initialState = {
         new ScenarioType("4321", "scene 2", "Yizak", 50, 1000, 3),
         new ScenarioType("555", "scene 3", "Yakov", 30, 233, 3),
         new ScenarioType("4444", "scene 4", "Yosef", 70, 443, 4),
-        new ScenarioType("556", "scene 3", "Yakov", 30, 233, 3),
-        new ScenarioType("557", "scene 3", "Yakov", 30, 233, 3),
-        new ScenarioType("558", "scene 3", "Yakov", 30, 233, 3),
-        new ScenarioType("559", "scene 3", "Yakov", 30, 233, 3),
-        new ScenarioType("550", "scene 3", "Yakov", 30, 233, 3),
-        new ScenarioType("333", "scene 3", "Yakov", 30, 233, 3),
+        new ScenarioType("556", "scene 3", "Yakov", 30, 233, 3)
     ]
 }
 
-export default function ui(simulation = initialState, action) {
+export default function simulation(simulation = initialState, action) {
     
     switch (action.type) {
         case SELECT_SCENARIO: {
@@ -31,6 +26,10 @@ export default function ui(simulation = initialState, action) {
             ])(simulation)
         }
         case SELECT_SCENARIO_STEP: {
+            // TODO...
+            return set("scenarioCurrentStepIdx", action.payload.step, simulation)
+        }
+        case CREATE_SCENARIO: {
             // TODO...
             return set("scenarioCurrentStepIdx", action.payload.step, simulation)
         }

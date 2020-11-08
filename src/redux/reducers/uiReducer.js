@@ -7,7 +7,8 @@ import {
     SWITCH_THEME,
     SELECT_DOMAIN_ITEM_FOR_COMPARISON,
     TOGGLE_COMPARE_DOMAIN_ITEMS_MODE,
-    CLEAR_ALL_SELECTED_ITEMS_FOR_COMPARISON} from "../actions/actionTypes"
+    CLEAR_ALL_SELECTED_ITEMS_FOR_COMPARISON,
+    TOGGLE_CREATE_SCENARIO} from "../actions/actionTypes"
 
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 import {startupTheme} from '../../configLoader';
@@ -17,7 +18,8 @@ const initialState = {
     selectedDomainItemID: null,
     themeId: startupTheme,
     compareDomainItemsMode: false,
-    selectedDomainItemsIdsForCmp: []
+    selectedDomainItemsIdsForCmp: [],
+    createScenarioOpen: true
 }
 
 export default function ui(ui = initialState, action) {
@@ -66,6 +68,9 @@ export default function ui(ui = initialState, action) {
         }
         case CLEAR_ALL_SELECTED_ITEMS_FOR_COMPARISON: {
             return set('selectedDomainItemsIdsForCmp', [], ui)
+        }
+        case TOGGLE_CREATE_SCENARIO: {
+            return set('createScenarioOpen', !ui.createScenarioOpen, ui)
         }
         default:
             return ui

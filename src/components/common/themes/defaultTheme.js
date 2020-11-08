@@ -10,8 +10,10 @@ export const sliderHandle = "rgba(0, 0, 0, 1)"
 export const sliderRail = "lightgray"
 export const topbarSliderButton = "black"
 export const weightLabel = "black"
-export const changeThemeButtonColor = "black"
-export const compareDomainItemsButtonColor = "black"
+export const iconButtonColor = "black"
+export const iconButtonColorIcon = "white"
+export const createButtonColor = "orange"
+export const cancelButtonColor = "black"
 
 
 // labels full styles
