@@ -14,27 +14,29 @@ export const StyledScenarioContainer = styled(Div)`
 `;
 
 function Scenario({scenario, selected, selectScenarioAction}) {
-    const renderAttr = (name, value) => {
+    const renderAttr = (name, value, selected) => {
         return <FlexColumns styleType="label3" marginBottom='10px' justifyContent="flex-start">
-                    <Div minWidth="100px" display="flex">
+                    <Div width="220px" display="flex" styleType={selected ? "selectedScenarioLabelKey" : "scenarioLabelKey"}>
                         {capitalize(name)}:
                     </Div>
-                    {value}
+                    <Div width="220px" styleType="scenarioLabelValue">
+                        {value}
+                    </Div>                    
                 </FlexColumns>
     }
 
     const handleSelectScenario = () => {
-        selectScenarioAction(scenario.id)
+        selectScenarioAction(scenario.id.value)
     }
 
     return (
-        <StyledScenarioContainer width="200px">
+        <StyledScenarioContainer width="500px">
             <FlexRows>
                 {/* <Button basic={!selected} color={selected ? "green" : "sdandard"} onClick={handleSelectScenario}> */}
                 <Button basic={!selected} color="black" onClick={handleSelectScenario}>
                     <FlexRows alignItems="flex-start">
                         {
-                            map((key) => renderAttr(key, scenario[key]), keys(scenario))
+                            map((key) => renderAttr(scenario[key].key, scenario[key].value, selected), keys(scenario))
                         }
                     </FlexRows>                    
                 </Button>

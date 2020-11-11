@@ -1,9 +1,11 @@
 import React from 'react';
 import { connect } from "react-redux"
-import {Button, Modal, Segment, Form, FormField, TextArea} from 'semantic-ui-react';
+import {Button, Modal, Segment, Form, FormField, TextArea, Loader, Dimmer} from 'semantic-ui-react';
 import {withTheme} from 'styled-components';
 import {getOr, isEmpty, toNumber, values, flow, compact, isNaN} from 'lodash/fp'
 import {toggleCreateScenario, createScenario} from '../redux/actions/actions'
+import AsyncRESTMeta from '../types/asyncRESTMeta';
+import { FlexColumns } from './common/CommonComponents';
 
 const FORM_FIELDS = {
     NAME: "name",
@@ -18,7 +20,7 @@ const FORM_FIELDS = {
 class CreateScenarioForm extends React.Component {
 
     constructor(props){
-        super(props)
+        super(props)     
         this.fieldsValues = {}
         this.errors = {}
     }
@@ -56,12 +58,22 @@ class CreateScenarioForm extends React.Component {
         this.errors[FORM_FIELDS.NEXT_STEP_SIG_TASKS_PERC] = this._ifSetCheckInRange(this.fieldsValues[FORM_FIELDS.NEXT_STEP_SIG_TASKS_PERC], 1, 100) ? null : "Valid between 1 - 100"
         this.errors[FORM_FIELDS.RADIUS] = this._ifSetCheckInRange(this.fieldsValues[FORM_FIELDS.RADIUS], 1, 1000) ? null : "Valid between 1 - 1000 meters"
         this.errors[FORM_FIELDS.STEPS] = this._ifSetCheckInRange(this.fieldsValues[FORM_FIELDS.STEPS], 1, 5) ? null : "Valid between 1 - 5 steps"
-        
-        this.setState({})
-        if(!isEmpty(flow([values, compact])(this.errors))){            
+                
+        if(!isEmpty(flow([values, compact])(this.errors))){
+            this.setState({})
             return
         }
-        this.props.createScenarioAction()
+        this.props.createScenarioAction(new AsyncRESTMeta("/simulation/create_scenario", "POST", "http://localhost:5000"),
+        {
+            "sig_neighbors_percentage": toNumber(this.fieldsValues[FORM_FIELDS.SIG_NEIGH_PERC]),
+            "sig_tasks_percentage": toNumber(this.fieldsValues[FORM_FIELDS.SIG_TASKS_PERC]),
+            "radius": toNumber(this.fieldsValues[FORM_FIELDS.RADIUS]),
+            "number_of_steps": toNumber(this.fieldsValues[FORM_FIELDS.STEPS]),
+            "new_sig_tasks_percentage": toNumber(this.fieldsValues[FORM_FIELDS.NEXT_STEP_SIG_TASKS_PERC]),
+            "name": this.fieldsValues[FORM_FIELDS.NAME],
+            "description": this.fieldsValues[FORM_FIELDS.DESCRIPTION],
+            "creator": "TODO CREATOR"
+        })
     }
 
     onFieldChange = (fieldName, e) => {
@@ -77,13 +89,21 @@ class CreateScenarioForm extends React.Component {
                 dimmer="blurring">
                 <Modal.Header>Create Scenario</Modal.Header>
                 <Modal.Content scrolling>
-                    <Form>                    
+                    {
+                        this.props.createScenariosLoading ? 
+                        <FlexColumns width="300px" height="50vh" alignItems="center" justifyContent="center">
+                            <Dimmer active inverted>
+                                <Loader size="massive" active content="Loading"/>                                
+                            </Dimmer>                            
+                        </FlexColumns>                        
+                        : 
+                        <Form>
                         <Segment color="grey">
                             {this.renderSimpleField({header:"Scenario Name", required: true, inputType: "text", 
                                                     onChange: (value) => {this.onFieldChange(FORM_FIELDS.NAME, value)}, error: this.errors[FORM_FIELDS.NAME]})}
                             <FormField>
                                 <label>Scenario Description</label>
-                                <TextArea/>
+                                <TextArea onChange={(value) => {this.onFieldChange(FORM_FIELDS.DESCRIPTION, value)}}/>
                             </FormField>
                             {this.renderSimpleField({header:"Scenario steps count", unitLabel: "steps", min: 1, max: 5,
                                                      onChange: (value) => {this.onFieldChange(FORM_FIELDS.STEPS, value)}, error: this.errors[FORM_FIELDS.STEPS]})}
@@ -103,6 +123,7 @@ class CreateScenarioForm extends React.Component {
                             </Form.Group>
                         </Segment>
                     </Form>
+                    }
                 </Modal.Content>
                 <Modal.Actions>
                 <Button onClick={this.props.toggleCreateScenarioAction} color={this.props.theme["cancelButtonColor"]}>
@@ -117,8 +138,11 @@ class CreateScenarioForm extends React.Component {
     }
 }
 
+const mapStateToProps = state => ({
+    createScenariosLoading: state.simulation.createScenariosLoading
+})
 
-export default connect(null, {
+export default connect(mapStateToProps, {
     toggleCreateScenarioAction: toggleCreateScenario,
     createScenarioAction: createScenario
 })(withTheme(CreateScenarioForm));

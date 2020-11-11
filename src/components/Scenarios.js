@@ -1,30 +1,37 @@
 import React from 'react';
 import { connect } from "react-redux"
 import {map} from 'lodash/fp'
-import {Divider, Label} from 'semantic-ui-react';
+import {Divider, Label, Loader} from 'semantic-ui-react';
 import {FlexColumns, FlexRows} from './common/CommonComponents';
 import Scenario from './Scenario'
+import { loadScenarios } from '../redux/actions/actions';
+import AsyncRESTMeta from '../types/asyncRESTMeta';
 
 
-const Scenarios = ({scenarios, selectedScenarioId}) => {
+const Scenarios = ({scenarios, selectedScenarioId, loadScenariosAction, scenariosLoading}) => {
+    React.useEffect(() => {
+        loadScenariosAction(new AsyncRESTMeta("/simulation/scenario", "GET", "http://localhost:5000"))
+    }, [loadScenariosAction])
     return (
-        <FlexRows>
+            <FlexRows>
             <FlexRows styleType="label2" alignItems="center">
                 <Label size="huge" color="orange" basic>Scenarios</Label>
             </FlexRows>
             <Divider/>
-            <FlexColumns flexWrap="wrap" maxWidth="650px" maxHeight="50vh">
-            {
-                map((scenario => <Scenario selected={selectedScenarioId === scenario.id} scenario={scenario}/>), scenarios)
+            <Loader size="massive" active={scenariosLoading} content="Loading"/>
+            <FlexColumns flexWrap="wrap" width="600px" height="50vh">
+            {                
+                map((scenario => <Scenario selected={selectedScenarioId === scenario.id.value} scenario={scenario}/>), scenarios)
             }            
             </FlexColumns>            
-        </FlexRows>        
+        </FlexRows>             
     )
 }
 
 const mapStateToProps = state => ({
     scenarios: state.simulation.scenarios,
-    selectedScenarioId: state.simulation.selectedScenarioId
+    selectedScenarioId: state.simulation.selectedScenarioId,
+    scenariosLoading: state.simulation.scenariosLoading
 })
 
-export default connect(mapStateToProps, {})(Scenarios);
+export default connect(mapStateToProps, {loadScenariosAction: loadScenarios})(Scenarios);

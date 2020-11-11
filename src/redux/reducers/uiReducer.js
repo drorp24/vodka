@@ -8,7 +8,8 @@ import {
     SELECT_DOMAIN_ITEM_FOR_COMPARISON,
     TOGGLE_COMPARE_DOMAIN_ITEMS_MODE,
     CLEAR_ALL_SELECTED_ITEMS_FOR_COMPARISON,
-    TOGGLE_CREATE_SCENARIO} from "../actions/actionTypes"
+    TOGGLE_CREATE_SCENARIO,
+    CREATE_SCENARIO} from "../actions/actionTypes"
 
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 import {startupTheme} from '../../configLoader';
@@ -19,11 +20,13 @@ const initialState = {
     themeId: startupTheme,
     compareDomainItemsMode: false,
     selectedDomainItemsIdsForCmp: [],
-    createScenarioOpen: true
+    createScenarioOpen: false
 }
 
-export default function ui(ui = initialState, action) {
-    const weightUpdatedTriple = new LoadingSuccessFailureActionType(WEIGHT_UPDATED)
+const weightUpdatedTriple = new LoadingSuccessFailureActionType(WEIGHT_UPDATED)
+const createScenariosTriple = new LoadingSuccessFailureActionType(CREATE_SCENARIO)
+
+export default function ui(ui = initialState, action) {    
     switch (action.type) {
         case TOGGLE_SIDE_BAR:{
             return set('sideBarOpen', !ui.sideBarOpen, ui)
@@ -71,6 +74,10 @@ export default function ui(ui = initialState, action) {
         }
         case TOGGLE_CREATE_SCENARIO: {
             return set('createScenarioOpen', !ui.createScenarioOpen, ui)
+        }
+        case createScenariosTriple.failure:
+        case createScenariosTriple.success: {
+            return set('createScenarioOpen', false, ui)
         }
         default:
             return ui

@@ -5,24 +5,29 @@ import { AsyncRESTMetaType } from '../../types/asyncRESTMeta';
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 
 // const client = rest.wrap(mime);
-const serverHost = getOr(null, '__myapp.server_host_url', window)
+const defaultServerHost = getOr(null, '__myapp.server_host_url', window)
 
 const asyncRESTCall = store => next => action => {  
   if (getOr(undefined, 'payload.meta.type', action) === AsyncRESTMetaType) {
     const actionTypeTriple = new LoadingSuccessFailureActionType(action.type)
     const {dispatch} = store
+    let actualHost = defaultServerHost
     const route = getOr(null, 'payload.meta.route', action)
     if (route === null) {
-      successOrFailure(`action: ${action.type.loading}, missing route: ${JSON.stringify(action.payload)}`, dispatch, actionTypeTriple.failure, action)
+      successOrFailure(`action: ${actionTypeTriple.loading}, missing route: ${JSON.stringify(action.payload)}`, dispatch, actionTypeTriple.failure, action, actionTypeTriple)
     }
     const method = getOr(null, 'payload.meta.method', action)
     if (route === null) {
-      successOrFailure(`action: ${action.type.loading}, missing method (GET/POST...): ${JSON.stringify(action.payload)}`, dispatch, actionTypeTriple.failure, action)
+      successOrFailure(`action: ${actionTypeTriple.loading}, missing method (GET/POST...): ${JSON.stringify(action.payload)}`, dispatch, actionTypeTriple.failure, action, actionTypeTriple)
     }
-    if (serverHost === null) {
-      successOrFailure(`action: ${action.type.loading}, missin host (from config.js), can't resolve path`, dispatch, actionTypeTriple.failure, action)
+    const customHost = getOr(null, 'payload.meta.customHost', action)
+    if(customHost !== null){
+      actualHost = customHost
     }
-    const path = `${serverHost}${action.payload.meta.route}`
+    if (!actualHost) {
+      successOrFailure(`action: ${actionTypeTriple.loading}, missin host (from config.js), can't resolve path`, dispatch, actionTypeTriple.failure, action, actionTypeTriple)
+    }
+    const path = `${actualHost}${action.payload.meta.route}`
     const body = getOr(undefined, 'payload.body', action)
 
     dispatch({
@@ -32,30 +37,38 @@ const asyncRESTCall = store => next => action => {
 
     fetch(path, {
       method,
-      mode: 'cors',
+      mode: "cors",
       cache: 'no-cache',
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': "http://localhost:3000"
       },
       body: JSON.stringify(body)
     }).then((response) => {
-      successOrFailure(response, dispatch, actionTypeTriple.success, action)
+      successOrFailure(response, dispatch, actionTypeTriple.success, action, actionTypeTriple)
     }, (response) => {
-      successOrFailure(response, dispatch, actionTypeTriple.failure, action)
+      successOrFailure(response, dispatch, actionTypeTriple.failure, action, actionTypeTriple)
     })
   }
   return next(action)
 }
 
-const successOrFailure = (payload, dispatch, type, previousAction) => {
-  payload.json().then((result) => {
+const successOrFailure = (payload, dispatch, type, previousAction, originalType) => {
+  try {
+    payload.json().then((result) => {
+      dispatch({
+        type,
+        payload: result,
+        previousAction
+      })
+    }) 
+  } catch (error) {
     dispatch({
-      type,
-      payload: result,
+      type: originalType.failure,
+      payload: null,
       previousAction
     })
-  })
+  }  
 }
 
 export default asyncRESTCall

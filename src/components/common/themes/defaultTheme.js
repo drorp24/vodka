@@ -45,6 +45,23 @@ color: gray;
 text-overflow: ellipsis;
 overflow: hidden;
 white-space: nowrap;
+line-height: normal;
+text-align: left;
+`;
+
+export const scenarioLabelValue = css`
+${labelDefaultDisabled}
+font-size: 14px;
+`;
+
+export const scenarioLabelKey = css`
+${labelDefaultDisabled}
+color: black;
+`;
+
+export const selectedScenarioLabelKey = css`
+${labelDefaultDisabled}
+color: white;
 `;
 
 

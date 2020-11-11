@@ -72,11 +72,15 @@ actionHandlers[loadDomainItemsTriple.success] = (state, action) => {
 }
 
 const weightUpdatedTriple = new LoadingSuccessFailureActionType(WEIGHT_UPDATED)
+actionHandlers[weightUpdatedTriple.loading] = (state, action) => {  
+  return set("loadingItems", true, state)
+}
 actionHandlers[weightUpdatedTriple.success] = (state, action) => {
   const weights = convertToWeights(action.previousAction.payload.body.weights)
   return {
     ...state,
     weights,
+    loadingItems: false,
     items: convertToDomainItems(state, action.payload, weights)
   }
 }
