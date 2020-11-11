@@ -71,7 +71,7 @@ class DomainItems extends React.Component {
           {
             this.props.loadingItems ?
             <FlexColumns height="100%" width="100%" alignItems="center" justifyContent="center">
-              <Loader active inline/>
+              <Loader active inline size="massive" content="Loading"/>
             </FlexColumns> : 
             <AutoSizer>
                 {({width, height}) => (
