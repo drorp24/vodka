@@ -17,7 +17,7 @@ const asyncRESTCall = store => next => action => {
       successOrFailure(`action: ${actionTypeTriple.loading}, missing route: ${JSON.stringify(action.payload)}`, dispatch, actionTypeTriple.failure, action, actionTypeTriple)
     }
     const method = getOr(null, 'payload.meta.method', action)
-    if (route === null) {
+    if (method === null) {
       successOrFailure(`action: ${actionTypeTriple.loading}, missing method (GET/POST...): ${JSON.stringify(action.payload)}`, dispatch, actionTypeTriple.failure, action, actionTypeTriple)
     }
     const customHost = getOr(null, 'payload.meta.customHost', action)

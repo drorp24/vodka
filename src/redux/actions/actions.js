@@ -18,7 +18,8 @@ import {
   LOAD_DOMAIN_ITEMS_BY_PRESET,
   TOGGLE_CREATE_SCENARIO,
   CREATE_SCENARIO,
-  LOAD_SCENARIOS} from "./actionTypes"
+  LOAD_SCENARIOS,
+  LOAD_PRESETS} from "./actionTypes"
 
 function makeActionCreator(type, ...argNames) {
   return function(...args) {
@@ -54,3 +55,4 @@ export const loadDomainItemsByPreset = makeActionCreator(LOAD_DOMAIN_ITEMS_BY_PR
 export const toggleCreateScenario = makeActionCreator(TOGGLE_CREATE_SCENARIO)
 export const createScenario = makeActionCreator(CREATE_SCENARIO, 'meta', 'body')
 export const loadScenarios = makeActionCreator(LOAD_SCENARIOS, 'meta', 'body')
+export const loadPresets = makeActionCreator(LOAD_PRESETS, 'meta', 'body')

@@ -1,5 +1,6 @@
 import DomainItemType from "../../types/domainItemType"
 import WeightType from "../../types/weightType"
+import PresetType from "../../types/presetTyps"
 import { map, getOr, keyBy, flow, set, filter } from 'lodash/fp'
 import { WEIGHT_UPDATED,
   DOMAIN_ITEM_PRESSED, 
@@ -8,7 +9,8 @@ import { WEIGHT_UPDATED,
   TEXT_FILTER_START_SEARCH,
   TEXT_FILTER_FINISH_SEARCH,
   TEXT_FILTER_UPDATE_SELECTION,
-  LOAD_DOMAIN_ITEMS_BY_PRESET } from "../actions/actionTypes"
+  LOAD_DOMAIN_ITEMS_BY_PRESET,
+  LOAD_PRESETS } from "../actions/actionTypes"
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 
 const convertToDomainItems = (state, items, weights) => {
@@ -140,6 +142,19 @@ actionHandlers[TEXT_FILTER_UPDATE_SELECTION] = (state, action) => {
     return set("actualTextFilter", {term: action.payload.textFilterValue}, newState)
   }
   
+}
+
+const loadPresetTriple = new LoadingSuccessFailureActionType(LOAD_PRESETS)
+actionHandlers[loadPresetTriple.loading] = (state, action) => {  
+   return set("loadingPresets", true, state)
+}
+
+actionHandlers[loadPresetTriple.success] = (state, action) => {
+  const presets = map((preset) => new PresetType(preset), getOr([], "payload", action))
+   return flow([
+    set("presets", presets),
+    set("loadingPresets", false)
+   ])(state)
 }
 
 export default function domainItems(state = initialState, action) {

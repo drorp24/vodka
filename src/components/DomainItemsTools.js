@@ -8,7 +8,8 @@ import {Div} from './common/StyledElements';
 import { 
     toggleCompareDomainItemsMode, 
     clearAllSelectedItemsForComparison,
-    loadDomainItemsByPreset
+    loadDomainItemsByPreset,
+    loadPresets
 } from '../redux/actions/actions'
 import AsyncRESTMeta from '../types/asyncRESTMeta';
 
@@ -22,7 +23,7 @@ export const DropdownContainer = styled(FlexColumns)`
 
 const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForCmp, compareDomainItemsMode, 
     toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, 
-    loadDomainItemsByPresetAction, theme}) => {
+    loadDomainItemsByPresetAction, loadPresetsAction, loadingPresets, theme}) => {
     const onCompareClick = () => {
         toggleCompareDomainItemsModeAction()
     }
@@ -33,6 +34,10 @@ const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForC
     const handlePresetSelected = (event, data) => {
         const selectedPreset = getOr(null, "value", data)
         loadDomainItemsByPresetAction(new AsyncRESTMeta("/items", "POST"), {preset_id:selectedPreset})
+    }    
+
+    const openPresetsList = () => {
+        loadPresetsAction(new AsyncRESTMeta("/config/rules_preset?user_name=shayde", "GET", "http://localhost:5000"))
     }
 
     return (
@@ -43,6 +48,7 @@ const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForC
                 </Div>
                 <Div marginRight="20px" styleType="label3disabled">
                     <Dropdown
+                        onOpen={openPresetsList}                        
                         options={presets}
                         value={selectedPresetId}
                         onChange={handlePresetSelected}
@@ -65,11 +71,13 @@ const mapStateToProps = state => ({
     presets: map((preset)=>({key:preset.id, text:preset.name.length > 15 ? `${preset.name.substring(0,15)}...` : preset.name, value:preset.id}),state.domainItems.presets),
     selectedPresetId: state.domainItems.selectedPresetId,
     compareDomainItemsMode: state.ui.compareDomainItemsMode,
-    selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp
+    selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp,
+    loadingPresets: state.domainItems.loadingPresets
 })
 
 export default connect(mapStateToProps, {
         toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode,
         clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison,
-        loadDomainItemsByPresetAction: loadDomainItemsByPreset
+        loadDomainItemsByPresetAction: loadDomainItemsByPreset,
+        loadPresetsAction: loadPresets        
 })(withTheme(DomainItemsTools));
