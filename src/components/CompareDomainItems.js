@@ -1,7 +1,6 @@
 import React from 'react';
 import {withTheme} from 'styled-components';
 import { connect } from "react-redux"
-import { Button as ButtonSemantic } from 'semantic-ui-react';
 import { ResponsiveRadar } from '@nivo/radar'
 import {filter, map, set, remove , find, flow, concat} from 'lodash/fp'
 import {FlexRows} from './common/CommonComponents';

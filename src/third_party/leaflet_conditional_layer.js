@@ -24,14 +24,14 @@ L.ConditionalMarkers = L.FeatureGroup.extend({
       this.onMap= false;
   },
   setMaxMarkers: function (i) {
-      if (this.options.maxMarkers != undefined) {
+      if (this.options.maxMarkers !== undefined) {
           this.options.maxMarkers=i;
       }
   },
 
   addLayer: function (layer) {
     this._markers.push(layer);
-    if (this._map !=undefined){
+    if (this._map !== undefined){
       this._update();
     }
   },
@@ -40,7 +40,7 @@ L.ConditionalMarkers = L.FeatureGroup.extend({
     var markerIndex;
 
     for (var i = 0; i < this._markers.length; i++) {
-      if (this._markers[i] == layer) {
+      if (this._markers[i] === layer) {
         markerIndex = i;
         break;
       }
@@ -54,7 +54,6 @@ L.ConditionalMarkers = L.FeatureGroup.extend({
 
   onAdd: function (map) {
     this._map = map;
-    var self = this;
     this.onMap = true;
     if (map != null) {
       map.on("moveend", this._update, this );
@@ -77,7 +76,7 @@ L.ConditionalMarkers = L.FeatureGroup.extend({
 
   _update: function (e) {
     // Perform updates to markers on map
-    if (this.onMap==true) {
+    if (this.onMap === true) {
       this._removeMarkers();
       this._addMarkers();
       this._cleanupMarkers();
