@@ -14,8 +14,8 @@ export const StyledScenarioContainer = styled(Div)`
 `;
 
 function Scenario({scenario, selected, selectScenarioAction}) {
-    const renderAttr = (name, value, selected) => {
-        return <FlexColumns styleType="label3" marginBottom='10px' justifyContent="flex-start">
+    const renderAttr = (name, value, selected, key) => {
+        return <FlexColumns key={key} styleType="label3" marginBottom='10px' justifyContent="flex-start">
                     <Div width="220px" display="flex" styleType={selected ? "selectedScenarioLabelKey" : "scenarioLabelKey"}>
                         {capitalize(name)}:
                     </Div>
@@ -36,7 +36,7 @@ function Scenario({scenario, selected, selectScenarioAction}) {
                 <Button basic={!selected} color="black" onClick={handleSelectScenario}>
                     <FlexRows alignItems="flex-start">
                         {
-                            map((key) => renderAttr(scenario[key].key, scenario[key].value, selected), keys(scenario))
+                            map((key) => renderAttr(scenario[key].key, scenario[key].value, selected, key), keys(scenario))
                         }
                     </FlexRows>                    
                 </Button>

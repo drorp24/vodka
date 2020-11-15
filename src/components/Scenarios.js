@@ -21,7 +21,7 @@ const Scenarios = ({scenarios, selectedScenarioId, loadScenariosAction, scenario
             <Loader size="massive" active={scenariosLoading} content="Loading"/>
             <FlexColumns flexWrap="wrap" width="600px" height="50vh">
             {                
-                map((scenario => <Scenario selected={selectedScenarioId === scenario.id.value} scenario={scenario}/>), scenarios)
+                map((scenario => <Scenario key={scenario.id.value} selected={selectedScenarioId === scenario.id.value} scenario={scenario}/>), scenarios)
             }            
             </FlexColumns>            
         </FlexRows>             
