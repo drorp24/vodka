@@ -26,7 +26,6 @@ class Map extends React.Component {
         this.layerGroup = L.layerGroup()
         this.geojsonLayer = null
         this.markersTopXLayer = null
-        this.topMarkersCount = 0
     }
 
     componentDidUpdate(){
@@ -53,17 +52,17 @@ class Map extends React.Component {
     }
 
     refreshLayers = () => {
-      this.calcMarkersCount()
+      const topMarkersCount = this.calcMarkersCount()
       this.layerGroup.clearLayers()
       const geoJsonItems = flow([
-        take(this.topMarkersCount),
+        take(topMarkersCount),
         map((domainItem) => domainItem.geogson)        
       ])(this.props.domainItems)
       this.geojsonLayer = L.geoJSON(geoJsonItems)
       const maxScore = getOr(0, "[0].score", this.props.domainItems)
       const minScore = getOr(0, "score", last(this.props.domainItems))
       const markersArray = flow([
-        take(this.topMarkersCount),
+        take(topMarkersCount),
         map((domainItem) => {
           const selectedId = getOr(null, "selected_id.id", this.props)
           let iconSize =  Math.round((domainItem.score - minScore) / ((maxScore - minScore)/(13)))        
@@ -82,8 +81,9 @@ class Map extends React.Component {
     calcMarkersCount = () => {
       const currZoom = this.getMapZoom()
       let topMarkersCount =  Math.round((currZoom - MIN_ZOOM) / ((MAX_ZOOM - MIN_ZOOM)/(this.props.domainItems.length)))
-      this.topMarkersCount = topMarkersCount * ((Math.pow(currZoom, 10))/Math.pow(MAX_ZOOM, 10))
-      console.log(`top count for zoom: ${currZoom} is ${this.topMarkersCount}`)
+      topMarkersCount = topMarkersCount * ((Math.pow(currZoom, 10))/Math.pow(MAX_ZOOM, 10))
+      console.log(`top count for zoom: ${currZoom} is ${topMarkersCount}`)
+      return topMarkersCount
     }
 
     handleZoomEnd = (eventParams) => {      
