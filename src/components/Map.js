@@ -2,12 +2,12 @@ import React from 'react';
 import 'leaflet/dist/leaflet.css'
 import 'prunecluster-exportable/dist/LeafletStyleSheet.css'
 import L from 'leaflet'
-import _ from "../third_party/leaflet_conditional_layer"
+import "../third_party/leaflet_conditional_layer"
 import {Div} from './common/StyledElements';
 import { Map as LeafletMap, TileLayer } from 'react-leaflet'
 import { CoordinatesControl } from 'react-leaflet-coordinates'
 import { connect } from "react-redux"
-import {getOr, find, map, set, drop, flow, take, last} from "lodash/fp"
+import {getOr, find, map, flow, take, last} from "lodash/fp"
 import {handleMapClicked} from '../redux/actions/actions'
 
 const MAX_ZOOM = 18

@@ -37,13 +37,13 @@ const ScenarioPlayer = ({selectedScenarioId, scenarios, scenarioCurrentStepIdx, 
             <Div marginLeft="10px"><Label  pointing='right' color="orange" >{currentText}</Label></Div>
             <Div marginLeft="20px">
                 <Button size="tiny" icon labelPosition='left' basic color="orange" disabled={prevDisabled} circular onClick={handlePrevRequest}>
-                    <Icon name='caret squre left' />
+                    <Icon name='caret square left' />
                     {prevText}
                 </Button>
             </Div>
             <Div marginLeft="10px">
                 <Button disabled={nextDisabled} size="tiny" icon labelPosition='right' basic color="orange"  circular onClick={handleNextRequest}>
-                    <Icon name='caret squre right' />
+                    <Icon name='caret square right' />
                     {nextText}
                 </Button>
             </Div>
