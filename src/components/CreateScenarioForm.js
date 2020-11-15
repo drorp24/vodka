@@ -63,7 +63,7 @@ class CreateScenarioForm extends React.Component {
             this.setState({})
             return
         }
-        this.props.createScenarioAction(new AsyncRESTMeta("/simulation/create_scenario", "POST", "http://localhost:5000"),
+        this.props.createScenarioAction(new AsyncRESTMeta("/simulation/scenario", "POST", "http://localhost:5000"),
         {
             "sig_neighbors_percentage": toNumber(this.fieldsValues[FORM_FIELDS.SIG_NEIGH_PERC]),
             "sig_tasks_percentage": toNumber(this.fieldsValues[FORM_FIELDS.SIG_TASKS_PERC]),
