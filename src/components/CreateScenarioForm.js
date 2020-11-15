@@ -93,7 +93,7 @@ class CreateScenarioForm extends React.Component {
                         this.props.createScenariosLoading ? 
                         <FlexColumns width="300px" height="50vh" alignItems="center" justifyContent="center">
                             <Dimmer active inverted>
-                                <Loader size="massive" active content="Loading"/>                                
+                                <Loader size="massive" active content="Processing"/>
                             </Dimmer>                            
                         </FlexColumns>                        
                         : 
