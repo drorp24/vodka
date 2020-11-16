@@ -25,7 +25,7 @@ export const DropdownContainer = styled(FlexColumns)`
 const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForCmp, compareDomainItemsMode, 
     toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, 
     loadDomainItemsAction, loadPresetsAction, loadingPresets, weights, 
-    scenarioId, scenarioStepIdx, theme}) => {
+    scenarioId, scenarioStepIdx, domainItems, theme}) => {
     const onCompareClick = () => {
         toggleCompareDomainItemsModeAction()
     }
@@ -35,7 +35,8 @@ const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForC
 
     const handlePresetSelected = (event, data) => {
         const presetId = getOr(null, "value", data)        
-        const loadItemsRequestBody = getLoadItemsRequestBody({presetId, weights, scenarioId, scenarioStepIdx})
+        const ids = map((domainItem)=> domainItem.id, domainItems)
+        const loadItemsRequestBody = getLoadItemsRequestBody({presetId, weights, scenarioId, scenarioStepIdx, ids})
         loadDomainItemsAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
     }    
 
@@ -79,7 +80,8 @@ const mapStateToProps = state => {
         loadingPresets: state.domainItems.loadingPresets,
         weights: state.domainItems.weights,
         scenarioId: state.simulation.selectedScenarioId,
-        scenarioStepIdx: state.simulation.scenarioCurrentStepIdx
+        scenarioStepIdx: state.simulation.scenarioCurrentStepIdx,
+        domainItems: state.domainItems.items
     }
 }
 
@@ -87,5 +89,5 @@ export default connect(mapStateToProps, {
         toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode,
         clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison,
         loadDomainItemsAction: loadDomainItems,
-        loadPresetsAction: loadPresets        
+        loadPresetsAction: loadPresets
 })(withTheme(DomainItemsTools));

@@ -8,12 +8,13 @@ import {FlexColumns} from './common/CommonComponents';
 import {selectScenarioStep} from '../redux/actions/actions'
 import AsyncRestParams from '../types/asyncRestParams';
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
+import {map} from 'lodash/fp'
 
 export const SimulationPlayerContainer = styled(FlexColumns)`
     border-radius: 10px;
 `;
 
-const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, presetId}) => {
+const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, presetId, domainItems}) => {
     const scenarioSelected = scenarioId !== null
     const prevDisabled = scenarioCurrentStepIdx <= 0    
     const currentScenario = find((scenario) => scenario.id.value === scenarioId, scenarios)
@@ -29,7 +30,8 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
     const nextText = scenarioCurrentStepIdx < 0 ? stepsLabels[0] : nextDisabled ? "Next" : stepsLabels[scenarioCurrentStepIdx + 1]
 
     const handleScenarionStepRequest = (scenarioStepIdx) => {
-        const loadItemsRequestBody = getLoadItemsRequestBody({presetId, weights, scenarioId, scenarioStepIdx})
+        const ids = map((domainItem)=> domainItem.id, domainItems)
+        const loadItemsRequestBody = getLoadItemsRequestBody({presetId, weights, scenarioId, scenarioStepIdx, ids})
         selectScenarioStepAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
     }
     const handleNextRequest = () => {
@@ -64,6 +66,7 @@ const mapStateToProps = state => ({
     scenarioCurrentStepIdx: state.simulation.scenarioCurrentStepIdx,
     weights: state.domainItems.weights,
     presetId: state.domainItems.selectedPresetId,
+    domainItems: state.domainItems.items
 })
 
 export default connect(mapStateToProps, {selectScenarioStepAction: selectScenarioStep})(ScenarioPlayer);

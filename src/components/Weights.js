@@ -20,8 +20,8 @@ class Weights extends React.Component {
       if(key !== weight.key) return weight
       return set('value', value, weight)
     }, this.props.weights)
-    
-    const loadItemsRequestBody = getLoadItemsRequestBody({presetId: this.props.presetId, weights, scenarioId: this.props.scenarioId, scenarioStepIdx: this.props.scenarioStepIdx})
+    const ids = map((domainItem)=> domainItem.id, this.props.domainItems)
+    const loadItemsRequestBody = getLoadItemsRequestBody({presetId: this.props.presetId, weights, scenarioId: this.props.scenarioId, scenarioStepIdx: this.props.scenarioStepIdx, ids})
     this.props.weightUpdatedAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
   }
 
@@ -42,6 +42,7 @@ class Weights extends React.Component {
 const mapStateToProps = state => ({
   weights: state.domainItems.weights,
   presetId: state.domainItems.selectedPresetId,
+  domainItems: state.domainItems.items,
   scenarioId: state.simulation.selectedScenarioId,
   scenarioStepIdx: state.simulation.scenarioCurrentStepIdx
 })

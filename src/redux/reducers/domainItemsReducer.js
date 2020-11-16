@@ -2,7 +2,7 @@ import DomainItemType from "../../types/domainItemType"
 import WeightType from "../../types/weightType"
 import PresetType from "../../types/presetTyps"
 import KeyValueType from "../../types/keyValueType"
-import { map, getOr, keyBy, flow, set, filter, reverse, sortBy } from 'lodash/fp'
+import { map, getOr, keyBy, flow, set, filter, reverse, sortBy, find } from 'lodash/fp'
 import { WEIGHT_UPDATED,
   DOMAIN_ITEM_PRESSED, 
   LOAD_WEIGHTS,
@@ -70,9 +70,10 @@ const loadDomainItemsLoadingActionHandler = (state, action) => {
 }
 
 const loadDomainItemsSuccessActionHandler = (state, action) => {
+  const selectedDomainItemID = getOr(null, "full_id", find({full_id: state.selectedDomainItemID}, action.payload.tasks_data))
   return {
     ...state,
-    selectedDomainItemID: null,
+    selectedDomainItemID,
     selectedPresetId: getOr(null, "previousAction.payload.body.preset_id", action),
     loadingItems: false,
     items: convertToDomainItems(state, getOr([], "payload.tasks_data", action), state.weights),
