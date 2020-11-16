@@ -1,4 +1,4 @@
-import {set, flow, map} from 'lodash/fp'
+import {set, flow, map, getOr} from 'lodash/fp'
 import LoadingSuccessFailureActionType from '../../types/loadingSuccessFailureActionType'
 import ScenarioType from "../../types/scenarioType"
 import { SELECT_SCENARIO, SELECT_SCENARIO_STEP, CREATE_SCENARIO, LOAD_SCENARIOS
@@ -9,12 +9,13 @@ const initialState = {
     selectedScenarioId: null,
     scenarioCurrentStepIdx: -1,
     scenariosLoading: false,
-    createScenariosLoading: false,
+    createScenariosProcessing: false,
     scenarios: []
 }
 
 const loadScenariosTriple = new LoadingSuccessFailureActionType(LOAD_SCENARIOS)
 const createScenariosTriple = new LoadingSuccessFailureActionType(CREATE_SCENARIO)
+const selectScenarioStep = new LoadingSuccessFailureActionType(SELECT_SCENARIO_STEP)
 
 export default function simulation(simulation = initialState, action) {
     
@@ -25,19 +26,18 @@ export default function simulation(simulation = initialState, action) {
                 set("scenarioCurrentStepIdx", -1)
             ])(simulation)
         }
-        case SELECT_SCENARIO_STEP: {
-            // TODO...
-            return set("scenarioCurrentStepIdx", action.payload.step, simulation)
+        case selectScenarioStep.success: {
+            const scenarioCurrentStepIdx = getOr(null, "previousAction.payload.body.scenario_step", action)
+            return set("scenarioCurrentStepIdx", scenarioCurrentStepIdx, simulation)
         }
         case createScenariosTriple.loading: {
-            return set("createScenariosLoading", true, simulation)
+            return set("createScenariosProcessing", true, simulation)
         }
         case createScenariosTriple.failure:
         case createScenariosTriple.success: {
-            return set("createScenariosLoading", false, simulation)
+            return set("createScenariosProcessing", false, simulation)
         }
         case loadScenariosTriple.loading :{
-            // TODO handle loading
             return set("scenariosLoading", true, simulation)
         }
         case loadScenariosTriple.success :{
@@ -52,7 +52,6 @@ export default function simulation(simulation = initialState, action) {
             ])(simulation)
         }
         case loadScenariosTriple.failure :{
-            // TODO handle loading
             return set("scenariosLoading", false, simulation)
         }
         default:

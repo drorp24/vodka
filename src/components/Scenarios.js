@@ -5,12 +5,12 @@ import {Divider, Label, Loader} from 'semantic-ui-react';
 import {FlexColumns, FlexRows} from './common/CommonComponents';
 import Scenario from './Scenario'
 import { loadScenarios } from '../redux/actions/actions';
-import AsyncRESTMeta from '../types/asyncRESTMeta';
+import AsyncRestParams from '../types/asyncRestParams';
 
 
 const Scenarios = ({scenarios, selectedScenarioId, loadScenariosAction, scenariosLoading}) => {
     React.useEffect(() => {
-        loadScenariosAction(new AsyncRESTMeta("/simulation/scenario", "GET", "http://localhost:5000"))
+        loadScenariosAction(new AsyncRestParams("/simulation/scenario", "GET"))
     }, [loadScenariosAction])
     return (
             <FlexRows>

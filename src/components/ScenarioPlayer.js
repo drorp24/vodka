@@ -6,15 +6,17 @@ import {find} from 'lodash/fp'
 import { Div } from "./common/StyledElements"
 import {FlexColumns} from './common/CommonComponents';
 import {selectScenarioStep} from '../redux/actions/actions'
+import AsyncRestParams from '../types/asyncRestParams';
+import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
 
 export const SimulationPlayerContainer = styled(FlexColumns)`
     border-radius: 10px;
 `;
 
-const ScenarioPlayer = ({selectedScenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction}) => {
-    const scenarioSelected = selectedScenarioId !== null
+const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, presetId}) => {
+    const scenarioSelected = scenarioId !== null
     const prevDisabled = scenarioCurrentStepIdx <= 0    
-    const currentScenario = find((scenario) => scenario.id.value === selectedScenarioId, scenarios)
+    const currentScenario = find((scenario) => scenario.id.value === scenarioId, scenarios)
     const stepsLabels = []
     if(currentScenario){
         for (let index = 0; index < currentScenario.stepsCount.value; index++) {
@@ -25,11 +27,16 @@ const ScenarioPlayer = ({selectedScenarioId, scenarios, scenarioCurrentStepIdx, 
     const currentText = scenarioCurrentStepIdx < 0 ? "Pre Load" : stepsLabels[scenarioCurrentStepIdx]
     const prevText = scenarioCurrentStepIdx <= 0 ? "Prev" : stepsLabels[scenarioCurrentStepIdx - 1]
     const nextText = scenarioCurrentStepIdx < 0 ? stepsLabels[0] : nextDisabled ? "Next" : stepsLabels[scenarioCurrentStepIdx + 1]
+
+    const handleScenarionStepRequest = (scenarioStepIdx) => {
+        const loadItemsRequestBody = getLoadItemsRequestBody({presetId, weights, scenarioId, scenarioStepIdx})
+        selectScenarioStepAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
+    }
     const handleNextRequest = () => {
-        selectScenarioStepAction(scenarioCurrentStepIdx + 1)
+        handleScenarionStepRequest(scenarioCurrentStepIdx + 1)
     }
     const handlePrevRequest = () => {
-        selectScenarioStepAction(scenarioCurrentStepIdx - 1)
+        handleScenarionStepRequest(scenarioCurrentStepIdx - 1)
     }
     return (
         <SimulationPlayerContainer visibility={!scenarioSelected ? "collapse" : "visible"} padding="5px" marginRight="15px" alignItems="center" styleType={scenarioSelected ? "simPlayerBorderDisabled": "simPlayerBorder"}>
@@ -53,8 +60,10 @@ const ScenarioPlayer = ({selectedScenarioId, scenarios, scenarioCurrentStepIdx, 
 
 const mapStateToProps = state => ({
     scenarios: state.simulation.scenarios,
-    selectedScenarioId: state.simulation.selectedScenarioId,    
-    scenarioCurrentStepIdx: state.simulation.scenarioCurrentStepIdx
+    scenarioId: state.simulation.selectedScenarioId,
+    scenarioCurrentStepIdx: state.simulation.scenarioCurrentStepIdx,
+    weights: state.domainItems.weights,
+    presetId: state.domainItems.selectedPresetId,
 })
 
 export default connect(mapStateToProps, {selectScenarioStepAction: selectScenarioStep})(ScenarioPlayer);

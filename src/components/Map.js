@@ -9,6 +9,7 @@ import { CoordinatesControl } from 'react-leaflet-coordinates'
 import { connect } from "react-redux"
 import {getOr, find, map, flow, take, last} from "lodash/fp"
 import {handleMapClicked} from '../redux/actions/actions'
+import {default_map_center} from '../configLoader';
 
 const MAX_ZOOM = 18
 const MIN_ZOOM = 1
@@ -18,8 +19,8 @@ class Map extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            lat: 32.811,
-            lng: 34.982,
+            lat: default_map_center[0],
+            lng: default_map_center[1],
             zoom: 14,
           }
         this.leafletMap = null
@@ -64,7 +65,7 @@ class Map extends React.Component {
       const markersArray = flow([
         take(topMarkersCount),
         map((domainItem) => {
-          const selectedId = getOr(null, "selected_id.id", this.props)
+          const selectedId = getOr(null, "selected_id", this.props)
           let iconSize =  Math.round((domainItem.score - minScore) / ((maxScore - minScore)/(13)))        
           iconSize += 18        
           const iconUrl = domainItem.id === selectedId ? 'selected-map-marker.svg' : "map-marker.svg"
@@ -81,7 +82,7 @@ class Map extends React.Component {
     calcMarkersCount = () => {
       const currZoom = this.getMapZoom()
       let topMarkersCount =  Math.round((currZoom - MIN_ZOOM) / ((MAX_ZOOM - MIN_ZOOM)/(this.props.domainItems.length)))
-      topMarkersCount = topMarkersCount * ((Math.pow(currZoom, 10))/Math.pow(MAX_ZOOM, 10))
+      topMarkersCount = topMarkersCount * ((Math.pow(currZoom, 2))/Math.pow(MAX_ZOOM, 2))
       console.log(`top count for zoom: ${currZoom} is ${topMarkersCount}`)
       return topMarkersCount
     }
@@ -92,9 +93,9 @@ class Map extends React.Component {
 
     refreshMap = () => {
       if(!this.leafletMap) return
-      const zoom = getOr(null, "selected_id.id", this.props) ? MAX_ZOOM : INITIAL_ZOOM_LEVEL
+      const zoom = getOr(null, "selected_id", this.props) ? MAX_ZOOM : INITIAL_ZOOM_LEVEL
       this.leafletMap.setZoom(zoom)      
-      const center = getOr(null, "selected_id.id", this.props) ? find({id: this.props.selected_id.id}, this.props.domainItems).center : 
+      const center = getOr(null, "selected_id", this.props) ? find({id: this.props.selected_id}, this.props.domainItems).center : 
       [this.state.lat, this.state.lng]
       this.leafletMap.flyTo(center)
     }
@@ -119,7 +120,7 @@ class Map extends React.Component {
 
   const mapStateToProps = state => ({
     domainItems: state.domainItems.items,
-    selected_id: state.ui.selectedDomainItemID
+    selected_id: state.domainItems.selectedDomainItemID
   })
 
   export default connect(mapStateToProps, {handleMapClickedAction: handleMapClicked})(Map);

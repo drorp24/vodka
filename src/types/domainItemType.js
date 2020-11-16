@@ -1,14 +1,13 @@
-import { keyBy, getOr } from "lodash/fp";
 
 export default class DomainItemType {
-  constructor(id, name, description, center, geogson, weightedAttributes) {
+  constructor(id, name, description, center, geogson, weightedAttributes, score) {
     this.id = id
     this.name = name
     this.description = description
     this.weightedAttributes = weightedAttributes
     this.prevIdx = -1
     this.currIdx = -1
-    this.score = -1
+    this.score = score
     this.center = center
     this.geogson = geogson
     this.expanded = false
@@ -23,15 +22,15 @@ export default class DomainItemType {
     return newDomainItem
   }
 
-  updateScore(weights) {
-    let score = 0
-    const weightedAttributesObject = keyBy("key", this.weightedAttributes)
-    weights.forEach(weight => {
-      score += getOr(0, `${weight.key}.value`, weightedAttributesObject) * weight.value
-    });
-    this.score = score
-    return score
-  }
+  // updateScore(weights) {
+  //   let score = 0
+  //   const weightedAttributesObject = keyBy("key", this.weightedAttributes)
+  //   weights.forEach(weight => {
+  //     score += getOr(0, `${weight.key}.value`, weightedAttributesObject) * weight.value
+  //   });
+  //   this.score = score
+  //   return score
+  // }
 
   isIndexChanged() {
     const result = this.prevIdx !== this.currIdx

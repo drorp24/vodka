@@ -1,7 +1,8 @@
 import DomainItemType from "../../types/domainItemType"
 import WeightType from "../../types/weightType"
 import PresetType from "../../types/presetTyps"
-import { map, getOr, keyBy, flow, set, filter } from 'lodash/fp'
+import KeyValueType from "../../types/keyValueType"
+import { map, getOr, keyBy, flow, set, filter, reverse, sortBy } from 'lodash/fp'
 import { WEIGHT_UPDATED,
   DOMAIN_ITEM_PRESSED, 
   LOAD_WEIGHTS,
@@ -9,27 +10,12 @@ import { WEIGHT_UPDATED,
   TEXT_FILTER_START_SEARCH,
   TEXT_FILTER_FINISH_SEARCH,
   TEXT_FILTER_UPDATE_SELECTION,
-  LOAD_DOMAIN_ITEMS_BY_PRESET,
-  LOAD_PRESETS } from "../actions/actionTypes"
+  LOAD_DOMAIN_ITEMS,
+  LOAD_PRESETS,
+  SELECT_SCENARIO_STEP } from "../actions/actionTypes"
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 
-const convertToDomainItems = (state, items, weights) => {
-  const oldDomainItemsMapById = keyBy("id", state.items)
-  const mapWithIdx = map.convert({'cap': false})
-  return mapWithIdx((item, idx) => {
-    const domainItem = new DomainItemType(item.id, item.name, item.description, item.center, item.geogson, item.weightedAttributes)
-    domainItem.updateScore(weights)
-    const previousDomainItem = getOr(null, domainItem.id, oldDomainItemsMapById)
-    domainItem.prevIdx = previousDomainItem !== null ? previousDomainItem.currIdx : idx
-    domainItem.currIdx = idx
-    return domainItem
-  }, items)
-}
-
-const convertToWeights = (weights) => {
-  return map(weight => new WeightType(weight.key, weight.value, weight.min, weight.max), weights)
-}
-
+/**INITIAL STATE */
 const initialState = {
   loadingItems: false,
   items: [],  
@@ -41,49 +27,76 @@ const initialState = {
   },
   textFilterLoading: false,
   textFilterItems:[],
-  presets:[{id:1234, name:"best preset", description:"indeed the best preset ever"},
-           {id:4321, name:"lousy preset", description:"indeed the lousiest preset ever"},
-           {id:555, name:"harmless preset long name indeed", description:"indeed an harmless preset"}],
-  selectedPresetId: null
+  presets:[],
+  selectedPresetId: null,
+  selectedDomainItemID: null
 }
+
+/**HELPERS */
+const convertToDomainItems = (state, items, weights) => {
+  const oldDomainItemsMapById = keyBy("id", state.items)
+  const mapWithIdx = map.convert({'cap': false})
+  const weightKeys = map((weight) => weight.key, weights)
+  return mapWithIdx((item, idx) => {
+    const weightedAttributes = map((key) => {
+      return new KeyValueType(key, item[key])
+    }, weightKeys)
+    const domainItem = new DomainItemType(item.full_id, item.name, item.description, [item.center_y, item.center_x], JSON.parse(item.location), weightedAttributes, item.score)
+    // domainItem.updateScore(weights)
+    const previousDomainItem = getOr(null, domainItem.id, oldDomainItemsMapById)
+    domainItem.prevIdx = previousDomainItem !== null ? previousDomainItem.currIdx : idx
+    domainItem.currIdx = idx
+    return domainItem
+  }, flow([sortBy(["score"]), reverse])(items))
+}
+
+const convertToWeights = (weights) => {
+  return map(weight => new WeightType(weight.key, weight.value, weight.min, weight.max), weights)
+}
+
+/**ASYNC ACTION TYPES */
+const loadWeightsTriple = new LoadingSuccessFailureActionType(LOAD_WEIGHTS)
+const loadDomainItemsTriple = new LoadingSuccessFailureActionType(LOAD_DOMAIN_ITEMS)
+const weightUpdatedTriple = new LoadingSuccessFailureActionType(WEIGHT_UPDATED)
+const loadPresetsTriple = new LoadingSuccessFailureActionType(LOAD_PRESETS)
+const selectScenarioStep = new LoadingSuccessFailureActionType(SELECT_SCENARIO_STEP)
 
 
 const actionHandlers = {}
 
-const loadWeightsTriple = new LoadingSuccessFailureActionType(LOAD_WEIGHTS)
+/**COMMON ACTION HANDLERS */
+const loadDomainItemsLoadingActionHandler = (state, action) => {  
+  return set("loadingItems", true, state)
+}
+
+const loadDomainItemsSuccessActionHandler = (state, action) => {
+  return {
+    ...state,
+    selectedDomainItemID: null,
+    selectedPresetId: getOr(null, "previousAction.payload.body.preset_id", action),
+    loadingItems: false,
+    items: convertToDomainItems(state, getOr([], "payload.tasks_data", action), state.weights),
+    weights: convertToWeights(getOr(state.weights, "previousAction.payload.body.weights", action))
+  }
+}
+
+actionHandlers[loadDomainItemsTriple.loading] = loadDomainItemsLoadingActionHandler
+actionHandlers[loadDomainItemsTriple.success] = loadDomainItemsSuccessActionHandler
+
+actionHandlers[weightUpdatedTriple.loading] = loadDomainItemsLoadingActionHandler
+actionHandlers[weightUpdatedTriple.success] = loadDomainItemsSuccessActionHandler
+
+actionHandlers[selectScenarioStep.loading] = loadDomainItemsLoadingActionHandler
+actionHandlers[selectScenarioStep.success] = loadDomainItemsSuccessActionHandler
+
+
+/**SPECIFIC ACTION HANDLERS */
+
 actionHandlers[loadWeightsTriple.success] = (state, action) => {
-  const weights = map(weight => new WeightType(weight.key, weight.value, weight.min, weight.max), action.payload)
+  const weights = map(weight => new WeightType(weight.key, weight.value, weight.minimum, weight.maximum), action.payload.weights)
   return {
     ...state,
     weights
-  }
-}
-
-const loadDomainItemsTriple = new LoadingSuccessFailureActionType(LOAD_DOMAIN_ITEMS_BY_PRESET)
-actionHandlers[loadDomainItemsTriple.loading] = (state, action) => {  
-  return set("loadingItems", true, state)
-}
-
-actionHandlers[loadDomainItemsTriple.success] = (state, action) => {
-  return {
-    ...state,
-    selectedPresetId: action.previousAction.payload.body.preset_id,
-    loadingItems: false,
-    items: convertToDomainItems(state, action.payload, state.weights)
-  }
-}
-
-const weightUpdatedTriple = new LoadingSuccessFailureActionType(WEIGHT_UPDATED)
-actionHandlers[weightUpdatedTriple.loading] = (state, action) => {  
-  return set("loadingItems", true, state)
-}
-actionHandlers[weightUpdatedTriple.success] = (state, action) => {
-  const weights = convertToWeights(action.previousAction.payload.body.weights)
-  return {
-    ...state,
-    weights,
-    loadingItems: false,
-    items: convertToDomainItems(state, action.payload, weights)
   }
 }
 
@@ -144,17 +157,20 @@ actionHandlers[TEXT_FILTER_UPDATE_SELECTION] = (state, action) => {
   
 }
 
-const loadPresetTriple = new LoadingSuccessFailureActionType(LOAD_PRESETS)
-actionHandlers[loadPresetTriple.loading] = (state, action) => {  
+actionHandlers[loadPresetsTriple.loading] = (state, action) => {  
    return set("loadingPresets", true, state)
 }
 
-actionHandlers[loadPresetTriple.success] = (state, action) => {
+actionHandlers[loadPresetsTriple.success] = (state, action) => {
   const presets = map((preset) => new PresetType(preset), getOr([], "payload", action))
    return flow([
     set("presets", presets),
     set("loadingPresets", false)
    ])(state)
+}
+
+actionHandlers[DOMAIN_ITEM_PRESSED] = (state, action) => {  
+  return set('selectedDomainItemID', action.payload.id, state)
 }
 
 export default function domainItems(state = initialState, action) {

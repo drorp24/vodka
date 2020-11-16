@@ -4,7 +4,7 @@ import {Button, Modal, Segment, Form, FormField, TextArea, Loader, Dimmer} from 
 import {withTheme} from 'styled-components';
 import {getOr, isEmpty, toNumber, values, flow, compact, isNaN} from 'lodash/fp'
 import {toggleCreateScenario, createScenario} from '../redux/actions/actions'
-import AsyncRESTMeta from '../types/asyncRESTMeta';
+import AsyncRestParams from '../types/asyncRestParams';
 import { FlexColumns } from './common/CommonComponents';
 
 const FORM_FIELDS = {
@@ -63,7 +63,7 @@ class CreateScenarioForm extends React.Component {
             this.setState({})
             return
         }
-        this.props.createScenarioAction(new AsyncRESTMeta("/simulation/scenario", "POST", "http://localhost:5000"),
+        this.props.createScenarioAction(new AsyncRestParams("/simulation/scenario", "POST"),
         {
             "sig_neighbors_percentage": toNumber(this.fieldsValues[FORM_FIELDS.SIG_NEIGH_PERC]),
             "sig_tasks_percentage": toNumber(this.fieldsValues[FORM_FIELDS.SIG_TASKS_PERC]),
@@ -90,7 +90,7 @@ class CreateScenarioForm extends React.Component {
                 <Modal.Header>Create Scenario</Modal.Header>
                 <Modal.Content scrolling>
                     {
-                        this.props.createScenariosLoading ? 
+                        this.props.createScenariosProcessing ? 
                         <FlexColumns width="300px" height="50vh" alignItems="center" justifyContent="center">
                             <Dimmer active inverted>
                                 <Loader size="massive" active content="Processing"/>
@@ -139,7 +139,7 @@ class CreateScenarioForm extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    createScenariosLoading: state.simulation.createScenariosLoading
+    createScenariosProcessing: state.simulation.createScenariosProcessing
 })
 
 export default connect(mapStateToProps, {

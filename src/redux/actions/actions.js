@@ -15,7 +15,6 @@ import {
   TEXT_FILTER_UPDATE_SELECTION,
   SELECT_SCENARIO,
   SELECT_SCENARIO_STEP,
-  LOAD_DOMAIN_ITEMS_BY_PRESET,
   TOGGLE_CREATE_SCENARIO,
   CREATE_SCENARIO,
   LOAD_SCENARIOS,
@@ -50,8 +49,7 @@ export const textFilterStartSearch = makeActionCreator(TEXT_FILTER_START_SEARCH,
 export const textFilterFinishSearch = makeActionCreator(TEXT_FILTER_FINISH_SEARCH, 'textFilterValue')
 export const textFilterUpdateSelection = makeActionCreator(TEXT_FILTER_UPDATE_SELECTION, 'id', 'textFilterValue')
 export const selectScenario = makeActionCreator(SELECT_SCENARIO, 'id')
-export const selectScenarioStep = makeActionCreator(SELECT_SCENARIO_STEP, 'step')
-export const loadDomainItemsByPreset = makeActionCreator(LOAD_DOMAIN_ITEMS_BY_PRESET, 'meta', 'body')
+export const selectScenarioStep = makeActionCreator(SELECT_SCENARIO_STEP, 'meta', 'body')
 export const toggleCreateScenario = makeActionCreator(TOGGLE_CREATE_SCENARIO)
 export const createScenario = makeActionCreator(CREATE_SCENARIO, 'meta', 'body')
 export const loadScenarios = makeActionCreator(LOAD_SCENARIOS, 'meta', 'body')

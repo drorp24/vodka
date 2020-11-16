@@ -1,17 +1,13 @@
-// import rest from 'rest';
-// import mime from 'rest/interceptor/mime'
 import { getOr, omit } from 'lodash/fp'
-import { AsyncRESTMetaType } from '../../types/asyncRESTMeta';
+import { AsyncRestParamsType } from '../../types/asyncRestParams';
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
+import { server_host_url } from '../../configLoader';
 
-// const client = rest.wrap(mime);
-const defaultServerHost = getOr(null, '__myapp.server_host_url', window)
-
-const asyncRESTCall = store => next => action => {  
-  if (getOr(undefined, 'payload.meta.type', action) === AsyncRESTMetaType) {
+const asyncRestCallMiddleware = store => next => action => {  
+  if (getOr(undefined, 'payload.meta.type', action) === AsyncRestParamsType) {
     const actionTypeTriple = new LoadingSuccessFailureActionType(action.type)
     const {dispatch} = store
-    let actualHost = defaultServerHost
+    let actualHost = server_host_url
     const route = getOr(null, 'payload.meta.route', action)
     if (route === null) {
       successOrFailure(`action: ${actionTypeTriple.loading}, missing route: ${JSON.stringify(action.payload)}`, dispatch, actionTypeTriple.failure, action, actionTypeTriple)
@@ -71,4 +67,4 @@ const successOrFailure = (payload, dispatch, type, previousAction, originalType)
   }  
 }
 
-export default asyncRESTCall
+export default asyncRestCallMiddleware

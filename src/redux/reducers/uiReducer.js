@@ -1,6 +1,5 @@
 import {set, flow, concat, remove, find, isNil} from 'lodash/fp'
 import {
-    WEIGHT_UPDATED,
     TOGGLE_SIDE_BAR, 
     DOMAIN_ITEM_PRESSED, 
     MAP_CLICKED,
@@ -16,14 +15,12 @@ import {startupTheme} from '../../configLoader';
 
 const initialState = {
     sideBarOpen: false,
-    selectedDomainItemID: null,
     themeId: startupTheme,
     compareDomainItemsMode: false,
     selectedDomainItemsIdsForCmp: [],
     createScenarioOpen: false
 }
 
-const weightUpdatedTriple = new LoadingSuccessFailureActionType(WEIGHT_UPDATED)
 const createScenariosTriple = new LoadingSuccessFailureActionType(CREATE_SCENARIO)
 
 export default function ui(ui = initialState, action) {    
@@ -38,14 +35,8 @@ export default function ui(ui = initialState, action) {
             return set('sideBarOpen', false, ui)
         }
         case DOMAIN_ITEM_PRESSED: { 
-            return flow([
-                set('selectedDomainItemID', {id: action.payload.id}),
-                set('sideBarOpen', false)]
-            )(ui)
-        }
-        case weightUpdatedTriple.success: {
-            return set('selectedDomainItemID', null, ui)
-        }
+            return set('sideBarOpen', false, ui)
+        }        
         case SELECT_DOMAIN_ITEM_FOR_COMPARISON: {
             const idFromAlreadySelectedIdx = find((id) => id === action.payload.id, ui.selectedDomainItemsIdsForCmp)
             if(!isNil(idFromAlreadySelectedIdx)){

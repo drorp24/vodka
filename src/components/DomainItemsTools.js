@@ -8,10 +8,11 @@ import {Div} from './common/StyledElements';
 import { 
     toggleCompareDomainItemsMode, 
     clearAllSelectedItemsForComparison,
-    loadDomainItemsByPreset,
+    loadDomainItems,
     loadPresets
 } from '../redux/actions/actions'
-import AsyncRESTMeta from '../types/asyncRESTMeta';
+import AsyncRestParams from '../types/asyncRestParams';
+import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
 
 export const DomainItemsToolsContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
@@ -23,7 +24,8 @@ export const DropdownContainer = styled(FlexColumns)`
 
 const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForCmp, compareDomainItemsMode, 
     toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, 
-    loadDomainItemsByPresetAction, loadPresetsAction, loadingPresets, theme}) => {
+    loadDomainItemsAction, loadPresetsAction, loadingPresets, weights, 
+    scenarioId, scenarioStepIdx, theme}) => {
     const onCompareClick = () => {
         toggleCompareDomainItemsModeAction()
     }
@@ -32,12 +34,13 @@ const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForC
     }
 
     const handlePresetSelected = (event, data) => {
-        const selectedPreset = getOr(null, "value", data)
-        loadDomainItemsByPresetAction(new AsyncRESTMeta("/items", "POST"), {preset_id:selectedPreset})
+        const presetId = getOr(null, "value", data)        
+        const loadItemsRequestBody = getLoadItemsRequestBody({presetId, weights, scenarioId, scenarioStepIdx})
+        loadDomainItemsAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
     }    
 
     const openPresetsList = () => {
-        loadPresetsAction(new AsyncRESTMeta("/config/rules_preset?user_name=shayde", "GET", "http://localhost:5000"))
+        loadPresetsAction(new AsyncRestParams("/config/rules_preset?user_name=shayde", "GET"))
     }
 
     return (
@@ -67,17 +70,22 @@ const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForC
     )
 }
 
-const mapStateToProps = state => ({
-    presets: map((preset)=>({key:preset.id, text:preset.name.length > 15 ? `${preset.name.substring(0,15)}...` : preset.name, value:preset.id}),state.domainItems.presets),
-    selectedPresetId: state.domainItems.selectedPresetId,
-    compareDomainItemsMode: state.ui.compareDomainItemsMode,
-    selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp,
-    loadingPresets: state.domainItems.loadingPresets
-})
+const mapStateToProps = state => {
+    return {
+        presets: map((preset)=>({key:preset.id, text:preset.name.length > 15 ? `${preset.name.substring(0,15)}...` : preset.name, value:preset.id}),state.domainItems.presets),
+        selectedPresetId: state.domainItems.selectedPresetId,
+        compareDomainItemsMode: state.ui.compareDomainItemsMode,
+        selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp,
+        loadingPresets: state.domainItems.loadingPresets,
+        weights: state.domainItems.weights,
+        scenarioId: state.simulation.selectedScenarioId,
+        scenarioStepIdx: state.simulation.scenarioCurrentStepIdx
+    }
+}
 
 export default connect(mapStateToProps, {
         toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode,
         clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison,
-        loadDomainItemsByPresetAction: loadDomainItemsByPreset,
+        loadDomainItemsAction: loadDomainItems,
         loadPresetsAction: loadPresets        
 })(withTheme(DomainItemsTools));
