@@ -16,7 +16,7 @@ export const SimulationPlayerContainer = styled(FlexColumns)`
 
 const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, presetId, domainItems}) => {
     const scenarioSelected = scenarioId !== null
-    const prevDisabled = scenarioCurrentStepIdx <= 0    
+    const prevDisabled = !presetId || scenarioCurrentStepIdx <= 0    
     const currentScenario = find((scenario) => scenario.id.value === scenarioId, scenarios)
     const stepsLabels = []
     if(currentScenario){
@@ -24,7 +24,7 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
             stepsLabels.push(`Step ${index + 1}`)
         }
     }
-    const nextDisabled = scenarioCurrentStepIdx >= stepsLabels.length - 1
+    const nextDisabled = !presetId || scenarioCurrentStepIdx >= stepsLabels.length - 1
     const currentText = scenarioCurrentStepIdx < 0 ? "Pre Load" : stepsLabels[scenarioCurrentStepIdx]
     const prevText = scenarioCurrentStepIdx <= 0 ? "Prev" : stepsLabels[scenarioCurrentStepIdx - 1]
     const nextText = scenarioCurrentStepIdx < 0 ? stepsLabels[0] : nextDisabled ? "Next" : stepsLabels[scenarioCurrentStepIdx + 1]
