@@ -113,6 +113,7 @@ actionHandlers[DOMAIN_ITEM_PRESSED] = (state, action) => {
     state.items)
   return {
     ...state,
+    selectedDomainItemID: action.payload.id,
     items
   }
 }
@@ -167,10 +168,6 @@ actionHandlers[loadPresetsTriple.success] = (state, action) => {
     set("presets", presets),
     set("loadingPresets", false)
    ])(state)
-}
-
-actionHandlers[DOMAIN_ITEM_PRESSED] = (state, action) => {  
-  return set('selectedDomainItemID', action.payload.id, state)
 }
 
 export default function domainItems(state = initialState, action) {
