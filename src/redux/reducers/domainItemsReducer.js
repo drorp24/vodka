@@ -39,10 +39,9 @@ const convertToDomainItems = (state, items, weights) => {
   const weightKeys = map((weight) => weight.key, weights)
   return mapWithIdx((item, idx) => {
     const weightedAttributes = map((key) => {
-      return new KeyValueType(key, item[key])
+      return new KeyValueType(key, item[`${key}_score`])
     }, weightKeys)
     const domainItem = new DomainItemType(item.full_id, item.name, item.description, [item.center_y, item.center_x], JSON.parse(item.location), weightedAttributes, item.score)
-    // domainItem.updateScore(weights)
     const previousDomainItem = getOr(null, domainItem.id, oldDomainItemsMapById)
     domainItem.prevIdx = previousDomainItem !== null ? previousDomainItem.currIdx : idx
     domainItem.currIdx = idx
