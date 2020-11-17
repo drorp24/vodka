@@ -26,6 +26,7 @@ class Map extends React.Component {
         this.leafletMap = null
         this.layerGroup = L.layerGroup()
         this.geojsonLayer = null
+        this.geojsonNeighborsLayer = null
         this.markersTopXLayer = null
     }
 
@@ -60,6 +61,20 @@ class Map extends React.Component {
         map((domainItem) => domainItem.geogson)        
       ])(this.props.domainItems)
       this.geojsonLayer = L.geoJSON(geoJsonItems)
+
+      const geoJsonNeighborsItems = flow([
+        take(topMarkersCount),
+        map((domainItem) => domainItem.geogson)
+      ])(this.props.neighbors)
+      this.geojsonNeighborsLayer = L.geoJSON(geoJsonNeighborsItems,
+        {
+          style: {
+            "color": "#ff7800",
+            "weight": 5,
+            "opacity": 0.65
+        }
+        })
+
       const maxScore = getOr(0, "[0].score", this.props.domainItems)
       const minScore = getOr(0, "score", last(this.props.domainItems))
       const markersArray = flow([
@@ -76,6 +91,7 @@ class Map extends React.Component {
       ])(this.props.domainItems)
       this.markersTopXLayer = L.conditionalMarkers(markersArray, {maxMarkers: this.props.domainItems.length})      
       this.layerGroup.addLayer(this.geojsonLayer)
+      this.layerGroup.addLayer(this.geojsonNeighborsLayer)
       this.layerGroup.addLayer(this.markersTopXLayer)
     }
 
@@ -121,6 +137,7 @@ class Map extends React.Component {
 
   const mapStateToProps = state => ({
     domainItems: state.domainItems.items,
+    neighbors: state.domainItems.neighbors,
     selected_id: state.domainItems.selectedDomainItemID
   })
 

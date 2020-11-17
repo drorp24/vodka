@@ -18,7 +18,8 @@ import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureAc
 /**INITIAL STATE */
 const initialState = {
   loadingItems: false,
-  items: [],  
+  items: [],
+  neighbors: [],
   weights: [],
   textFilterValue: "",
   actualTextFilter: {
@@ -49,6 +50,18 @@ const convertToDomainItems = (state, items, weights) => {
   }, flow([sortBy(["score"]), reverse])(items))
 }
 
+const convertNeighborsToDomainItems = (state, items, weights) => {
+  const mapWithIdx = map.convert({'cap': false})
+  const weightKeys = map((weight) => weight.key, weights)
+  return mapWithIdx((item, idx) => {
+    const weightedAttributes = map((key) => {
+      return new KeyValueType(key, item[`${key}_score`])
+    }, weightKeys)
+    const domainItem = new DomainItemType(item.full_id, item.name, item.description, [item.center_y, item.center_x], JSON.parse(item.location), weightedAttributes, item.score)
+    return domainItem
+  }, items)
+}
+
 const convertToWeights = (weights) => {
   return map(weight => new WeightType(weight.key, weight.value, weight.min, weight.max), weights)
 }
@@ -76,6 +89,7 @@ const loadDomainItemsSuccessActionHandler = (state, action) => {
     selectedPresetId: getOr(null, "previousAction.payload.body.preset_id", action),
     loadingItems: false,
     items: convertToDomainItems(state, getOr([], "payload.tasks_data", action), state.weights),
+    neighbors: convertNeighborsToDomainItems(state, getOr([], "payload.neighbors_data", action), state.weights),
     weights: convertToWeights(getOr(state.weights, "previousAction.payload.body.weights", action))
   }
 }
