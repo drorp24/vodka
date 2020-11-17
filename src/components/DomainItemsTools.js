@@ -13,6 +13,7 @@ import {
 } from '../redux/actions/actions'
 import AsyncRestParams from '../types/asyncRestParams';
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
+import { default_username } from '../configLoader';
 
 export const DomainItemsToolsContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
@@ -40,7 +41,7 @@ const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForC
     }    
 
     const openPresetsList = () => {
-        loadPresetsAction(new AsyncRestParams("/config/rules_preset?user_name=shayde", "GET"))
+        loadPresetsAction(new AsyncRestParams(`/config/rules_preset?user_name=${default_username}`, "GET"))
     }
 
     return (
