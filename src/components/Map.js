@@ -83,7 +83,7 @@ class Map extends React.Component {
       let currZoom = Math.max(this.getMapZoom(), MIN_ZOOM + 1)
       currZoom = Math.min(currZoom, MAX_ZOOM)
       const degree = Math.round(Math.sqrt(this.props.domainItems.length))
-      let topMarkersCount =  Math.round((Math.pow((currZoom - MIN_ZOOM), degree) / Math.pow(MAX_ZOOM - MIN_ZOOM, degree)) * this.props.domainItems.length)
+      let topMarkersCount =  Math.ceil((Math.pow((currZoom - MIN_ZOOM), degree) / Math.pow(MAX_ZOOM - MIN_ZOOM, degree)) * this.props.domainItems.length)
       console.log(`top count for zoom: ${currZoom} is ${topMarkersCount} out of ${this.props.domainItems.length}`)
       return topMarkersCount
     }
