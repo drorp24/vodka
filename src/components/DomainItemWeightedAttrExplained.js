@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import styled from 'styled-components';
 import { FlexRows, FlexColumns } from './common/CommonComponents';
 import { Div } from './common/StyledElements';
-import { map, find, capitalize, replace, flow } from 'lodash/fp'
+import { map, find, capitalize, replace, flow, isNumber } from 'lodash/fp'
 
 export const StyledContanier = styled(FlexRows)`
     :hover  { cursor: auto}
@@ -38,7 +38,7 @@ const DomainItemWeightedAttrExplained = ({domainItem, weights}) => {
                 [flow([replace("_", " "), capitalize])(weightedAttribute.key),
                   weightedAttribute.value, 
                   weightedAttribute.weight.value,
-                  parseInt(weightedAttribute.value * weightedAttribute.weight.value)]
+                  isNumber(weightedAttribute.value) ? parseInt(weightedAttribute.value * weightedAttribute.weight.value) : ""]
               )
           ), attributesWeighted)
         }
