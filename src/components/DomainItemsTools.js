@@ -34,9 +34,8 @@ const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForC
     }
 
     const handlePresetSelected = (event, data) => {
-        const presetId = getOr(null, "value", data)        
-        const ids = map((domainItem)=> domainItem.id, domainItems)
-        const loadItemsRequestBody = getLoadItemsRequestBody({presetId, weights, scenarioId, scenarioStepIdx, ids})
+        const presetId = getOr(null, "value", data)
+        const loadItemsRequestBody = getLoadItemsRequestBody({presetId, weights, scenarioId, scenarioStepIdx})
         loadDomainItemsAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
     }    
 
