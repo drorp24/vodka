@@ -1,12 +1,12 @@
 import {getOr, isNil} from 'lodash/fp'
-import {default_items_to_load_amount} from '../configLoader';
+import {amount_of_items_to_load} from '../configLoader';
 
 const mandatories = ["preset_id", "weights"]
 
 const requestBodyDefaults = {
     "weights":null,
     "preset_id": null,    
-    "amount":default_items_to_load_amount,
+    "amount":amount_of_items_to_load,
     "scenario_id": null,
     "scenario_step": null,
     "ids": null
