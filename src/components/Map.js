@@ -31,6 +31,7 @@ class Map extends React.Component {
         this.geojsonLayer = null
         this.geojsonNeighborsLayer = null
         this.markersTopXLayer = null
+        this.layersControlAdded = false
     }
 
     componentDidUpdate(){
@@ -56,16 +57,19 @@ class Map extends React.Component {
       this.neighborsPolygonsGroup.addTo(this.leafletMap)
       this.polygonsGroup.addTo(this.leafletMap)
       this.refreshLayers()
-      this.initLayersControl()
     }
 
     initLayersControl = () => {
-      const overlayers = {
-        "Tasks Polygons": this.polygonsGroup,
-        "Tasks Neigbors": this.neighborsPolygonsGroup,
-        "Tasks Location": this.markersGroup
-      }
-      L.control.layers(null, overlayers).addTo(this.leafletMap)
+      if(this.props.domainItems && this.props.domainItems.length > 0 && !this.layersControlAdded){
+        const overlayers = {
+          "Tasks Polygons": this.polygonsGroup,
+          "Tasks Neigbors": this.neighborsPolygonsGroup,
+          "Tasks Location": this.markersGroup
+        }
+        L.control.layers(null, overlayers).addTo(this.leafletMap) 
+        this.layersControlAdded = true
+        console.log("layers control added")
+      }      
     }
 
     refreshLayers = () => {
@@ -111,6 +115,7 @@ class Map extends React.Component {
       this.polygonsGroup.addLayer(this.geojsonLayer)
       this.neighborsPolygonsGroup.addLayer(this.geojsonNeighborsLayer)
       this.markersGroup.addLayer(this.markersTopXLayer)
+      this.initLayersControl()      
     }
 
     calcMarkersCount = () => {
