@@ -102,8 +102,9 @@ class Map extends React.Component {
         take(topMarkersCount),
         map((domainItem) => {
           const selectedId = getOr(null, "selected_id", this.props)
-          let iconSize =  Math.round((domainItem.score - minScore) / ((maxScore - minScore)/(13)))        
-          iconSize += 18        
+          let iconSize = maxScore === minScore ? 18 : Math.round((domainItem.score - minScore) / (maxScore - minScore)) * 27
+          iconSize = Math.max(iconSize, 10)
+          iconSize = Math.min(iconSize, 25)
           const iconUrl = domainItem.id === selectedId ? 'selected-map-marker.svg' : "map-marker.svg"
           const marker = L.marker(domainItem.center, {icon: L.icon({iconUrl, iconSize: [iconSize,iconSize],iconAnchor: [9, 9]})})
           marker.bindPopup(`${domainItem.name} <br/> score: ${parseInt(domainItem.score)} <br/> importance: ${domainItem.currIdx + 1}`)          
