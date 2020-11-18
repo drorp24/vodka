@@ -8,7 +8,7 @@ import {Div} from './common/StyledElements';
 import { 
     toggleCompareDomainItemsMode, 
     clearAllSelectedItemsForComparison,
-    loadDomainItems,
+    selectPreset,
     loadPresets
 } from '../redux/actions/actions'
 import AsyncRestParams from '../types/asyncRestParams';
@@ -25,7 +25,7 @@ export const DropdownContainer = styled(FlexColumns)`
 
 const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForCmp, compareDomainItemsMode, 
     toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, 
-    loadDomainItemsAction, loadPresetsAction, loadingPresets, weights, 
+    selectPresetAction, loadPresetsAction, loadingPresets, weights, 
     scenarioId, scenarioStepIdx, domainItems, theme}) => {
     const onCompareClick = () => {
         toggleCompareDomainItemsModeAction()
@@ -37,7 +37,7 @@ const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForC
     const handlePresetSelected = (event, data) => {
         const presetId = getOr(null, "value", data)
         const loadItemsRequestBody = getLoadItemsRequestBody({presetId, weights, scenarioId, scenarioStepIdx})
-        loadDomainItemsAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
+        selectPresetAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
     }    
 
     const openPresetsList = () => {
@@ -88,6 +88,6 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
         toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode,
         clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison,
-        loadDomainItemsAction: loadDomainItems,
+        selectPresetAction: selectPreset,
         loadPresetsAction: loadPresets
 })(withTheme(DomainItemsTools));

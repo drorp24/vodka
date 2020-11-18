@@ -1,6 +1,6 @@
 import { 
   WEIGHT_UPDATED,
-  LOAD_DOMAIN_ITEMS, 
+  SELECT_PRESET, 
   DOMAIN_ITEM_PRESSED, 
   TOGGLE_SIDE_BAR, 
   MAP_CLICKED, 
@@ -34,7 +34,7 @@ function makeActionCreator(type, ...argNames) {
   }
 }
 
-export const loadDomainItems = makeActionCreator(LOAD_DOMAIN_ITEMS, 'meta', 'body')
+export const selectPreset = makeActionCreator(SELECT_PRESET, 'meta', 'body')
 export const weightUpdated = makeActionCreator(WEIGHT_UPDATED, 'meta', 'body')
 export const loadWeights = makeActionCreator(LOAD_WEIGHTS, 'meta', 'body')
 export const handleDomainItemPressed = makeActionCreator(DOMAIN_ITEM_PRESSED, 'id')

@@ -10,7 +10,7 @@ import { WEIGHT_UPDATED,
   TEXT_FILTER_START_SEARCH,
   TEXT_FILTER_FINISH_SEARCH,
   TEXT_FILTER_UPDATE_SELECTION,
-  LOAD_DOMAIN_ITEMS,
+  SELECT_PRESET,
   LOAD_PRESETS,
   SELECT_SCENARIO_STEP } from "../actions/actionTypes"
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
@@ -68,7 +68,7 @@ const convertToWeights = (weights) => {
 
 /**ASYNC ACTION TYPES */
 const loadWeightsTriple = new LoadingSuccessFailureActionType(LOAD_WEIGHTS)
-const loadDomainItemsTriple = new LoadingSuccessFailureActionType(LOAD_DOMAIN_ITEMS)
+const selectPresetTriple = new LoadingSuccessFailureActionType(SELECT_PRESET)
 const weightUpdatedTriple = new LoadingSuccessFailureActionType(WEIGHT_UPDATED)
 const loadPresetsTriple = new LoadingSuccessFailureActionType(LOAD_PRESETS)
 const selectScenarioStep = new LoadingSuccessFailureActionType(SELECT_SCENARIO_STEP)
@@ -77,11 +77,11 @@ const selectScenarioStep = new LoadingSuccessFailureActionType(SELECT_SCENARIO_S
 const actionHandlers = {}
 
 /**COMMON ACTION HANDLERS */
-const loadDomainItemsLoadingActionHandler = (state, action) => {  
+const selectPresetLoadingActionHandler = (state, action) => {  
   return set("loadingItems", true, state)
 }
 
-const loadDomainItemsSuccessActionHandler = (state, action) => {
+const selectPresetSuccessActionHandler = (state, action) => {
   const selectedDomainItemID = getOr(null, "full_id", find({full_id: state.selectedDomainItemID}, action.payload.tasks_data))
   return {
     ...state,
@@ -94,14 +94,14 @@ const loadDomainItemsSuccessActionHandler = (state, action) => {
   }
 }
 
-actionHandlers[loadDomainItemsTriple.loading] = loadDomainItemsLoadingActionHandler
-actionHandlers[loadDomainItemsTriple.success] = loadDomainItemsSuccessActionHandler
+actionHandlers[selectPresetTriple.loading] = selectPresetLoadingActionHandler
+actionHandlers[selectPresetTriple.success] = selectPresetSuccessActionHandler
 
-actionHandlers[weightUpdatedTriple.loading] = loadDomainItemsLoadingActionHandler
-actionHandlers[weightUpdatedTriple.success] = loadDomainItemsSuccessActionHandler
+actionHandlers[weightUpdatedTriple.loading] = selectPresetLoadingActionHandler
+actionHandlers[weightUpdatedTriple.success] = selectPresetSuccessActionHandler
 
-actionHandlers[selectScenarioStep.loading] = loadDomainItemsLoadingActionHandler
-actionHandlers[selectScenarioStep.success] = loadDomainItemsSuccessActionHandler
+actionHandlers[selectScenarioStep.loading] = selectPresetLoadingActionHandler
+actionHandlers[selectScenarioStep.success] = selectPresetSuccessActionHandler
 
 
 /**SPECIFIC ACTION HANDLERS */
