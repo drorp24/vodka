@@ -1,0 +1,19 @@
+
+.leaflet-control-layers-overlays{
+    font-size: 16px;
+    color: rgba(0,0,0,.87);
+  }
+
+/* .leaflet-control-layers-expanded{
+  background-color: rgba(234, 235, 230, 1);
+  }
+
+  
+.leaflet-control-layers-toggle{
+  background-color: rgba(234, 235, 230, 1);
+  } */
+
+.leaflet-control-layers-selector{
+    margin-right: 5px;
+    margin-top: 15px;
+  }

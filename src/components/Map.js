@@ -3,6 +3,7 @@ import 'leaflet/dist/leaflet.css'
 import 'prunecluster-exportable/dist/LeafletStyleSheet.css'
 import L from 'leaflet'
 import "../third_party/leaflet_conditional_layer"
+import './leaflet_layers_control_style.css'
 import {Div} from './common/StyledElements';
 import { Map as LeafletMap, TileLayer } from 'react-leaflet'
 import { CoordinatesControl } from 'react-leaflet-coordinates'
@@ -24,7 +25,9 @@ class Map extends React.Component {
             zoom: 14,
           }
         this.leafletMap = null
-        this.layerGroup = L.layerGroup()
+        this.markersGroup = L.layerGroup()
+        this.neighborsPolygonsGroup = L.layerGroup()
+        this.polygonsGroup  = L.layerGroup()
         this.geojsonLayer = null
         this.geojsonNeighborsLayer = null
         this.markersTopXLayer = null
@@ -49,13 +52,27 @@ class Map extends React.Component {
 
     whenReadyCB = (obj) => {
       this.leafletMap = obj.target
-      this.layerGroup.addTo(this.leafletMap)
+      this.markersGroup.addTo(this.leafletMap)
+      this.neighborsPolygonsGroup.addTo(this.leafletMap)
+      this.polygonsGroup.addTo(this.leafletMap)
       this.refreshLayers()
+      this.initLayersControl()
+    }
+
+    initLayersControl = () => {
+      const overlayers = {
+        "Tasks Polygons": this.polygonsGroup,
+        "Tasks Neigbors": this.neighborsPolygonsGroup,
+        "Tasks Location": this.markersGroup
+      }
+      L.control.layers(null, overlayers).addTo(this.leafletMap)
     }
 
     refreshLayers = () => {
       const topMarkersCount = this.calcMarkersCount()
-      this.layerGroup.clearLayers()
+      this.markersGroup.clearLayers()
+      this.polygonsGroup.clearLayers()
+      this.neighborsPolygonsGroup.clearLayers()
       const geoJsonItems = flow([
         take(topMarkersCount),
         map((domainItem) => domainItem.geogson)        
@@ -89,10 +106,11 @@ class Map extends React.Component {
           return marker
         })
       ])(this.props.domainItems)
-      this.markersTopXLayer = L.conditionalMarkers(markersArray, {maxMarkers: this.props.domainItems.length})      
-      this.layerGroup.addLayer(this.geojsonLayer)
-      this.layerGroup.addLayer(this.geojsonNeighborsLayer)
-      this.layerGroup.addLayer(this.markersTopXLayer)
+      this.markersTopXLayer = L.conditionalMarkers(markersArray, {maxMarkers: this.props.domainItems.length})
+
+      this.polygonsGroup.addLayer(this.geojsonLayer)
+      this.neighborsPolygonsGroup.addLayer(this.geojsonNeighborsLayer)
+      this.markersGroup.addLayer(this.markersTopXLayer)
     }
 
     calcMarkersCount = () => {
