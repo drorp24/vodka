@@ -54,6 +54,12 @@ ${labelDefaultDisabled}
 font-size: 14px;
 `;
 
+export const selectedScenarioLabelValue = css`
+${labelDefaultDisabled}
+font-size: 14px;
+color: #bbb5b5;
+`;
+
 export const scenarioLabelKey = css`
 ${labelDefaultDisabled}
 color: black;

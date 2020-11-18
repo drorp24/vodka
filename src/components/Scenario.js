@@ -19,7 +19,7 @@ function Scenario({scenario, selected, selectScenarioAction}) {
                     <Div width="220px" display="flex" styleType={selected ? "selectedScenarioLabelKey" : "scenarioLabelKey"}>
                         {capitalize(name)}:
                     </Div>
-                    <Div width="220px" styleType="scenarioLabelValue">
+                    <Div width="220px" styleType={selected ? "selectedScenarioLabelValue" : "scenarioLabelValue"}>
                         {value}
                     </Div>                    
                 </FlexColumns>
