@@ -26,8 +26,6 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
     }
     const nextDisabled = !presetId || scenarioCurrentStepIdx >= stepsLabels.length - 1
     const currentText = scenarioCurrentStepIdx < 0 ? "Pre Load" : stepsLabels[scenarioCurrentStepIdx]
-    const prevText = scenarioCurrentStepIdx <= 0 ? "Prev" : stepsLabels[scenarioCurrentStepIdx - 1]
-    const nextText = scenarioCurrentStepIdx < 0 ? stepsLabels[0] : nextDisabled ? "Next" : stepsLabels[scenarioCurrentStepIdx + 1]
 
     const handleScenarionStepRequest = (scenarioStepIdx) => {
         const ids = map((domainItem)=> domainItem.id, domainItems)
@@ -42,18 +40,18 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
     }
     return (
         <SimulationPlayerContainer visibility={!scenarioSelected ? "collapse" : "visible"} padding="5px" marginRight="15px" alignItems="center" styleType={scenarioSelected ? "simPlayerBorderDisabled": "simPlayerBorder"}>
-            <Div styleType={!scenarioSelected ? "simPlayerLabelDisabled": "simPlayerLabel"} marginLeft="5px">Simulation: </Div>
-            <Div marginLeft="10px"><Label  pointing='right' color="orange" >{currentText}</Label></Div>
-            <Div marginLeft="20px">
+            <Div styleType={!scenarioSelected ? "simPlayerLabelDisabled": "simPlayerLabel"} marginLeft="5px">Simulation</Div>
+            <Div marginLeft="10px">
                 <Button size="tiny" icon labelPosition='left' basic color="orange" disabled={prevDisabled} circular onClick={handlePrevRequest}>
                     <Icon name='caret square left' />
-                    {prevText}
+                    Prev
                 </Button>
             </Div>
+            <Div marginLeft="10px"><Label circular color="orange" >{currentText}</Label></Div>
             <Div marginLeft="10px">
                 <Button disabled={nextDisabled} size="tiny" icon labelPosition='right' basic color="orange"  circular onClick={handleNextRequest}>
                     <Icon name='caret square right' />
-                    {nextText}
+                    Next
                 </Button>
             </Div>
         </SimulationPlayerContainer>
