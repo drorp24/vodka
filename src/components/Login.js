@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../redux/reducers/usersReducer';
+import { useForm } from 'react-hook-form';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
@@ -41,15 +42,12 @@ export default function Login() {
   const loggedIn = useSelector(store => !!store.users.loggedIn.username);
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { register, handleSubmit, errors } = useForm();
 
-  const login = async e => {
+  const onSubmit = ({ user_name, password }) => {
     if (loggedIn) return;
 
-    e.preventDefault();
-
-    dispatch(
-      fetchUser({ user_name: 'test', password: 'test123' }) // ToDo: replace with actual values
-    );
+    dispatch(fetchUser({ user_name, password }));
   };
 
   if (loggedIn) {
@@ -66,7 +64,11 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className={classes.form}
+          noValidate
+        >
           <TextField
             variant="outlined"
             margin="normal"
@@ -77,6 +79,9 @@ export default function Login() {
             name="user_name"
             autoComplete="user_name"
             autoFocus
+            inputRef={register({ required: true })}
+            error={!!errors.user_name}
+            helperText="user_name is required"
           />
           <TextField
             variant="outlined"
@@ -88,6 +93,9 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
+            inputRef={register({ required: true })}
+            error={!!errors.password}
+            helperText="password is required"
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -99,7 +107,6 @@ export default function Login() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={login}
           >
             Sign In
           </Button>
