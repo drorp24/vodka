@@ -1,5 +1,8 @@
-import React from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Redirect, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser } from '../redux/reducers/usersReducer';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,7 +16,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { fakeAuth } from './common/PrivateRoute';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -36,28 +38,30 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Login() {
-  const [redirectToReferrer, setRedirectToReferrer] = React.useState(false);
+  const loggedIn = useSelector(store => !!store.loggedIn?.username);
+  const [loginAccepted, setLoginAccepted] = useState(false);
+  let history = useHistory();
+  window.his = history;
+  const dispatch = useDispatch();
   const classes = useStyles();
 
-  const fakeAuth = {
-    isAuthenticated: false,
-    authenticate(cb) {
-      this.isAuthenticated = true;
-      setTimeout(cb, 100); // fake async
-    },
-    signout(cb) {
-      this.isAuthenticated = false;
-      setTimeout(cb, 100); // fake async
-    },
+  const login = async e => {
+    if (loggedIn) return;
+
+    e.preventDefault();
+
+    const response = await dispatch(
+      fetchUser({ user_name: 'test', password: 'test123' }) // ToDo: replace with actual values
+    );
+    setLoginAccepted(!!response.payload?.username);
+    console.log('loginAccepted: ', loginAccepted);
+    if (loginAccepted) history.push('/');
   };
 
-  const login = () =>
-    fakeAuth.authenticate(() => {
-      setRedirectToReferrer(true);
-    });
-
-  if (redirectToReferrer === true) {
-    return <Redirect to='/simulator,' />;
+  console.log('in Login');
+  console.log('loggedIn: ', loggedIn);
+  if (loggedIn || loginAccepted) {
+    return <Redirect to='/' />;
   }
 
   return (
@@ -76,10 +80,10 @@ export default function Login() {
             margin='normal'
             required
             fullWidth
-            id='email'
-            label='Email Address'
-            name='email'
-            autoComplete='email'
+            id='user_name'
+            label='User name'
+            name='user_name'
+            autoComplete='user_name'
             autoFocus
           />
           <TextField

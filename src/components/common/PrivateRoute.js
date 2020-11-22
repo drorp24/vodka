@@ -1,29 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 
-const fakeAuth = {
-  isAuthenticated: false,
-  authenticate(cb) {
-    this.isAuthenticated = true;
-    setTimeout(cb, 100); // fake async
-  },
-  signout(cb) {
-    this.isAuthenticated = false;
-    setTimeout(cb, 100); // fake async
-  },
-};
+const PrivateRoute = ({ children, ...rest }) => {
+  const loggedIn = useSelector(store => !!store.loggedIn?.username);
+  const [permit, setPermit] = useState(false);
+  console.log('in PrivateRoute. loggedIn: ', loggedIn);
 
-export default function PrivateRoute({ children, ...rest }) {
+  useEffect(() => {
+    setPermit(loggedIn);
+  }, [loggedIn]);
+
   return (
     <Route
       {...rest}
-      render={() => {
-        return fakeAuth.isAuthenticated === true ? (
-          children
-        ) : (
-          <Redirect to='/login' />
-        );
-      }}
+      render={() => (permit ? children : <Redirect to='/login' />)}
     />
   );
-}
+};
+
+export default PrivateRoute;
