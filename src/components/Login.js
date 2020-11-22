@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../redux/reducers/usersReducer';
 
+import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,7 +15,6 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 const useStyles = makeStyles(theme => ({
@@ -38,10 +38,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Login() {
-  const loggedIn = useSelector(store => !!store.loggedIn?.username);
-  const [loginAccepted, setLoginAccepted] = useState(false);
-  let history = useHistory();
-  window.his = history;
+  const loggedIn = useSelector(store => !!store.users.loggedIn.username);
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -50,62 +47,57 @@ export default function Login() {
 
     e.preventDefault();
 
-    const response = await dispatch(
+    dispatch(
       fetchUser({ user_name: 'test', password: 'test123' }) // ToDo: replace with actual values
     );
-    setLoginAccepted(!!response.payload?.username);
-    console.log('loginAccepted: ', loginAccepted);
-    if (loginAccepted) history.push('/');
   };
 
-  console.log('in Login');
-  console.log('loggedIn: ', loggedIn);
-  if (loggedIn || loginAccepted) {
-    return <Redirect to='/' />;
+  if (loggedIn) {
+    return <Redirect to="/" />;
   }
 
   return (
-    <Container component='main' maxWidth='xs'>
+    <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component='h1' variant='h5'>
+        <Typography component="h1" variant="h5">
           Sign in
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
-            variant='outlined'
-            margin='normal'
+            variant="outlined"
+            margin="normal"
             required
             fullWidth
-            id='user_name'
-            label='User name'
-            name='user_name'
-            autoComplete='user_name'
+            id="user_name"
+            label="User name"
+            name="user_name"
+            autoComplete="user_name"
             autoFocus
           />
           <TextField
-            variant='outlined'
-            margin='normal'
+            variant="outlined"
+            margin="normal"
             required
             fullWidth
-            name='password'
-            label='Password'
-            type='password'
-            id='password'
-            autoComplete='current-password'
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
           />
           <FormControlLabel
-            control={<Checkbox value='remember' color='primary' />}
-            label='Remember me'
+            control={<Checkbox value="remember" color="primary" />}
+            label="Remember me"
           />
           <Button
-            type='submit'
+            type="submit"
             fullWidth
-            variant='contained'
-            color='primary'
+            variant="contained"
+            color="primary"
             className={classes.submit}
             onClick={login}
           >
@@ -113,12 +105,12 @@ export default function Login() {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href='#' variant='body2'>
+              <Link href="#" variant="body2">
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
-              <Link href='#' variant='body2'>
+              <Link href="#" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>

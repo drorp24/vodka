@@ -1,20 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 
 const PrivateRoute = ({ children, ...rest }) => {
-  const loggedIn = useSelector(store => !!store.loggedIn?.username);
-  const [permit, setPermit] = useState(false);
-  console.log('in PrivateRoute. loggedIn: ', loggedIn);
-
-  useEffect(() => {
-    setPermit(loggedIn);
-  }, [loggedIn]);
+  const loggedIn = useSelector(store => !!store.users.loggedIn.username);
 
   return (
     <Route
       {...rest}
-      render={() => (permit ? children : <Redirect to='/login' />)}
+      render={() => (loggedIn ? children : <Redirect to="/login" />)}
     />
   );
 };
