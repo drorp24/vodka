@@ -17,7 +17,7 @@ import CompareDomainItems from './CompareDomainItems'
 import dictionaries from "../i18n/dictionaries"
 import LOCALES from "../i18n/locales"
 import Login from './Login'
-import PrivateRoute from './common/PrivateRoute'
+import ProtectedRoute from './common/ProtectedRoute'
 
 const themes = {
   defaultTheme,
@@ -39,7 +39,7 @@ function App({themeId, compareDomainItemsMode, locale}) {
         <AppContainer height="100%" themedbackgroundcolor="windowBackground" locale={locale}>
           <BrowserRouter>
             <Switch>
-              <PrivateRoute path="/simulator">
+              <ProtectedRoute path="/simulator">
                 <TopBar/> 
                 <FlexColumns height="100%">            
                   <Div width="40%">
@@ -52,7 +52,7 @@ function App({themeId, compareDomainItemsMode, locale}) {
                     </Sidebar.Pusher>
                   </Sidebar.Pushable>
                 </FlexColumns>
-              </PrivateRoute>
+              </ProtectedRoute>
               <Route path="/">
                 <Login />
               </Route>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../redux/reducers/usersReducer';
 import { useForm } from 'react-hook-form';
@@ -43,15 +43,14 @@ export default function Login() {
   const dispatch = useDispatch();
   const classes = useStyles();
   const { register, handleSubmit, errors } = useForm();
+  const { state } = useLocation();
 
   const onSubmit = ({ user_name, password }) => {
-    if (loggedIn) return;
-
     dispatch(fetchUser({ user_name, password }));
   };
 
   if (loggedIn) {
-    return <Redirect to="/" />;
+    return <Redirect to={state?.from || '/'} />;
   }
 
   return (
