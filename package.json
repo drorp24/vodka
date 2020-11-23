@@ -22,6 +22,7 @@
     "react-dom": "^16.13.1",
     "react-intl": "^5.10.6",
     "react-hook-form": "^6.11.4",
+    "react-hook-form": "^6.11.5",
     "react-leaflet": "^2.7.0",
     "react-leaflet-coordinates": "^1.0.1",
     "react-redux": "^7.2.1",
