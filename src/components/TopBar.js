@@ -11,6 +11,7 @@ import CreateScenarioForm from './CreateScenarioForm'
 import ScenariosModal from './ScenariosModal'
 import translate from '../i18n/translate'
 import LOCALES from "../i18n/locales"
+import Logout from './Logout'
 
 export const TopBarContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
@@ -68,6 +69,7 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
                             onClick={() => toggleSideBarAction()}/>
                 </Div>
             </FlexColumns>
+            <Logout />
             {createScenarioOpen && <CreateScenarioForm/>}
             <ScenariosModal open={scenariosIsOpen} closeCB={()=>setScenariosIsOpen(false)}/>
             
