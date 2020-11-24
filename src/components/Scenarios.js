@@ -13,16 +13,16 @@ const Scenarios = ({scenarios, selectedScenarioId, loadScenariosAction, scenario
         loadScenariosAction(new AsyncRestParams("/simulation/scenario", "GET"))
     }, [loadScenariosAction])
     return (
-            <FlexRows>
-            <FlexRows styleType="label2" alignItems="center">
-                <Header>Scenarios</Header>
-            </FlexRows>
-            <Divider/>
-            <Loader size="massive" active={scenariosLoading} content="Loading"/>
-            <FlexRows>
-            {                
-                map((scenario => <Scenario key={scenario.id.value} selected={selectedScenarioId === scenario.id.value} scenario={scenario}/>), scenarios)
-            }            
+            <FlexRows maxHeight="50vh">
+                <FlexRows styleType="label2" alignItems="center">
+                    <Header>Scenarios</Header>
+                </FlexRows>
+                <Divider/>
+                <Loader size="massive" active={scenariosLoading} content="Loading"/>
+                <FlexRows>
+                {                
+                    map((scenario => <Scenario key={scenario.id.value} selected={selectedScenarioId === scenario.id.value} scenario={scenario}/>), scenarios)
+                }            
             </FlexRows>            
         </FlexRows>             
     )
