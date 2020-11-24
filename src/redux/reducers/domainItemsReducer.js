@@ -1,6 +1,8 @@
 import DomainItemType from "../../types/domainItemType"
 import WeightType from "../../types/weightType"
-import PresetType from "../../types/presetTyps"
+import PriorityPresetType from "../../types/priorityPresetType"
+import FilterPresetType from "../../types/filterPresetType"
+import GeoPresetType from "../../types/geoPresetType"
 import KeyValueType from "../../types/keyValueType"
 import { map, getOr, keyBy, flow, set, filter, reverse, sortBy, find } from 'lodash/fp'
 import { WEIGHT_UPDATED,
@@ -10,9 +12,11 @@ import { WEIGHT_UPDATED,
   TEXT_FILTER_START_SEARCH,
   TEXT_FILTER_FINISH_SEARCH,
   TEXT_FILTER_UPDATE_SELECTION,
-  SELECT_PRESET,
-  LOAD_PRESETS,
-  SELECT_SCENARIO_STEP } from "../actions/actionTypes"
+  SELECT_PRESET_GROUP,
+  LOAD_PRIORITY_PRESETS,
+  SELECT_SCENARIO_STEP, 
+  LOAD_FILTER_PRESETS,
+  LOAD_GEO_PRESETS} from "../actions/actionTypes"
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 
 /**INITIAL STATE */
@@ -28,9 +32,16 @@ const initialState = {
   },
   textFilterLoading: false,
   textFilterItems:[],
-  presets:[],
-  selectedPresetId: null,
-  selectedDomainItemID: null
+  priorityPresets:[],
+  filterPresets:[],
+  geoPresets:[],
+  selectedPriorityPresetId: null,
+  selectedFilterPresetId: null,
+  selectedGeoPresetId: null,
+  selectedDomainItemID: null,
+  loadingPriorityPresets: false,
+  loadingFilterPresets: false,
+  loadingGeoPresets: false
 }
 
 /**HELPERS */
@@ -68,25 +79,29 @@ const convertToWeights = (weights) => {
 
 /**ASYNC ACTION TYPES */
 const loadWeightsTriple = new LoadingSuccessFailureActionType(LOAD_WEIGHTS)
-const selectPresetTriple = new LoadingSuccessFailureActionType(SELECT_PRESET)
+const selectPresetGroupTriple = new LoadingSuccessFailureActionType(SELECT_PRESET_GROUP)
 const weightUpdatedTriple = new LoadingSuccessFailureActionType(WEIGHT_UPDATED)
-const loadPresetsTriple = new LoadingSuccessFailureActionType(LOAD_PRESETS)
+const loadPriorityPresetsTriple = new LoadingSuccessFailureActionType(LOAD_PRIORITY_PRESETS)
+const loadFilterPresetsTriple = new LoadingSuccessFailureActionType(LOAD_FILTER_PRESETS)
+const loadGeoPresetsTriple = new LoadingSuccessFailureActionType(LOAD_GEO_PRESETS)
 const selectScenarioStep = new LoadingSuccessFailureActionType(SELECT_SCENARIO_STEP)
 
 
 const actionHandlers = {}
 
 /**COMMON ACTION HANDLERS */
-const selectPresetLoadingActionHandler = (state, action) => {  
+const loadItemsLoadingActionHandler = (state, action) => {  
   return set("loadingItems", true, state)
 }
 
-const selectPresetSuccessActionHandler = (state, action) => {
+const loadItemsSuccessActionHandler = (state, action) => {
   const selectedDomainItemID = getOr(null, "full_id", find({full_id: state.selectedDomainItemID}, action.payload.tasks_data))
   return {
     ...state,
     selectedDomainItemID,
-    selectedPresetId: getOr(null, "previousAction.payload.body.preset_id", action),
+    selectedPriorityPresetId: getOr(null, "previousAction.payload.body.parameters_scores_preset_id", action),
+    selectedFilterPresetId: getOr(null, "previousAction.payload.body.parameters_filter_preset_id", action),
+    selectedGeoPresetId: getOr(null, "previousAction.payload.body.aoi_id", action),
     loadingItems: false,
     items: convertToDomainItems(state, getOr([], "payload.tasks_data", action), state.weights),
     neighbors: convertNeighborsToDomainItems(state, getOr([], "payload.neighbors_data", action), state.weights),
@@ -94,14 +109,14 @@ const selectPresetSuccessActionHandler = (state, action) => {
   }
 }
 
-actionHandlers[selectPresetTriple.loading] = selectPresetLoadingActionHandler
-actionHandlers[selectPresetTriple.success] = selectPresetSuccessActionHandler
+actionHandlers[selectPresetGroupTriple.loading] = loadItemsLoadingActionHandler
+actionHandlers[selectPresetGroupTriple.success] = loadItemsSuccessActionHandler
 
-actionHandlers[weightUpdatedTriple.loading] = selectPresetLoadingActionHandler
-actionHandlers[weightUpdatedTriple.success] = selectPresetSuccessActionHandler
+actionHandlers[weightUpdatedTriple.loading] = loadItemsLoadingActionHandler
+actionHandlers[weightUpdatedTriple.success] = loadItemsSuccessActionHandler
 
-actionHandlers[selectScenarioStep.loading] = selectPresetLoadingActionHandler
-actionHandlers[selectScenarioStep.success] = selectPresetSuccessActionHandler
+actionHandlers[selectScenarioStep.loading] = loadItemsLoadingActionHandler
+actionHandlers[selectScenarioStep.success] = loadItemsSuccessActionHandler
 
 
 /**SPECIFIC ACTION HANDLERS */
@@ -172,16 +187,40 @@ actionHandlers[TEXT_FILTER_UPDATE_SELECTION] = (state, action) => {
   
 }
 
-actionHandlers[loadPresetsTriple.loading] = (state, action) => {  
-   return set("loadingPresets", true, state)
+actionHandlers[loadPriorityPresetsTriple.loading] = (state, action) => {  
+   return set("loadingPriorityPresets", true, state)
 }
 
-actionHandlers[loadPresetsTriple.success] = (state, action) => {
-  const presets = map((preset) => new PresetType(preset), getOr([], "payload", action))
+actionHandlers[loadPriorityPresetsTriple.success] = (state, action) => {
+  const priorityPresets = map((priorityPreset) => new PriorityPresetType(priorityPreset), getOr([], "payload", action))
    return flow([
-    set("presets", presets),
-    set("loadingPresets", false)
+    set("priorityPresets", priorityPresets),
+    set("loadingPriorityPresets", false)
    ])(state)
+}
+
+actionHandlers[loadFilterPresetsTriple.loading] = (state, action) => {  
+  return set("loadingFilterPresets", true, state)
+}
+
+actionHandlers[loadFilterPresetsTriple.success] = (state, action) => {
+ const filterPresets = map((filterPreset) => new FilterPresetType(filterPreset), getOr([], "payload", action))
+  return flow([
+   set("filterPresets", filterPresets),
+   set("loadingFilterPresets", false)
+  ])(state)
+}
+
+actionHandlers[loadGeoPresetsTriple.loading] = (state, action) => {  
+  return set("loadingGeoPresets", true, state)
+}
+
+actionHandlers[loadGeoPresetsTriple.success] = (state, action) => {
+ const geoPresets = map((geoPreset) => new GeoPresetType(geoPreset), getOr([], "payload", action))
+  return flow([
+   set("geoPresets", geoPresets),
+   set("loadingGeoPresets", false)
+  ])(state)
 }
 
 export default function domainItems(state = initialState, action) {

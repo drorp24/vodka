@@ -1,19 +1,11 @@
 import React from 'react';
 import { connect } from "react-redux"
-import {Dropdown, Button} from 'semantic-ui-react';
+import {Popup, Button} from 'semantic-ui-react';
 import styled, {withTheme} from 'styled-components';
-import {map, getOr} from 'lodash/fp'
 import {FlexColumns} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
-import { 
-    toggleCompareDomainItemsMode, 
-    clearAllSelectedItemsForComparison,
-    selectPreset,
-    loadPresets
-} from '../redux/actions/actions'
-import AsyncRestParams from '../types/asyncRestParams';
-import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
-import { default_username } from '../configLoader';
+import { toggleCompareDomainItemsMode, clearAllSelectedItemsForComparison } from '../redux/actions/actions'
+import ChoosePresets from './ChoosePresets'
 
 export const DomainItemsToolsContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
@@ -23,10 +15,10 @@ export const DropdownContainer = styled(FlexColumns)`
     border-right: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
 `;
 
-const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForCmp, compareDomainItemsMode, 
-    toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, 
-    selectPresetAction, loadPresetsAction, loadingPresets, weights, 
-    scenarioId, scenarioStepIdx, domainItems, theme}) => {
+const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
+    toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, theme}) => {
+    
+    const [choosePresetIsOpen, setChoosePresetIsOpen] = React.useState(false)
     const onCompareClick = () => {
         toggleCompareDomainItemsModeAction()
     }
@@ -34,30 +26,22 @@ const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForC
         clearAllSelectedItemsForComparisonAction()
     }
 
-    const handlePresetSelected = (event, data) => {
-        const presetId = getOr(null, "value", data)
-        const loadItemsRequestBody = getLoadItemsRequestBody({presetId, weights, scenarioId, scenarioStepIdx})
-        selectPresetAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
-    }    
-
-    const openPresetsList = () => {
-        loadPresetsAction(new AsyncRestParams(`/config/rules_preset?user_name=${default_username}`, "GET"))
+    const onCloseReq = () => {
+        setChoosePresetIsOpen(false)
     }
 
     return (
         <DomainItemsToolsContainer alignItems="center" justifyContent="space-between">
-            <DropdownContainer minHeight="40px" alignItems="center" flexBasis="70%" justifyContent="space-between">
-                <Div marginLeft="10px" styleType="label3disabled">
-                    Choose preset:
-                </Div>
-                <Div marginRight="20px" styleType="label3disabled">
-                    <Dropdown
-                        onOpen={openPresetsList}                        
-                        options={presets}
-                        value={selectedPresetId}
-                        onChange={handlePresetSelected}
-                    />
-                </Div>
+            <DropdownContainer marginLeft="10px" minHeight="40px" alignItems="center" flexBasis="70%" justifyContent="space-between">                
+                <Popup
+                    open={choosePresetIsOpen}
+                    position="bottom left"
+                    on='click'
+                    basic
+                    flowing
+                    trigger={<Button onClick={() => setChoosePresetIsOpen(!choosePresetIsOpen)}  basic color={theme["topbarSliderButton"]} content="Choose presets"/>}>
+                        <ChoosePresets close={onCloseReq}/>
+                </Popup>                
             </DropdownContainer>
             <Div marginRight="20px">
                 <Button color={theme["topbarSliderButton"]} size="small" circular icon={compareDomainItemsMode  ? "log out" : "check"}
@@ -72,22 +56,13 @@ const DomainItemsTools = ({presets, selectedPresetId, selectedDomainItemsIdsForC
 }
 
 const mapStateToProps = state => {
-    return {
-        presets: map((preset)=>({key:preset.id, text:preset.name.length > 15 ? `${preset.name.substring(0,15)}...` : preset.name, value:preset.id}),state.domainItems.presets),
-        selectedPresetId: state.domainItems.selectedPresetId,
+    return {        
         compareDomainItemsMode: state.ui.compareDomainItemsMode,
-        selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp,
-        loadingPresets: state.domainItems.loadingPresets,
-        weights: state.domainItems.weights,
-        scenarioId: state.simulation.selectedScenarioId,
-        scenarioStepIdx: state.simulation.scenarioCurrentStepIdx,
-        domainItems: state.domainItems.items
+        selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp        
     }
 }
 
 export default connect(mapStateToProps, {
         toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode,
-        clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison,
-        selectPresetAction: selectPreset,
-        loadPresetsAction: loadPresets
+        clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison        
 })(withTheme(DomainItemsTools));

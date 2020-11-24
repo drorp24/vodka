@@ -1,11 +1,11 @@
 import {getOr, isNil} from 'lodash/fp'
 import {amount_of_items_to_load} from '../configLoader';
 
-const mandatories = ["preset_id", "weights"]
+const mandatories = ["parameters_scores_preset_id", "parameters_filter_preset_id", "aoi_id", "weights"]
 
 const requestBodyDefaults = {
     "weights":null,
-    "preset_id": null,    
+    "parameters_scores_preset_id": null,    
     "amount":amount_of_items_to_load,
     "scenario_id": null,
     "scenario_step": null,
@@ -13,9 +13,12 @@ const requestBodyDefaults = {
     }
 
 class LoadItemsRequestBodyType {
-    constructor(weights, preset_id, amount, scenario_id, scenario_step, ids){
+    constructor(weights, parameters_scores_preset_id, parameters_filter_preset_id, aoi_id,
+        amount, scenario_id, scenario_step, ids){
         this.weights = weights
-        this.preset_id = preset_id
+        this.parameters_scores_preset_id = parameters_scores_preset_id
+        this.parameters_filter_preset_id = parameters_filter_preset_id
+        this.aoi_id = aoi_id
         this.amount = amount
         this.scenario_id = scenario_id
         this.scenario_step = scenario_step
@@ -31,7 +34,9 @@ const getLoadItemsRequestBody = (params) => {
         }
     });
     const weights = getOr(requestBodyDefaults.weights, "weights", params)
-    const preset_id = getOr(requestBodyDefaults.preset_id, "presetId", params)
+    const parameters_scores_preset_id = getOr(requestBodyDefaults.parameters_scores_preset_id, "priorityPresetId", params)
+    const parameters_filter_preset_id = getOr(requestBodyDefaults.parameters_filter_preset_id, "filterPresetId", params)
+    const aio_id = getOr(requestBodyDefaults.aio_id, "geoPresetId", params)
     const amount = getOr(requestBodyDefaults.amount, "amount", params)
     let scenario_id = getOr(requestBodyDefaults.scenario_id, "scenarioId", params)
     let scenario_step = getOr(requestBodyDefaults.scenario_step, "scenarioStepIdx", params)
@@ -42,7 +47,8 @@ const getLoadItemsRequestBody = (params) => {
         scenario_id = null
         scenario_step = null
     }
-    return new LoadItemsRequestBodyType(weights, preset_id, amount, scenario_id, scenario_step, ids)
+    return new LoadItemsRequestBodyType(weights, parameters_scores_preset_id, parameters_filter_preset_id, aio_id,
+        amount, scenario_id, scenario_step, ids)
 }
 
 export default getLoadItemsRequestBody

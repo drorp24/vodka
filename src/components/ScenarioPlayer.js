@@ -14,9 +14,9 @@ export const SimulationPlayerContainer = styled(FlexColumns)`
     border-radius: 10px;
 `;
 
-const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, presetId, domainItems}) => {
+const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, priorityPresetId, filterPresetId, geoPresetId, domainItems}) => {
     const scenarioSelected = scenarioId !== null
-    const prevDisabled = !presetId || scenarioCurrentStepIdx <= 0    
+    const prevDisabled = !priorityPresetId || scenarioCurrentStepIdx <= 0    
     const currentScenario = find((scenario) => scenario.id.value === scenarioId, scenarios)
     const stepsLabels = []
     if(currentScenario){
@@ -24,12 +24,12 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
             stepsLabels.push(`Step ${index + 1}`)
         }
     }
-    const nextDisabled = !presetId || scenarioCurrentStepIdx >= stepsLabels.length - 1
+    const nextDisabled = !priorityPresetId || scenarioCurrentStepIdx >= stepsLabels.length - 1
     const currentText = scenarioCurrentStepIdx < 0 ? "Pre Load" : stepsLabels[scenarioCurrentStepIdx]
 
     const handleScenarionStepRequest = (scenarioStepIdx) => {
         const ids = map((domainItem)=> domainItem.id, domainItems)
-        const loadItemsRequestBody = getLoadItemsRequestBody({presetId, weights, scenarioId, scenarioStepIdx, ids})
+        const loadItemsRequestBody = getLoadItemsRequestBody({priorityPresetId, filterPresetId, geoPresetId, weights, scenarioId, scenarioStepIdx, ids})
         selectScenarioStepAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
     }
     const handleNextRequest = () => {
@@ -59,12 +59,14 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
 }
 
 const mapStateToProps = state => ({
+    domainItems: state.domainItems.items,
+    priorityPresetId: state.domainItems.selectedPriorityPresetId,
+    filterPresetId: state.domainItems.selectedFilterPresetId,
+    geoPresetId: state.domainItems.selectedGeoPresetId,
+    weights: state.domainItems.weights,
     scenarios: state.simulation.scenarios,
     scenarioId: state.simulation.selectedScenarioId,
-    scenarioCurrentStepIdx: state.simulation.scenarioCurrentStepIdx,
-    weights: state.domainItems.weights,
-    presetId: state.domainItems.selectedPresetId,
-    domainItems: state.domainItems.items
+    scenarioCurrentStepIdx: state.simulation.scenarioCurrentStepIdx
 })
 
 export default connect(mapStateToProps, {selectScenarioStepAction: selectScenarioStep})(ScenarioPlayer);

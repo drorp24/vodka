@@ -1,6 +1,6 @@
 import { 
   WEIGHT_UPDATED,
-  SELECT_PRESET, 
+  SELECT_PRESET_GROUP, 
   DOMAIN_ITEM_PRESSED, 
   TOGGLE_SIDE_BAR, 
   MAP_CLICKED, 
@@ -18,7 +18,9 @@ import {
   TOGGLE_CREATE_SCENARIO,
   CREATE_SCENARIO,
   LOAD_SCENARIOS,
-  LOAD_PRESETS} from "./actionTypes"
+  LOAD_PRIORITY_PRESETS,
+  LOAD_FILTER_PRESETS,
+  LOAD_GEO_PRESETS} from "./actionTypes"
 
 function makeActionCreator(type, ...argNames) {
   return function(...args) {
@@ -34,7 +36,7 @@ function makeActionCreator(type, ...argNames) {
   }
 }
 
-export const selectPreset = makeActionCreator(SELECT_PRESET, 'meta', 'body')
+export const selectPresetGroup = makeActionCreator(SELECT_PRESET_GROUP, 'meta', 'body')
 export const weightUpdated = makeActionCreator(WEIGHT_UPDATED, 'meta', 'body')
 export const loadWeights = makeActionCreator(LOAD_WEIGHTS, 'meta', 'body')
 export const handleDomainItemPressed = makeActionCreator(DOMAIN_ITEM_PRESSED, 'id')
@@ -53,4 +55,6 @@ export const selectScenarioStep = makeActionCreator(SELECT_SCENARIO_STEP, 'meta'
 export const toggleCreateScenario = makeActionCreator(TOGGLE_CREATE_SCENARIO)
 export const createScenario = makeActionCreator(CREATE_SCENARIO, 'meta', 'body')
 export const loadScenarios = makeActionCreator(LOAD_SCENARIOS, 'meta', 'body')
-export const loadPresets = makeActionCreator(LOAD_PRESETS, 'meta', 'body')
+export const loadPriorityPresets = makeActionCreator(LOAD_PRIORITY_PRESETS, 'meta', 'body')
+export const loadFilterPresets = makeActionCreator(LOAD_FILTER_PRESETS, 'meta', 'body')
+export const loadGeoPresets = makeActionCreator(LOAD_GEO_PRESETS, 'meta', 'body')

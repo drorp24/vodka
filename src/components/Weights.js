@@ -21,7 +21,14 @@ class Weights extends React.Component {
       return set('value', value, weight)
     }, this.props.weights)
     const ids = map((domainItem)=> domainItem.id, this.props.domainItems)
-    const loadItemsRequestBody = getLoadItemsRequestBody({presetId: this.props.presetId, weights, scenarioId: this.props.scenarioId, scenarioStepIdx: this.props.scenarioStepIdx, ids})
+    const loadItemsRequestBody = getLoadItemsRequestBody({
+      priorityPresetId: this.props.priorityPresetId,
+      filterPresetId: this.props.filterPresetId,
+      geoPresetId: this.props.geoPresetId,
+      weights, 
+      scenarioId: this.props.scenarioId, 
+      scenarioStepIdx: this.props.scenarioStepIdx, 
+      ids})
     this.props.weightUpdatedAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
   }
 
@@ -40,9 +47,11 @@ class Weights extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  weights: state.domainItems.weights,
-  presetId: state.domainItems.selectedPresetId,
   domainItems: state.domainItems.items,
+  priorityPresetId: state.domainItems.selectedPriorityPresetId,
+  filterPresetId: state.domainItems.selectedFilterPresetId,
+  geoPresetId: state.domainItems.selectedGeoPresetId,
+  weights: state.domainItems.weights,
   scenarioId: state.simulation.selectedScenarioId,
   scenarioStepIdx: state.simulation.scenarioCurrentStepIdx
 })
