@@ -87,7 +87,7 @@ class CreateScenarioForm extends React.Component {
                 size="large"
                 open={true}
                 dimmer="blurring">
-                <Modal.Header>Create Scenario</Modal.Header>
+                <Modal.Header><FlexColumns justifyContent="center">Create Scenario</FlexColumns></Modal.Header>
                 <Modal.Content scrolling>
                     {
                         this.props.createScenariosProcessing ? 

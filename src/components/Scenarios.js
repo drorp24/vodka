@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from "react-redux"
 import {map} from 'lodash/fp'
-import {Divider, Label, Loader} from 'semantic-ui-react';
-import {FlexColumns, FlexRows} from './common/CommonComponents';
+import {Divider, Loader,  Header} from 'semantic-ui-react';
+import {FlexRows} from './common/CommonComponents';
 import Scenario from './Scenario'
 import { loadScenarios } from '../redux/actions/actions';
 import AsyncRestParams from '../types/asyncRestParams';
@@ -15,15 +15,15 @@ const Scenarios = ({scenarios, selectedScenarioId, loadScenariosAction, scenario
     return (
             <FlexRows>
             <FlexRows styleType="label2" alignItems="center">
-                <Label size="huge" color="orange" basic>Scenarios</Label>
+                <Header>Scenarios</Header>
             </FlexRows>
             <Divider/>
             <Loader size="massive" active={scenariosLoading} content="Loading"/>
-            <FlexColumns flexWrap="wrap" width="600px" height="50vh">
+            <FlexRows>
             {                
                 map((scenario => <Scenario key={scenario.id.value} selected={selectedScenarioId === scenario.id.value} scenario={scenario}/>), scenarios)
             }            
-            </FlexColumns>            
+            </FlexRows>            
         </FlexRows>             
     )
 }
