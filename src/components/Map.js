@@ -1,16 +1,17 @@
 import React from 'react';
 import 'leaflet/dist/leaflet.css'
 import 'prunecluster-exportable/dist/LeafletStyleSheet.css'
-import L from 'leaflet'
 import "../third_party/leaflet_conditional_layer"
 import './leaflet_layers_control_style.css'
 import {Div} from './common/StyledElements';
 import { Map as LeafletMap, TileLayer } from 'react-leaflet'
 import { CoordinatesControl } from 'react-leaflet-coordinates'
 import { connect } from "react-redux"
-import {getOr, find, map, flow, take, last} from "lodash/fp"
+import {getOr, find, concat, filter, isNil, flow, map, max, min} from "lodash/fp"
 import {handleMapClicked} from '../redux/actions/actions'
 import {default_map_center} from '../configLoader';
+import MapLayers from "./mapLayers"
+import {LayerParameters} from "./mapLayersConfig"
 
 const MAX_ZOOM = 18
 const MIN_ZOOM = 1
@@ -25,12 +26,7 @@ class Map extends React.Component {
             zoom: 14,
           }
         this.leafletMap = null
-        this.markersGroup = L.layerGroup()
-        this.neighborsPolygonsGroup = L.layerGroup()
-        this.polygonsGroup  = L.layerGroup()
-        this.geojsonLayer = null
-        this.geojsonNeighborsLayer = null
-        this.markersTopXLayer = null
+        this.mapLayers = new MapLayers()
         this.layersControlAdded = false
     }
 
@@ -53,72 +49,44 @@ class Map extends React.Component {
 
     whenReadyCB = (obj) => {
       this.leafletMap = obj.target
-      this.markersGroup.addTo(this.leafletMap)
-      this.neighborsPolygonsGroup.addTo(this.leafletMap)
-      this.polygonsGroup.addTo(this.leafletMap)
-      this.refreshLayers()
-    }
-
-    initLayersControl = () => {
-      if(this.props.domainItems && this.props.domainItems.length > 0 && !this.layersControlAdded){
-        const overlayers = {
-          "Tasks Polygons": this.polygonsGroup,
-          "Tasks Neigbors": this.neighborsPolygonsGroup,
-          "Tasks Location": this.markersGroup
-        }
-        L.control.layers(null, overlayers).addTo(this.leafletMap) 
-        this.layersControlAdded = true
-        console.log("layers control added")
-      }      
+      this.mapLayers.initialize(this.leafletMap)
+      this.mapLayers.addLayersControl(this.leafletMap)
+      this.refreshLayers()      
     }
 
     refreshLayers = () => {
-      const topMarkersCount = this.calcMarkersCount()
-      this.markersGroup.clearLayers()
-      this.polygonsGroup.clearLayers()
-      this.neighborsPolygonsGroup.clearLayers()
-      const geoJsonItems = flow([
-        take(topMarkersCount),
-        map((domainItem) => domainItem.geogson)        
-      ])(this.props.domainItems)
-      this.geojsonLayer = L.geoJSON(geoJsonItems)
+      const topItemsCount = this.calcMarkersCount()
+      this.mapLayers.clearLayers()
+      // Buildings layer
+      const buildings = concat(this.props.neighbors, this.props.domainItems)
+      this.mapLayers.addLayer("buildings", buildings, new LayerParameters("geojson", []), topItemsCount)
+      // Tasks layer
+      this.mapLayers.addLayer("tasks", this.props.domainItems, new LayerParameters("geojson", []), topItemsCount)
+      // "tfi" layer
+      const tfiItems = filter((domainItem)=> {
+        const tfiAttr = find((attr) => attr.key === "tfi"  ,domainItem.weightedAttributes)
+        return !isNil(tfiAttr.value) &&  tfiAttr.value > 0
+      }, this.props.domainItems)
+      const popupConf = [{key: "name", path: "name"}, {key: "score", path: "score"}, {key: "priority", path: "currIdx"}]
+      const maxTfiScore = flow([map((item) =>  find((attr)=> attr.key === "tfi", item.weightedAttributes).value)], max)(this.props.domainItems)
+      const minTfiScore = flow([map((item) =>  find((attr)=> attr.key === "tfi", item.weightedAttributes).value)], min)(this.props.domainItems)
+      this.mapLayers.addLayer("tfi", tfiItems, new LayerParameters("center", popupConf), topItemsCount, (domainItem) => {
+        const item_tfi_value = find((attr)=> attr.key === "tfi", domainItem.weightedAttributes).value
+        const relativ_score = (item_tfi_value - minTfiScore) / (maxTfiScore - minTfiScore)
+        return relativ_score > 0.5 ? "high_tfi.svg" : "low_tfi.svg"
+      })
 
-      const geoJsonNeighborsItems = flow([
-        take(topMarkersCount),
-        map((domainItem) => domainItem.geogson)
-      ])(this.props.neighbors)
-      this.geojsonNeighborsLayer = L.geoJSON(geoJsonNeighborsItems,
-        {
-          style: {
-            "color": "#ff7800",
-            "weight": 5,
-            "opacity": 0.65
-        }
-        })
-
-      const maxScore = getOr(0, "[0].score", this.props.domainItems)
-      const minScore = getOr(0, "score", last(this.props.domainItems))
-      const markersArray = flow([
-        take(topMarkersCount),
-        map((domainItem) => {
-          const selectedId = getOr(null, "selected_id", this.props)
-
-          const degree = Math.round(Math.log(this.props.domainItems.length))          
-          let iconSize = maxScore === minScore ? 20 : Math.round(Math.pow(domainItem.score - minScore, degree) / Math.pow(maxScore - minScore, degree)) * 35
-          iconSize = Math.max(iconSize, 20)
-
-          const iconUrl = domainItem.id === selectedId ? 'selected-map-marker.svg' : "map-marker.svg"
-          const marker = L.marker(domainItem.center, {icon: L.icon({iconUrl, iconSize: [iconSize,iconSize],iconAnchor: [9, 9]})})
-          marker.bindPopup(`${domainItem.name} <br/> score: ${parseInt(domainItem.score)} <br/> importance: ${domainItem.currIdx + 1}`)          
-          return marker
-        })
-      ])(this.props.domainItems)
-      this.markersTopXLayer = L.conditionalMarkers(markersArray, {maxMarkers: this.props.domainItems.length})
-
-      this.polygonsGroup.addLayer(this.geojsonLayer)
-      this.neighborsPolygonsGroup.addLayer(this.geojsonNeighborsLayer)
-      this.markersGroup.addLayer(this.markersTopXLayer)
-      this.initLayersControl()      
+      const maxMerScore = flow([map((item) =>  find((attr)=> attr.key === "mer", item.weightedAttributes).value)], max)(this.props.domainItems)
+      const minMerScore = flow([map((item) =>  find((attr)=> attr.key === "mer", item.weightedAttributes).value)], min)(this.props.domainItems)
+      const merItems = filter((domainItem)=> {
+        const merAttr = find((attr) => attr.key === "mer"  ,domainItem.weightedAttributes)
+        return !isNil(merAttr.value) &&  merAttr.value > 0
+      }, this.props.domainItems)
+      this.mapLayers.addLayer("mer", merItems, new LayerParameters("center", []), topItemsCount, (domainItem) => {
+        const item_mer_value = find((attr)=> attr.key === "mer", domainItem.weightedAttributes).value
+        const relativ_score = (item_mer_value - minMerScore) / (maxMerScore - minMerScore)
+        return relativ_score < 1/3 ? "low_cen.svg" : relativ_score < 2/3 ? "med_cen.svg" : "high_cen.svg"
+      })
     }
 
     calcMarkersCount = () => {

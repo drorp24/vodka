@@ -1,6 +1,6 @@
 
 export default class DomainItemType {
-  constructor(id, name, description, center, geogson, weightedAttributes, score) {
+  constructor(id, name, description, center, geojson, weightedAttributes, score) {
     this.id = id
     this.name = name
     this.description = description
@@ -9,12 +9,12 @@ export default class DomainItemType {
     this.currIdx = -1
     this.score = score
     this.center = center
-    this.geogson = geogson
+    this.geojson = geojson
     this.expanded = false
   }
 
   static copyDomainItem(domainItem) {
-    const newDomainItem = new DomainItemType(domainItem.id, domainItem.name, domainItem.description, domainItem.center, domainItem.geogson, domainItem.weightedAttributes)
+    const newDomainItem = new DomainItemType(domainItem.id, domainItem.name, domainItem.description, domainItem.center, domainItem.geojson, domainItem.weightedAttributes)
     newDomainItem.prevIdx = domainItem.prevIdx
     newDomainItem.currIdx = domainItem.currIdx
     newDomainItem.score = domainItem.score
