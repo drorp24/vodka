@@ -1,18 +1,25 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { server_host_url } from '../../configLoader';
 
 export const fetchUser = createAsyncThunk(
   'user/fetch',
   async ({ user_name, password }, thunkAPI) => {
     try {
-      const response = await axios.post(`${server_host_url}/login`, {
-        user_name,
-        password,
+      const response = await fetch(`${server_host_url}/login`, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_name,
+          password,
+        }),
       });
-      if (!response?.data) throw new Error('fetchUser returned no data');
-      if (response.data.code === 400) throw new Error(response.data.message);
-      return response.data;
+      const json = await response.json();
+      if (!json) throw new Error('fetchUser returned no data');
+      if (json.code === 400) throw new Error(json.message);
+      return json;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }

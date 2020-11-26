@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/reducers/usersReducer';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import { Button } from 'semantic-ui-react';
+import { withTheme } from 'styled-components';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Logout = () => {
+const Logout = ({ theme }) => {
   const username = useSelector(store => store.users.loggedIn.username);
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -40,16 +40,14 @@ const Logout = () => {
     <div className={classes.root}>
       <span className={classes.username}>{username}</span>
       <Button
-        className={classes.button}
+        color={theme['topbarSliderButton']}
         size="small"
-        color="primary"
-        endIcon={<PowerSettingsNewIcon />}
+        circular
+        icon={'shutdown'}
         onClick={handleClick}
-      >
-        Logout
-      </Button>
+      />
     </div>
   );
 };
 
-export default Logout;
+export default withTheme(Logout);
