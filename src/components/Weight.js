@@ -46,7 +46,7 @@ class Weight extends React.Component {
               <Label styleType="label2" marginLeft="10px">{this.props.weight.displayName()}</Label>
               <LabelSem color={this.props.theme["weightLabel"]} circular>{this.getValue()}</LabelSem>
           </FlexColumns>
-          <SemanticSlider value={this.getValue()} min={min} max={max} step={step} onChange={this.handleSliderChanging} onAfterChange={this.handleSliderDoneChanging}/>
+          <SemanticSlider disabled={this.props.disabled} value={this.getValue()} min={min} max={max} step={step} onChange={this.handleSliderChanging} onAfterChange={this.handleSliderDoneChanging}/>
           <Divider color="black"/>
         </FlexRows>
     )

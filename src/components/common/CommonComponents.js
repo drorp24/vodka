@@ -14,13 +14,13 @@ flex-direction: column;
 
 export const SemanticSlider = styled(Slider)`
     .rc-slider-track {
-        background-color: ${({ theme }) => theme["sliderTarck"]};
+        background-color: ${({ theme, disabled }) => theme[disabled ? "sliderTarckDisabled" : "sliderTarck"]};
     }
     .rc-slider-rail {
-        background-color: ${({ theme }) => theme["sliderRail"]};
+        background-color: ${({ theme, disabled }) => theme["sliderRail"]};
     }
     .rc-slider-handle {
         border: 0px;
-        background-color: ${({ theme }) => theme["sliderHandle"]};;
+        background-color: ${({ theme, disabled }) => theme[disabled ? "sliderHandleDisabled" : "sliderHandle"]};;
     }
 `

@@ -32,7 +32,7 @@ class Weights extends React.Component {
     this.props.weightUpdatedAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
   }
 
-  renderWeight = (weight) => (<Weight key={weight.key} weight={weight} onChange={this.handleWeightUpdate}/>)
+  renderWeight = (weight) => (<Weight disabled={this.props.loadingItems} key={weight.key} weight={weight} onChange={this.handleWeightUpdate}/>)
 
   render() {
     return (
@@ -51,6 +51,7 @@ const mapStateToProps = state => ({
   priorityPresetId: state.domainItems.selectedPriorityPresetId,
   filterPresetId: state.domainItems.selectedFilterPresetId,
   geoPresetId: state.domainItems.selectedGeoPresetId,
+  loadingItems: state.domainItems.loadingItems,
   weights: state.domainItems.weights,
   scenarioId: state.simulation.selectedScenarioId,
   scenarioStepIdx: state.simulation.scenarioCurrentStepIdx
