@@ -70,8 +70,14 @@ class Map extends React.Component {
       const minAttrScore = flow([map((item) =>  find((attr)=> attr.key === attrName, item.weightedAttributes).value), min])(this.props.domainItems)
       this.mapLayers.addLayer(attrName, items, new LayerParameters("center", []), topItemsCount, (domainItem) => {
         const itemAttrValue = find((attr)=> attr.key === attrName, domainItem.weightedAttributes).value
-        const relativ_score = (itemAttrValue - minAttrScore) / (maxAttrScore - minAttrScore)
-        return relativ_score < 1/3 ? icons[0] : relativ_score < 2/3 ? icons[1] : icons[2]
+        const relativ_score = (itemAttrValue - minAttrScore) / (maxAttrScore - minAttrScore)        
+        let iconCnt = 0
+        const iconLength = icons.length
+        while (iconCnt < iconLength){
+          if(relativ_score <= (iconCnt + 1)/iconLength) return icons[iconCnt]
+          iconCnt += 1
+        }
+        return null
       })
     }
 
