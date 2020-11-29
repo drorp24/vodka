@@ -96,7 +96,7 @@ export default class MapLayers {
     _buildPopupString(item, popupKeyAndPathArr){
         let popupString = ''
         popupKeyAndPathArr.forEach(popupKeyAndPath => {
-            popupString += `${popupKeyAndPath.key}: ${item[popupKeyAndPath.path]} <br/>`
+            popupString += `${popupKeyAndPath.key}: ${popupKeyAndPath.countFromOne ? item[popupKeyAndPath.path] + 1 : item[popupKeyAndPath.path]} <br/>`
         });
         return popupString
     }

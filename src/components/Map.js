@@ -54,9 +54,30 @@ class Map extends React.Component {
       this.refreshLayers()      
     }
 
+    _calcAttrLayerItems = (attrName) => {
+      const items = filter((domainItem)=> {
+        const attr = find((attr) => attr.key === attrName  ,domainItem.weightedAttributes)
+        return !isNil(attr.value) &&  attr.value > 0
+      }, this.props.domainItems)
+      return items      
+    }
+
+    _addAttrLayer = (items, attrName, topItemsCount, icons) => {
+      const maxAttrScore = flow([
+        map((item) => find((attr)=> attr.key === attrName, item.weightedAttributes).value),
+        max
+      ])(this.props.domainItems)
+      const minAttrScore = flow([map((item) =>  find((attr)=> attr.key === attrName, item.weightedAttributes).value), min])(this.props.domainItems)
+      this.mapLayers.addLayer(attrName, items, new LayerParameters("center", []), topItemsCount, (domainItem) => {
+        const itemAttrValue = find((attr)=> attr.key === attrName, domainItem.weightedAttributes).value
+        const relativ_score = (itemAttrValue - minAttrScore) / (maxAttrScore - minAttrScore)
+        return relativ_score < 1/3 ? icons[0] : relativ_score < 2/3 ? icons[1] : icons[2]
+      })
+    }
+
     refreshLayers = () => {
       const topItemsCount = this.calcMarkersCount()
-      const popupConf = [{key: "name", path: "name"}, {key: "score", path: "score"}, {key: "priority", path: "currIdx"}]
+      const popupConf = [{key: "name", path: "name"}, {key: "score", path: "score"}, {key: "priority", path: "currIdx", countFromOne: true}]
       this.mapLayers.clearLayers()
       // Buildings layer
       const buildings = concat(this.props.neighbors, this.props.domainItems)
@@ -64,29 +85,11 @@ class Map extends React.Component {
       // Tasks layer
       this.mapLayers.addLayer("tasks", this.props.domainItems, new LayerParameters("geojson", popupConf), topItemsCount)
       // "tfi" layer
-      const tfiItems = filter((domainItem)=> {
-        const tfiAttr = find((attr) => attr.key === "tfi"  ,domainItem.weightedAttributes)
-        return !isNil(tfiAttr.value) &&  tfiAttr.value > 0
-      }, this.props.domainItems)      
-      const maxTfiScore = flow([map((item) =>  find((attr)=> attr.key === "tfi", item.weightedAttributes).value)], max)(this.props.domainItems)
-      const minTfiScore = flow([map((item) =>  find((attr)=> attr.key === "tfi", item.weightedAttributes).value)], min)(this.props.domainItems)
-      this.mapLayers.addLayer("tfi", tfiItems, new LayerParameters("center", []), topItemsCount, (domainItem) => {
-        const item_tfi_value = find((attr)=> attr.key === "tfi", domainItem.weightedAttributes).value
-        const relativ_score = (item_tfi_value - minTfiScore) / (maxTfiScore - minTfiScore)
-        return relativ_score < 1/3 ? "low_act.svg" : relativ_score < 2/3 ? "med_act.svg" : "high_act.svg"
-      })
-
-      const maxMerScore = flow([map((item) =>  find((attr)=> attr.key === "mer", item.weightedAttributes).value)], max)(this.props.domainItems)
-      const minMerScore = flow([map((item) =>  find((attr)=> attr.key === "mer", item.weightedAttributes).value)], min)(this.props.domainItems)
-      const merItems = filter((domainItem)=> {
-        const merAttr = find((attr) => attr.key === "mer"  ,domainItem.weightedAttributes)
-        return !isNil(merAttr.value) &&  merAttr.value > 0
-      }, this.props.domainItems)
-      this.mapLayers.addLayer("mer", merItems, new LayerParameters("center", []), topItemsCount, (domainItem) => {
-        const item_mer_value = find((attr)=> attr.key === "mer", domainItem.weightedAttributes).value
-        const relativ_score = (item_mer_value - minMerScore) / (maxMerScore - minMerScore)
-        return relativ_score < 1/3 ? "low_cen.svg" : relativ_score < 2/3 ? "med_cen.svg" : "high_cen.svg"
-      })
+      const tfiItems = this._calcAttrLayerItems("tfi")
+      this._addAttrLayer(tfiItems, "tfi", topItemsCount, ["low_act.svg", "med_act.svg", "high_act.svg"])
+      // "mer" layer
+      const merItems = this._calcAttrLayerItems("mer")
+      this._addAttrLayer(merItems, "mer", topItemsCount, ["low_cen.svg", "med_cen.svg", "high_cen.svg"])
     }
 
     calcMarkersCount = () => {
