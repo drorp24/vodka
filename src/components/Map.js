@@ -73,7 +73,7 @@ class Map extends React.Component {
       this.mapLayers.addLayer("tfi", tfiItems, new LayerParameters("center", []), topItemsCount, (domainItem) => {
         const item_tfi_value = find((attr)=> attr.key === "tfi", domainItem.weightedAttributes).value
         const relativ_score = (item_tfi_value - minTfiScore) / (maxTfiScore - minTfiScore)
-        return relativ_score > 0.5 ? "high_tfi.svg" : "low_tfi.svg"
+        return relativ_score < 1/3 ? "low_act.svg" : relativ_score < 2/3 ? "med_act.svg" : "high_act.svg"
       })
 
       const maxMerScore = flow([map((item) =>  find((attr)=> attr.key === "mer", item.weightedAttributes).value)], max)(this.props.domainItems)
