@@ -96,6 +96,8 @@ class Map extends React.Component {
       // "mer" layer
       const merItems = this._calcAttrLayerItems("mer")
       this._addAttrLayer("mer", merItems, "mer", topItemsCount, ["low_cen.svg", "med_cen.svg", "high_cen.svg"])
+      const selectedDomainItem = find({id: this.props.selected_id}, this.props.domainItems)
+      this.mapLayers.updateSelectedItem(selectedDomainItem, new LayerParameters("center", popupConf))
     }
 
     calcMarkersCount = () => {

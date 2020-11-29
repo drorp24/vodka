@@ -12,17 +12,22 @@ class LayerGroupWrapper {
 export default class MapLayers {
     constructor(){
         this.layerGroupWrrapers = []
-        this.layersConfigMapByKey = keyBy("key", layersConfig)
+        this.layersConfigMapByKey = keyBy("key", layersConfig.layers)
         this.initialized = false
+        this.selectedItemLayer = null
     }
 
     initialize(leafletMap){
         if(this.initialized) return
-        layersConfig.forEach(layerConfig => {
+        layersConfig.layers.forEach(layerConfig => {
             const layerGroupWrapper = new LayerGroupWrapper(layerConfig.key, L.layerGroup())
             this.layerGroupWrrapers.push(layerGroupWrapper)
             layerGroupWrapper.leafletLayerGroup.addTo(leafletMap)
         });
+        if(layersConfig.selected_item_layer){
+            this.selectedItemLayer = new LayerGroupWrapper("selected_item", L.layerGroup())
+            this.selectedItemLayer.leafletLayerGroup.addTo(leafletMap)
+        }        
         this.initialized = true
     }
 
@@ -41,11 +46,22 @@ export default class MapLayers {
 
     addLayersControl(leafletMap) {
         const overlayers = {}
-        layersConfig.forEach(layerConfig => {
+        layersConfig.layers.forEach(layerConfig => {
             const layerGroupWrrapers = find({key: layerConfig.key}, this.layerGroupWrrapers)
             overlayers[layerConfig.name] = layerGroupWrrapers.leafletLayerGroup
         });
         L.control.layers(null, overlayers).addTo(leafletMap)        
+    }
+
+    updateSelectedItem(item, layerParameters) {
+        if(!this.selectedItemLayer) return
+        this.selectedItemLayer.leafletLayerGroup.clearLayers()
+        if(!item) return
+        const layerConfig = layersConfig.selected_item_layer
+        const markerOptions = {icon: L.icon({iconUrl: layerConfig.iconUrl, iconSize: [layerConfig.iconSize, layerConfig.iconSize], iconAnchor: [layerConfig.iconAnchorX, layerConfig.iconAnchorY]})}
+        const marker = L.marker(item[layerParameters.geoPropPath], markerOptions)
+        marker.setZIndexOffset(1000)
+        this.selectedItemLayer.leafletLayerGroup.addLayer(marker)
     }
 
     _addGeojsonLayer(key, items, top, layerParameters) {
@@ -76,8 +92,8 @@ export default class MapLayers {
             take(top),
             map((item) => {
                 const iconUrl = calcIconCallBack ? calcIconCallBack(item) : layerConfig.iconUrl
-                const iconOptions = {icon: L.icon({iconUrl, iconSize: [layerConfig.iconSize, layerConfig.iconSize], iconAnchor: [layerConfig.iconAnchorX, layerConfig.iconAnchorY]})}
-                const marker = L.marker(item[layerParameters.geoPropPath], iconOptions)
+                const markerOptions = {icon: L.icon({iconUrl, iconSize: [layerConfig.iconSize, layerConfig.iconSize], iconAnchor: [layerConfig.iconAnchorX, layerConfig.iconAnchorY]})}
+                const marker = L.marker(item[layerParameters.geoPropPath], markerOptions)
                 const popupString = this._buildPopupString(item, layerParameters.popupKeyAndPathArr)
                 if(!isEmpty(popupString))
                     marker.bindPopup(popupString)
