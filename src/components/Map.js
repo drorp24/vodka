@@ -59,16 +59,16 @@ class Map extends React.Component {
         const attr = find((attr) => attr.key === attrName  ,domainItem.weightedAttributes)
         return !isNil(attr.value) &&  attr.value > 0
       }, this.props.domainItems)
-      return items      
+      return items
     }
 
-    _addAttrLayer = (items, attrName, topItemsCount, icons) => {
+    _addAttrLayer = (layerKey, items, attrName, topItemsCount, icons) => {
       const maxAttrScore = flow([
         map((item) => find((attr)=> attr.key === attrName, item.weightedAttributes).value),
         max
       ])(this.props.domainItems)
       const minAttrScore = flow([map((item) =>  find((attr)=> attr.key === attrName, item.weightedAttributes).value), min])(this.props.domainItems)
-      this.mapLayers.addLayer(attrName, items, new LayerParameters("center", []), topItemsCount, (domainItem) => {
+      this.mapLayers.addLayer(layerKey, items, new LayerParameters("center", []), topItemsCount, (domainItem) => {
         const itemAttrValue = find((attr)=> attr.key === attrName, domainItem.weightedAttributes).value
         const relativ_score = (itemAttrValue - minAttrScore) / (maxAttrScore - minAttrScore)        
         let iconCnt = 0
@@ -92,10 +92,10 @@ class Map extends React.Component {
       this.mapLayers.addLayer("tasks", this.props.domainItems, new LayerParameters("geojson", popupConf), topItemsCount)
       // "tfi" layer
       const tfiItems = this._calcAttrLayerItems("tfi")
-      this._addAttrLayer(tfiItems, "tfi", topItemsCount, ["low_act.svg", "med_act.svg", "high_act.svg"])
+      this._addAttrLayer("tfi", tfiItems, "tfi", topItemsCount, ["low_act.svg", "med_act.svg", "high_act.svg"])
       // "mer" layer
       const merItems = this._calcAttrLayerItems("mer")
-      this._addAttrLayer(merItems, "mer", topItemsCount, ["low_cen.svg", "med_cen.svg", "high_cen.svg"])
+      this._addAttrLayer("mer", merItems, "mer", topItemsCount, ["low_cen.svg", "med_cen.svg", "high_cen.svg"])
     }
 
     calcMarkersCount = () => {
