@@ -67,7 +67,7 @@ class DomainItem extends React.Component {
     return (
     this.props.domainItem.expanded ?
       (
-        <DomainItemExpandedFlexRows position="relative" style={this.props.style} themedbackgroundcolor={backgroundColor}>
+        <DomainItemExpandedFlexRows position="relative" style={this.props.style} themedbackgroundcolor={this.props.domainItem.id === this.props.selectedDomainItemID ? "selectedItemBackgroundColor": backgroundColor}>
               <FlexColumns  alignItems="center" padding={this.props.compareDomainItemsMode ? "10px 10px 10px 5px" : "10px"}  onClick={this.onItemClick}>
               {   this.props.compareDomainItemsMode ? <Div>
                     <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.checkDisabled()} size="large" 
@@ -84,7 +84,7 @@ class DomainItem extends React.Component {
       )
       :
       (
-        <DomainItemFlexColumns position="relative" style={this.props.style} themedbackgroundcolor={backgroundColor} alignItems="center" padding={this.props.compareDomainItemsMode ? "10px 10px 10px 5px" : "10px"}  onClick={this.onItemClick}>
+        <DomainItemFlexColumns position="relative" style={this.props.style} themedbackgroundcolor={this.props.domainItem.id === this.props.selectedDomainItemID ? "selectedItemBackgroundColor": backgroundColor} alignItems="center" padding={this.props.compareDomainItemsMode ? "10px 10px 10px 5px" : "10px"}  onClick={this.onItemClick}>
           {this.props.compareDomainItemsMode ? <Div>
               <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.checkDisabled()} size="large" 
                     name={selectedForComparison ? "check circle outline" : "circle outline"}/>
@@ -102,7 +102,8 @@ class DomainItem extends React.Component {
 
 const mapStateToProps = state => ({
   compareDomainItemsMode: state.ui.compareDomainItemsMode,
-  selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp
+  selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp,
+  selectedDomainItemID: state.domainItems.selectedDomainItemID
 })
 
 export default connect(mapStateToProps, {

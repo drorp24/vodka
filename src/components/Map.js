@@ -96,7 +96,7 @@ class Map extends React.Component {
       // "mer" layer
       const merItems = this._calcAttrLayerItems("mer")
       this._addAttrLayer("mer", merItems, "mer", topItemsCount, ["low_cen.svg", "med_cen.svg", "high_cen.svg"])
-      const selectedDomainItem = find({id: this.props.selected_id}, this.props.domainItems)
+      const selectedDomainItem = find({id: this.props.selectedDomainItemID}, this.props.domainItems)
       this.mapLayers.updateSelectedItem(selectedDomainItem, new LayerParameters("center", popupConf))
     }
 
@@ -104,20 +104,19 @@ class Map extends React.Component {
       let currZoom = Math.max(this.getMapZoom(), MIN_ZOOM + 1)
       currZoom = Math.min(currZoom, MAX_ZOOM)
       const degree = Math.round(Math.sqrt(this.props.domainItems.length))
-      let topMarkersCount =  Math.ceil((Math.pow((currZoom - MIN_ZOOM), degree) / Math.pow(MAX_ZOOM - MIN_ZOOM, degree)) * this.props.domainItems.length)
-      console.log(`top count for zoom: ${currZoom} is ${topMarkersCount} out of ${this.props.domainItems.length}`)
+      let topMarkersCount =  Math.ceil((Math.pow((currZoom - MIN_ZOOM), degree) / Math.pow(MAX_ZOOM - MIN_ZOOM, degree)) * this.props.domainItems.length)      
       return topMarkersCount
     }
 
     handleZoomEnd = (eventParams) => {      
-      this.refreshLayers()      
+      this.refreshLayers()
     }
 
     refreshMap = () => {
       if(!this.leafletMap) return
-      const zoom = getOr(null, "selected_id", this.props) ? MAX_ZOOM : INITIAL_ZOOM_LEVEL
-      this.leafletMap.setZoom(zoom)      
-      const center = getOr(null, "selected_id", this.props) ? find({id: this.props.selected_id}, this.props.domainItems).center : 
+      const zoom = getOr(null, "selectedDomainItemID", this.props) ? MAX_ZOOM : INITIAL_ZOOM_LEVEL
+      this.leafletMap.setZoom(zoom)
+      const center = getOr(null, "selectedDomainItemID", this.props) ? find({id: this.props.selectedDomainItemID}, this.props.domainItems).center : 
       [this.state.lat, this.state.lng]
       this.leafletMap.flyTo(center)
     }
@@ -143,7 +142,7 @@ class Map extends React.Component {
   const mapStateToProps = state => ({
     domainItems: state.domainItems.items,
     neighbors: state.domainItems.neighbors,
-    selected_id: state.domainItems.selectedDomainItemID
+    selectedDomainItemID: state.domainItems.selectedDomainItemID
   })
 
   export default connect(mapStateToProps, {handleMapClickedAction: handleMapClicked})(Map);
