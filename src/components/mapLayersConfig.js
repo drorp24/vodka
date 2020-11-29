@@ -30,7 +30,7 @@ export default [
         name: "Activity",
         type: LAYER_TYPE.MARKERS,
         iconUrl: "high_tfi.svg",
-        iconSize: 20,
+        iconSize: 25,
         iconAnchorX: 9,
         iconAnchorY: 9
     },
@@ -39,7 +39,7 @@ export default [
         name: "Centrality",
         type: LAYER_TYPE.MARKERS,
         iconUrl: "selected-map-marker.svg",
-        iconSize: 20,
+        iconSize: 25,
         iconAnchorX: 20,
         iconAnchorY: 20
     }
