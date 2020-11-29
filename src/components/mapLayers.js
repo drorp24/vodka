@@ -1,6 +1,6 @@
 import layersConfig, {LAYER_TYPE} from "./mapLayersConfig"
 import L from 'leaflet'
-import {keyBy, flow, take, map, find, isNil, isEmpty} from 'lodash/fp'
+import {keyBy, flow, take, map, find, isNil, isEmpty, omit} from 'lodash/fp'
 
 class LayerGroupWrapper {
     constructor(key, leafletLayerGroup){
@@ -52,9 +52,21 @@ export default class MapLayers {
         const layerConfig = this.layersConfigMapByKey[key]
         const geoJsonItems = flow([
             take(top),
-            map((item) => item[layerParameters.geoPropPath])
+            map((item) => {
+                const type = "Feature"
+                const properties = {...omit(layerParameters.geoPropPath, item)}
+                const geometry = item[layerParameters.geoPropPath]
+                return {type, geometry, properties}
+            })
           ])(items)
-        const geojsonLayer = L.geoJSON(geoJsonItems, {style: layerConfig.style})
+        const geojsonLayer = L.geoJSON(geoJsonItems, {
+            style: layerConfig.style,
+            onEachFeature: (feature, layer) => {
+                const popupString = this._buildPopupString(feature.properties, layerParameters.popupKeyAndPathArr)
+                if(!isEmpty(popupString))
+                    layer.bindPopup(popupString);
+              }
+        })
         this._addLayerToGroup(geojsonLayer, key)
     }
 

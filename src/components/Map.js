@@ -56,21 +56,21 @@ class Map extends React.Component {
 
     refreshLayers = () => {
       const topItemsCount = this.calcMarkersCount()
+      const popupConf = [{key: "name", path: "name"}, {key: "score", path: "score"}, {key: "priority", path: "currIdx"}]
       this.mapLayers.clearLayers()
       // Buildings layer
       const buildings = concat(this.props.neighbors, this.props.domainItems)
       this.mapLayers.addLayer("buildings", buildings, new LayerParameters("geojson", []), topItemsCount)
       // Tasks layer
-      this.mapLayers.addLayer("tasks", this.props.domainItems, new LayerParameters("geojson", []), topItemsCount)
+      this.mapLayers.addLayer("tasks", this.props.domainItems, new LayerParameters("geojson", popupConf), topItemsCount)
       // "tfi" layer
       const tfiItems = filter((domainItem)=> {
         const tfiAttr = find((attr) => attr.key === "tfi"  ,domainItem.weightedAttributes)
         return !isNil(tfiAttr.value) &&  tfiAttr.value > 0
-      }, this.props.domainItems)
-      const popupConf = [{key: "name", path: "name"}, {key: "score", path: "score"}, {key: "priority", path: "currIdx"}]
+      }, this.props.domainItems)      
       const maxTfiScore = flow([map((item) =>  find((attr)=> attr.key === "tfi", item.weightedAttributes).value)], max)(this.props.domainItems)
       const minTfiScore = flow([map((item) =>  find((attr)=> attr.key === "tfi", item.weightedAttributes).value)], min)(this.props.domainItems)
-      this.mapLayers.addLayer("tfi", tfiItems, new LayerParameters("center", popupConf), topItemsCount, (domainItem) => {
+      this.mapLayers.addLayer("tfi", tfiItems, new LayerParameters("center", []), topItemsCount, (domainItem) => {
         const item_tfi_value = find((attr)=> attr.key === "tfi", domainItem.weightedAttributes).value
         const relativ_score = (item_tfi_value - minTfiScore) / (maxTfiScore - minTfiScore)
         return relativ_score > 0.5 ? "high_tfi.svg" : "low_tfi.svg"
