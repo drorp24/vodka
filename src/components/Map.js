@@ -15,7 +15,7 @@ import {LayerParameters} from "./mapLayersConfig"
 
 const MAX_ZOOM = 18
 const MIN_ZOOM = 1
-const INITIAL_ZOOM_LEVEL = 11
+const INITIAL_ZOOM_LEVEL = 15
 
 class Map extends React.Component {
     constructor(props) {
@@ -23,7 +23,7 @@ class Map extends React.Component {
         this.state = {
             lat: default_map_center[0],
             lng: default_map_center[1],
-            zoom: 14,
+            zoom: INITIAL_ZOOM_LEVEL,
           }
         this.leafletMap = null
         this.mapLayers = new MapLayers()
