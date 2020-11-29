@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux"
-import {map, getOr} from 'lodash/fp'
+import {map, getOr, isNil} from 'lodash/fp'
 import {Dropdown, Divider, Button, Loader, Header} from 'semantic-ui-react';
 import {Div} from './common/StyledElements';
 import {FlexRows} from './common/CommonComponents';
@@ -28,12 +28,18 @@ const ChoosePresets = (
         weights,
         scenarioId,
         scenarioStepIdx,
-        close
+        close,
+        initialPriorityPresetId,
+        initialFilterPresetId,
+        initialGeoPresetId
     }) => {
 
     const [priorityPresetId, setPriorityPresetId] = React.useState(null)
+    const actualPriorityPresetId = !isNil(priorityPresetId) ? priorityPresetId : initialPriorityPresetId
     const [filterPresetId, setFilterPresetId] = React.useState(null)
+    const actualFilterPresetId = !isNil(filterPresetId) ? filterPresetId : initialFilterPresetId
     const [geoPresetId, setGeoPresetId] = React.useState(null)
+    const actualGeoPresetId = !isNil(geoPresetId) ? geoPresetId : initialGeoPresetId
 
     const popupRef = React.useRef()
     React.useEffect(() => {
@@ -57,7 +63,7 @@ const ChoosePresets = (
     });
 
     const handlePresetsSelected = () => {
-        const loadItemsRequestBody = getLoadItemsRequestBody({priorityPresetId, filterPresetId, geoPresetId, weights, scenarioId, scenarioStepIdx})
+        const loadItemsRequestBody = getLoadItemsRequestBody({priorityPresetId: actualPriorityPresetId, filterPresetId: actualFilterPresetId, geoPresetId: actualGeoPresetId, weights, scenarioId, scenarioStepIdx})
         selectPresetGroupAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
         close()
     }    
@@ -67,7 +73,7 @@ const ChoosePresets = (
         updater(id)
     }
 
-    const enableLoad = priorityPresetId && filterPresetId && geoPresetId
+    const enableLoad = actualPriorityPresetId && actualFilterPresetId && actualGeoPresetId
     const presetsLoading = loadingPriorityPresets || loadingFilterPresets || loadingGeoPresets
 
     return (
@@ -82,6 +88,7 @@ const ChoosePresets = (
                     Priority parameters
                 </Div>
                 <Dropdown
+                    value={actualPriorityPresetId}
                     clearable
                     fluid
                     search
@@ -95,6 +102,7 @@ const ChoosePresets = (
                     Filters
                 </Div>
                 <Dropdown
+                    value={actualFilterPresetId}
                     clearable
                     fluid
                     search
@@ -108,6 +116,7 @@ const ChoosePresets = (
                 </Div>
                 <FlexRows marginBottom="10px">
                     <Dropdown
+                        value={actualGeoPresetId}
                         clearable
                         fluid
                         search
@@ -127,7 +136,10 @@ const mapStateToProps = state => ({
     geoPresets: map((geoPreset)=>({key: geoPreset.id, text:geoPreset.name.length > 15 ? `${geoPreset.name.substring(0,15)}...` : geoPreset.name, value:geoPreset.id}), state.domainItems.geoPresets),
     loadingPriorityPresets: state.domainItems.loadingPriorityPresets,
     loadingFilterPresets: state.domainItems.loadingFilterPresets,
-    loadingGeoPresets: state.domainItems.loadingGeoPresets,    
+    loadingGeoPresets: state.domainItems.loadingGeoPresets,
+    initialPriorityPresetId: state.domainItems.selectedPriorityPresetId,
+    initialFilterPresetId: state.domainItems.selectedFilterPresetId,
+    initialGeoPresetId: state.domainItems.selectedGeoPresetId,
     weights: state.domainItems.weights,
     scenarioId: state.simulation.selectedScenarioId,
     scenarioStepIdx: state.simulation.scenarioCurrentStepIdx,
