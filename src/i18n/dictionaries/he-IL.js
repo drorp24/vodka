@@ -28,6 +28,7 @@ export default {
         "simulation_sigint": "סימולציית סיגינט",
         "pre_load": "טרום טעינה",
         "step": "שלב {number}",
-        "create_scenario": "צור תרחיש"
+        "create_scenario": "צור תרחיש",
+        "select_to_compare": "בחר בבקשה לכל היותר {max_items_to_compare} פריטים להשוואה"
     }
 }

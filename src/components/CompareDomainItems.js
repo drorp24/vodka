@@ -7,6 +7,7 @@ import {FlexRows} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
 import { toggleCompareDomainItemsMode } from '../redux/actions/actions'
 import {max_items_to_compare} from '../configLoader';
+import translate from '../i18n/translate'
 
 const CompareDomainItems = ({theme, compareDomainItemsMode, selectedDomainItemsIdsForCmp, toggleCompareDomainItemsModeAction, domainItems}) => {
     
@@ -14,7 +15,7 @@ const CompareDomainItems = ({theme, compareDomainItemsMode, selectedDomainItemsI
         return (
             <FlexRows alignItems="center" justifyContent="center" width="100%" height="calc(100vh - 60px)">
                 <Div styleType="label1" marginBottom="20px">
-                {`Please select up to ${max_items_to_compare} items to compare`}
+                    {translate("select_to_compare", true, {max_items_to_compare})}
                 </Div>                
             </FlexRows>
         )
