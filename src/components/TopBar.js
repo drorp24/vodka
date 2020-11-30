@@ -9,12 +9,13 @@ import Scenarios from './Scenarios'
 import ScenarioPlayer from './ScenarioPlayer'
 import DomainItemsSearch from './DomainItemsSearch'
 import CreateScenarioForm from './CreateScenarioForm'
+import translate from '../i18n/translate'
 
 export const TopBarContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
 `;
 
-const TopBar = ({themeId, sideBarOpen, createScenarioOpen, toggleSideBarAction, theme, switchThemeAction, compareDomainItemsMode, toggleCreateScenarioAction}) => {
+const TopBar = ({themeId, sideBarOpen, createScenarioOpen, toggleSideBarAction, theme, switchThemeAction, compareDomainItemsMode, toggleCreateScenarioAction}) => {    
     return (
         <TopBarContainer minHeight="60px" alignItems="center" marginLeft="20px" width="100%" position="relative">
             <FlexColumns alignItems="center" justifyContent="space-between" width="100%">
@@ -26,10 +27,10 @@ const TopBar = ({themeId, sideBarOpen, createScenarioOpen, toggleSideBarAction, 
                             button
                             style={{"background":`${theme["iconButtonColor"]}`, "color": `${theme["iconButtonColorIcon"]}`}}>
                             <Dropdown.Menu>
-                            <Dropdown.Header  content='Create' />
+                            <Dropdown.Header  content={translate("create", true)} />
                             <Dropdown.Divider/>
-                            <Dropdown.Item icon='film' text='Scenario' onClick={()=>{toggleCreateScenarioAction()}}/>
-                            <Dropdown.Item icon='filter' text='Rules Preset' />
+                            <Dropdown.Item icon='film' text={translate("scenario", true)} onClick={()=>{toggleCreateScenarioAction()}}/>
+                            <Dropdown.Item icon='filter' text={translate("rules_preset", true)} />
                             </Dropdown.Menu>
                         </Dropdown>
                     </FlexColumns>

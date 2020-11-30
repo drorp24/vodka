@@ -9,6 +9,7 @@ import {selectScenarioStep} from '../redux/actions/actions'
 import AsyncRestParams from '../types/asyncRestParams';
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
 import {map} from 'lodash/fp'
+import translate from '../i18n/translate'
 
 export const SimulationPlayerContainer = styled(FlexColumns)`
     border-radius: 10px;
@@ -17,15 +18,15 @@ export const SimulationPlayerContainer = styled(FlexColumns)`
 const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, priorityPresetId, filterPresetId, geoPresetId, domainItems}) => {
     const scenarioSelected = scenarioId !== null
     const prevDisabled = !priorityPresetId || scenarioCurrentStepIdx <= 0    
-    const currentScenario = find((scenario) => scenario.id.value === scenarioId, scenarios)
+    const currentScenario = find((scenario) => scenario.id === scenarioId, scenarios)
     const stepsLabels = []
     if(currentScenario){
-        for (let index = 0; index < currentScenario.stepsCount.value; index++) {
+        for (let index = 0; index < currentScenario.stepsCount; index++) {
             stepsLabels.push(`Step ${index + 1}`)
         }
     }
     const nextDisabled = !priorityPresetId || scenarioCurrentStepIdx >= stepsLabels.length - 1
-    const currentText = scenarioCurrentStepIdx < 0 ? "Pre Load" : stepsLabels[scenarioCurrentStepIdx]
+    const currentText = scenarioCurrentStepIdx < 0 ? translate("pre_load") : stepsLabels[scenarioCurrentStepIdx]
 
     const handleScenarionStepRequest = (scenarioStepIdx) => {
         const ids = map((domainItem)=> domainItem.id, domainItems)
@@ -40,18 +41,20 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
     }
     return (
         <SimulationPlayerContainer visibility={!scenarioSelected ? "collapse" : "visible"} padding="5px" marginRight="15px" alignItems="center" styleType={scenarioSelected ? "simPlayerBorderDisabled": "simPlayerBorder"}>
-            <Div styleType={!scenarioSelected ? "simPlayerLabelDisabled": "simPlayerLabel"} marginLeft="5px">Simulation</Div>
+            <Div styleType={!scenarioSelected ? "simPlayerLabelDisabled": "simPlayerLabel"} marginLeft="5px">
+                {translate("simulation_sigint")}:
+            </Div>
             <Div marginLeft="10px">
                 <Button size="tiny" icon labelPosition='left' basic color="orange" disabled={prevDisabled} circular onClick={handlePrevRequest}>
                     <Icon name='caret square left' />
-                    Prev
+                    {translate("prev")}
                 </Button>
             </Div>
             <Div marginLeft="10px"><Label circular color="orange" >{currentText}</Label></Div>
             <Div marginLeft="10px">
                 <Button disabled={nextDisabled} size="tiny" icon labelPosition='right' basic color="orange"  circular onClick={handleNextRequest}>
                     <Icon name='caret square right' />
-                    Next
+                    {translate("next")}
                 </Button>
             </Div>
         </SimulationPlayerContainer>

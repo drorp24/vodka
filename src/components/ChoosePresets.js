@@ -12,6 +12,7 @@ import {
 } from '../redux/actions/actions'
 import AsyncRestParams from '../types/asyncRestParams';
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
+import translate from '../i18n/translate'
 
 const ChoosePresets = (
     {
@@ -79,13 +80,13 @@ const ChoosePresets = (
     return (
         <FlexRows width="300px" ref={popupRef}>
             <FlexRows alignItems="center">
-                <Header>Choose Presets</Header>
+            <Header>{translate("choose_presets", true)}</Header>
             </FlexRows>
             <Divider/>
             <Loader size="massive" active={presetsLoading} content="Loading"/>
             <FlexRows marginBottom="10px">
                 <Div marginBottom="5px">
-                    Priority parameters
+                    {translate("priority_parameters", true)}
                 </Div>
                 <Dropdown
                     value={actualPriorityPresetId}
@@ -99,7 +100,7 @@ const ChoosePresets = (
             </FlexRows>
             <FlexRows marginBottom="10px">
                 <Div marginBottom="5px">
-                    Filters
+                    {translate("filters", true)}
                 </Div>
                 <Dropdown
                     value={actualFilterPresetId}
@@ -112,7 +113,7 @@ const ChoosePresets = (
                 />
             </FlexRows>
                 <Div marginBottom="5px">
-                    Geographic filter
+                    {translate("geographic_filter", true)}
                 </Div>
                 <FlexRows marginBottom="10px">
                     <Dropdown
@@ -125,7 +126,7 @@ const ChoosePresets = (
                         onChange={(event, data) => {handleChoose(data, setGeoPresetId)}}
                     />
                 </FlexRows>
-            <Button color="orange" fluid disabled={!enableLoad} onClick={handlePresetsSelected}>Load</Button>
+            <Button color="orange" fluid disabled={!enableLoad} onClick={handlePresetsSelected}>{translate("load", true)}</Button>
         </FlexRows>
     )
 }

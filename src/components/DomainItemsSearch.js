@@ -9,6 +9,7 @@ import {
     textFilterStartSearch,
     textFilterFinishSearch,
     textFilterUpdateSelection } from '../redux/actions/actions'
+import {useIntl} from "react-intl"
 
 
 export const SearchStyled = styled(Search)`
@@ -64,11 +65,11 @@ const DomainItemsSerach = ({
             }), results)
             return results
         }
-        
+        const intl = useIntl()
         return (
             <FlexColumns position="absolute" left="calc(50% - 30vh)" marginRight="10px" height="50px" alignItems="center" marginLeft="5px" justifyContent="space-between">
                 <SearchStyled
-                        placeholder="Search"
+                        placeholder={intl.formatMessage({id: "search"})}
                         ref={ref}
                         onKeyPress={keyPress}
                         showNoResults={textFilterLoading ? false : true}

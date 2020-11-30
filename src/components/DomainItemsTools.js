@@ -6,6 +6,7 @@ import {FlexColumns} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
 import { toggleCompareDomainItemsMode, clearAllSelectedItemsForComparison } from '../redux/actions/actions'
 import ChoosePresets from './ChoosePresets'
+import translate from "../i18n/translate"
 
 export const DomainItemsToolsContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
@@ -39,7 +40,7 @@ const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
                     on='click'
                     basic
                     flowing
-                    trigger={<Button onClick={() => setChoosePresetIsOpen(!choosePresetIsOpen)}  basic color={theme["topbarSliderButton"]} content="Choose presets"/>}>
+                    trigger={<Button onClick={() => setChoosePresetIsOpen(!choosePresetIsOpen)}  basic color={theme["topbarSliderButton"]} content={translate("choose_presets", true)}/>}>
                         <ChoosePresets close={onCloseReq}/>
                 </Popup>                
             </DropdownContainer>

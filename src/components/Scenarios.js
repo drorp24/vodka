@@ -6,6 +6,7 @@ import {FlexRows} from './common/CommonComponents';
 import Scenario from './Scenario'
 import { loadScenarios } from '../redux/actions/actions';
 import AsyncRestParams from '../types/asyncRestParams';
+import translate from '../i18n/translate'
 
 
 const Scenarios = ({scenarios, selectedScenarioId, loadScenariosAction, scenariosLoading}) => {
@@ -15,13 +16,13 @@ const Scenarios = ({scenarios, selectedScenarioId, loadScenariosAction, scenario
     return (
             <FlexRows maxHeight="50vh">
                 <FlexRows styleType="label2" alignItems="center">
-                    <Header>Scenarios</Header>
+                <Header>{translate("scenarios", true)}</Header>
                 </FlexRows>
                 <Divider/>
                 <Loader size="massive" active={scenariosLoading} content="Loading"/>
                 <FlexRows>
                 {                
-                    map((scenario => <Scenario key={scenario.id.value} selected={selectedScenarioId === scenario.id.value} scenario={scenario}/>), scenarios)
+                    map((scenario => <Scenario key={scenario.id} selected={selectedScenarioId === scenario.id} scenario={scenario}/>), scenarios)
                 }            
             </FlexRows>            
         </FlexRows>             
