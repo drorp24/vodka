@@ -25,6 +25,7 @@ export default {
         "next":"הבא",
         "prev":"קודם",
         "simulation_sigint": "סימולציית סיגינט",
-        "pre_load": "טרום טעינה"
+        "pre_load": "טרום טעינה",
+        "step": "שלב {number}"
     }
 }

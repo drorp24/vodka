@@ -22,7 +22,7 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
     const stepsLabels = []
     if(currentScenario){
         for (let index = 0; index < currentScenario.stepsCount; index++) {
-            stepsLabels.push(`Step ${index + 1}`)
+            stepsLabels.push(translate("step", false, {number: index + 1}))
         }
     }
     const nextDisabled = !priorityPresetId || scenarioCurrentStepIdx >= stepsLabels.length - 1
