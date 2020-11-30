@@ -1,6 +1,7 @@
 import React from 'react';
 import 'leaflet/dist/leaflet.css'
 import 'prunecluster-exportable/dist/LeafletStyleSheet.css'
+import {injectIntl} from "react-intl"
 import "../third_party/leaflet_conditional_layer"
 import './leaflet_layers_control_style.css'
 import {Div} from './common/StyledElements';
@@ -83,7 +84,7 @@ class Map extends React.Component {
 
     refreshLayers = () => {
       const topItemsCount = this.calcMarkersCount()
-      const popupConf = [{key: "name", path: "name"}, {key: "score", path: "score"}, {key: "priority", path: "currIdx", countFromOne: true}]
+      const popupConf = [{key: this.props.intl.formatMessage({id: "name"}), path: "name"}, {key: this.props.intl.formatMessage({id: "score"}), path: "score"}, {key: this.props.intl.formatMessage({id: "priority"}), path: "currIdx", countFromOne: true}]
       this.mapLayers.clearLayers()
       // Buildings layer
       const buildings = concat(this.props.neighbors, this.props.domainItems)
@@ -145,4 +146,4 @@ class Map extends React.Component {
     selectedDomainItemID: state.domainItems.selectedDomainItemID
   })
 
-  export default connect(mapStateToProps, {handleMapClickedAction: handleMapClicked})(Map);
+  export default connect(mapStateToProps, {handleMapClickedAction: handleMapClicked})(injectIntl(Map));

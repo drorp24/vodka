@@ -29,6 +29,8 @@ export default {
         "pre_load": "pre load",
         "step": "step {number}",
         "create_scenario": "create scenario",
-        "select_to_compare": "please select up to {max_items_to_compare} items to compare"
+        "select_to_compare": "please select up to {max_items_to_compare} items to compare",
+        "priority": "priority",
+        "score": "score"
     }
 }

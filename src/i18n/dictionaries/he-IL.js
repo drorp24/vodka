@@ -29,6 +29,8 @@ export default {
         "pre_load": "טרום טעינה",
         "step": "שלב {number}",
         "create_scenario": "צור תרחיש",
-        "select_to_compare": "בחר בבקשה לכל היותר {max_items_to_compare} פריטים להשוואה"
+        "select_to_compare": "בחר בבקשה לכל היותר {max_items_to_compare} פריטים להשוואה",
+        "priority": "תעדוף",
+        "score": "ציון"
     }
 }
