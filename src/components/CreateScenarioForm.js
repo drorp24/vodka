@@ -6,6 +6,7 @@ import {getOr, isEmpty, toNumber, values, flow, compact, isNaN} from 'lodash/fp'
 import {toggleCreateScenario, createScenario} from '../redux/actions/actions'
 import AsyncRestParams from '../types/asyncRestParams';
 import { FlexColumns } from './common/CommonComponents';
+import translate from '../i18n/translate'
 
 const FORM_FIELDS = {
     NAME: "name",
@@ -87,7 +88,7 @@ class CreateScenarioForm extends React.Component {
                 size="large"
                 open={true}
                 dimmer="blurring">
-                <Modal.Header><FlexColumns justifyContent="center">Create Scenario</FlexColumns></Modal.Header>
+                <Modal.Header><FlexColumns justifyContent="center">{translate("create_scenario", true)}</FlexColumns></Modal.Header>
                 <Modal.Content scrolling>
                     {
                         this.props.createScenariosProcessing ? 
@@ -99,26 +100,26 @@ class CreateScenarioForm extends React.Component {
                         : 
                         <Form>
                         <Segment color="grey">
-                            {this.renderSimpleField({header:"Scenario Name", required: true, inputType: "text", 
+                            {this.renderSimpleField({header:translate("name"), required: true, inputType: "text", 
                                                     onChange: (value) => {this.onFieldChange(FORM_FIELDS.NAME, value)}, error: this.errors[FORM_FIELDS.NAME]})}
                             <FormField>
-                                <label>Scenario Description</label>
+                                {translate("description")}
                                 <TextArea onChange={(value) => {this.onFieldChange(FORM_FIELDS.DESCRIPTION, value)}}/>
                             </FormField>
-                            {this.renderSimpleField({header:"Scenario steps count", unitLabel: "steps", min: 1, max: 5,
+                            {this.renderSimpleField({header:translate("stepsCount"), unitLabel: "steps", min: 1, max: 5,
                                                      onChange: (value) => {this.onFieldChange(FORM_FIELDS.STEPS, value)}, error: this.errors[FORM_FIELDS.STEPS]})}
                         </Segment>
                         <Segment color="grey">
                             <Form.Group>
-                                {this.renderSimpleField({header:"Sig tasks percentage", min: 1, max: 100,
+                                {this.renderSimpleField({header:translate("tarPer"), min: 1, max: 100,
                                                     onChange: (value) => {this.onFieldChange(FORM_FIELDS.SIG_TASKS_PERC, value)}, error: this.errors[FORM_FIELDS.SIG_TASKS_PERC]})}
-                                {this.renderSimpleField({header:"Sig neighbors percentage", min: 1, max: 10,
+                                {this.renderSimpleField({header:translate("neiPer"), min: 1, max: 10,
                                                 onChange: (value) => {this.onFieldChange(FORM_FIELDS.SIG_NEIGH_PERC, value)}, error: this.errors[FORM_FIELDS.SIG_NEIGH_PERC]})}
-                                {this.renderSimpleField({header:"Radius detect neighbors", min: 1, max: 1000,
+                                {this.renderSimpleField({header:translate("neiRad"), min: 1, max: 1000,
                                                 onChange: (value) => {this.onFieldChange(FORM_FIELDS.RADIUS, value)}, error: this.errors[FORM_FIELDS.RADIUS]})}
                             </Form.Group>
                             <Form.Group>
-                                {this.renderSimpleField({header:"Next step sig tasks percentage", min: 1, max: 100,
+                                {this.renderSimpleField({header:translate("nextSteptarPer"), min: 1, max: 100,
                                                 onChange: (value) => {this.onFieldChange(FORM_FIELDS.NEXT_STEP_SIG_TASKS_PERC, value)}, error: this.errors[FORM_FIELDS.NEXT_STEP_SIG_TASKS_PERC]})}
                             </Form.Group>
                         </Segment>
@@ -127,10 +128,10 @@ class CreateScenarioForm extends React.Component {
                 </Modal.Content>
                 <Modal.Actions>
                 <Button onClick={this.props.toggleCreateScenarioAction} color={this.props.theme["cancelButtonColor"]}>
-                    Cancel
+                        {translate("cancel", true)}
                     </Button>
                     <Button onClick={this.onCreate} color={this.props.theme["createButtonColor"]}>
-                        Create
+                        {translate("create", true)}
                     </Button>
                 </Modal.Actions>
             </Modal>

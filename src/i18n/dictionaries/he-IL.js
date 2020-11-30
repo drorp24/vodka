@@ -9,6 +9,7 @@ export default {
         "load": "טען",
         "search": "חפש",
         "create": "צור",
+        "cancel": "בטל",
         "scenario": "תרחיש",
         "rules_preset": "חוקים",
         "scenarios": "תרחישים",
@@ -26,6 +27,7 @@ export default {
         "prev":"קודם",
         "simulation_sigint": "סימולציית סיגינט",
         "pre_load": "טרום טעינה",
-        "step": "שלב {number}"
+        "step": "שלב {number}",
+        "create_scenario": "צור תרחיש"
     }
 }

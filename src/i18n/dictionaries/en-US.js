@@ -9,6 +9,7 @@ export default {
         "load": "load",
         "search": "search",
         "create": "create",
+        "cancel": "cancel",
         "scenario": "scenario",
         "rules_preset": "rules preset",
         "scenarios": "scenarios",
@@ -26,6 +27,7 @@ export default {
         "prev":"prev",
         "simulation_sigint": "com simultaion",
         "pre_load": "pre load",
-        "step": "step {number}"        
+        "step": "step {number}",
+        "create_scenario": "create scenario"
     }
 }
