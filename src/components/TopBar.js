@@ -1,64 +1,75 @@
 import React from 'react';
 import { connect } from "react-redux"
 import styled, {withTheme} from 'styled-components';
-import {Button, Icon, Popup, Dropdown} from 'semantic-ui-react';
+import {Button, Dropdown} from 'semantic-ui-react';
 import {FlexColumns} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
-import {toggleSideBar, switchTheme, toggleCreateScenario} from '../redux/actions/actions'
-import Scenarios from './Scenarios'
+import {toggleSideBar, switchTheme, toggleCreateScenario, selectLocale} from '../redux/actions/actions'
 import ScenarioPlayer from './ScenarioPlayer'
 import DomainItemsSearch from './DomainItemsSearch'
 import CreateScenarioForm from './CreateScenarioForm'
+import ScenariosModal from './ScenariosModal'
 import translate from '../i18n/translate'
+import LOCALES from "../i18n/locales"
 
 export const TopBarContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
 `;
 
-const TopBar = ({themeId, sideBarOpen, createScenarioOpen, toggleSideBarAction, theme, switchThemeAction, compareDomainItemsMode, toggleCreateScenarioAction}) => {    
+const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme, 
+                switchThemeAction, compareDomainItemsMode, toggleCreateScenarioAction, selectLocaleAction, locale}) => {
+    const [scenariosIsOpen, setScenariosIsOpen] = React.useState(false)
     return (
-        <TopBarContainer minHeight="60px" alignItems="center" marginLeft="20px" width="100%" position="relative">
-            <FlexColumns alignItems="center" justifyContent="space-between" width="100%">
-                <FlexColumns alignItems="center">
-                    <FlexColumns  marginRight="30px">
-                        <Dropdown
-                            icon='list'
-                            className='icon'
-                            button
-                            style={{"background":`${theme["iconButtonColor"]}`, "color": `${theme["iconButtonColorIcon"]}`}}>
-                            <Dropdown.Menu>
+        <TopBarContainer minHeight="60px" alignItems="center"  width="100%" position="relative" justifyContent="space-between">
+            <Div  margin="0px 10px">
+                    <Dropdown
+                        direction={locale === LOCALES.HEBREW ? "left" : "right"}
+                        icon='list'
+                        className='icon'
+                        button
+                        style={{"background":`${theme["iconButtonColor"]}`, "color": `${theme["iconButtonColorIcon"]}`}}>
+                        <Dropdown.Menu direction={locale === LOCALES.HEBREW ? "left" : "right"}>
                             <Dropdown.Header  content={translate("create", true)} />
-                            <Dropdown.Divider/>
-                            <Dropdown.Item icon='film' text={translate("scenario", true)} onClick={()=>{toggleCreateScenarioAction()}}/>
+                            <Dropdown.Divider/>                            
                             <Dropdown.Item icon='filter' text={translate("rules_preset", true)} />
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </FlexColumns>
-                    <Button disabled={compareDomainItemsMode ? true : false} color={theme["topbarSliderButton"]} circular icon={sideBarOpen ? 'angle double left' : 'angle double right'}
+                            <Dropdown.Header  content={translate("open", true)} />
+                            <Dropdown.Divider/>
+                            <Dropdown.Item text={translate("scenarios", true)} onClick={()=>setScenariosIsOpen(true)} icon="film"/>
+                            <Dropdown.Header  content={translate("simulation", true)} />
+                            <Dropdown.Divider/>
+                            <Dropdown.Item icon='film' text={translate("create_scenario", true)} onClick={()=>{toggleCreateScenarioAction()}}/>
+                            <Dropdown.Header  content={translate("settings", true)} />
+                            <Dropdown.Divider/>
+                            <Dropdown.Item>
+                                <Dropdown text={translate("language", true)} direction={locale === LOCALES.HEBREW ? "left" : "right"}>
+                                    <Dropdown.Menu direction={locale === LOCALES.HEBREW ? "left" : "right"}>
+                                        <Dropdown.Item text={translate("hebrew", true)} onClick={()=>{selectLocaleAction(LOCALES.HEBREW)}}/>
+                                        <Dropdown.Item text={translate("english", true)} onClick={()=>{selectLocaleAction(LOCALES.ENGLISH)}}/>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </Dropdown.Item>
+                            <Dropdown.Item>
+                                <Dropdown text={translate("theme", true)} direction={locale === LOCALES.HEBREW ? "left" : "right"}>
+                                    <Dropdown.Menu direction={locale === LOCALES.HEBREW ? "left" : "right"}>
+                                        <Dropdown.Item text={translate("dark", true)} onClick={() => switchThemeAction('darkTheme')}/>
+                                        <Dropdown.Item text={translate("white", true)} onClick={() => switchThemeAction('defaultTheme')}/>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+            </Div>
+            <DomainItemsSearch/>             
+            <FlexColumns>
+                <ScenarioPlayer/>
+                <Div margin="0px 10px">
+                    <Button disabled={compareDomainItemsMode ? true : false} color={theme["topbarSliderButton"]} circular icon={sideBarOpen ? `angle double ${locale === LOCALES.HEBREW ? 'left' : 'right'}` : `angle double ${locale === LOCALES.HEBREW ? 'right' : 'left'}`}
                             onClick={() => toggleSideBarAction()}/>
-                    <Div marginLeft="20px">
-                        <Button circular  size="medium" color={theme["iconButtonColor"]} icon onClick={() => switchThemeAction(themeId === "defaultTheme" ? 'darkTheme' : 'defaultTheme')}>
-                            <Icon name={themeId === "defaultTheme" ? 'moon' : 'sun'}/>
-                        </Button>
-                    </Div>
-                    <Div marginLeft="20px" position="relative">
-                        <Popup
-                            style={{"overflow": "auto"}}
-                            position="bottom left"
-                            on='click'
-                            basic
-                            flowing
-                            trigger={<Button color={theme["topbarSliderButton"]} circular icon='file'/>}>
-                                <Scenarios/>
-                        </Popup>                    
-                    </Div>
-                </FlexColumns>
-                <Div marginLeft="20px" marginRight="20px">
-                    <ScenarioPlayer/>
                 </Div>
-                {createScenarioOpen && <CreateScenarioForm/>}
             </FlexColumns>
-            <DomainItemsSearch/>
+            {createScenarioOpen && <CreateScenarioForm/>}
+            <ScenariosModal open={scenariosIsOpen} closeCB={()=>setScenariosIsOpen(false)}/>
+            
         </TopBarContainer>
     )
 }
@@ -66,7 +77,7 @@ const TopBar = ({themeId, sideBarOpen, createScenarioOpen, toggleSideBarAction, 
 const mapStateToProps = state => ({
     sideBarOpen: state.ui.sideBarOpen,
     createScenarioOpen: state.ui.createScenarioOpen,
-    themeId: state.ui.themeId,
+    locale: state.ui.locale,
     compareDomainItemsMode: state.ui.compareDomainItemsMode
   })
 
@@ -74,5 +85,6 @@ export default connect(mapStateToProps,
     {
         toggleSideBarAction: toggleSideBar, 
         switchThemeAction: switchTheme,
-        toggleCreateScenarioAction: toggleCreateScenario
+        toggleCreateScenarioAction: toggleCreateScenario,
+        selectLocaleAction: selectLocale
     })(withTheme(TopBar));

@@ -10,12 +10,13 @@ import AsyncRestParams from '../types/asyncRestParams';
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
 import {map} from 'lodash/fp'
 import translate from '../i18n/translate'
+import LOCALES from "../i18n/locales"
 
 export const SimulationPlayerContainer = styled(FlexColumns)`
     border-radius: 10px;
 `;
 
-const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, priorityPresetId, filterPresetId, geoPresetId, domainItems}) => {
+const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, priorityPresetId, filterPresetId, geoPresetId, domainItems, locale}) => {
     const scenarioSelected = scenarioId !== null
     const prevDisabled = !priorityPresetId || scenarioCurrentStepIdx <= 0    
     const currentScenario = find((scenario) => scenario.id === scenarioId, scenarios)
@@ -45,15 +46,15 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
                 {translate("simulation_sigint")}:
             </Div>
             <Div marginLeft="10px">
-                <Button size="tiny" icon labelPosition='left' basic color="orange" disabled={prevDisabled} circular onClick={handlePrevRequest}>
-                    <Icon name='caret square left' />
+                <Button size="tiny" icon labelPosition={locale === LOCALES.HEBREW? 'right' : 'left'} basic color="orange" disabled={prevDisabled} circular onClick={handlePrevRequest}>
+                    <Icon name={`caret square ${locale === LOCALES.HEBREW ? 'right' : 'left'}`} />
                     {translate("prev")}
                 </Button>
             </Div>
             <Div marginLeft="10px"><Label circular color="orange" >{currentText}</Label></Div>
             <Div marginLeft="10px">
-                <Button disabled={nextDisabled} size="tiny" icon labelPosition='right' basic color="orange"  circular onClick={handleNextRequest}>
-                    <Icon name='caret square right' />
+                <Button disabled={nextDisabled} size="tiny" icon labelPosition={locale === LOCALES.HEBREW? 'left' : 'right'} basic color="orange"  circular onClick={handleNextRequest}>
+                    <Icon name={`caret square ${locale === LOCALES.HEBREW ? 'left' : 'right'}`} />
                     {translate("next")}
                 </Button>
             </Div>
@@ -69,7 +70,8 @@ const mapStateToProps = state => ({
     weights: state.domainItems.weights,
     scenarios: state.simulation.scenarios,
     scenarioId: state.simulation.selectedScenarioId,
-    scenarioCurrentStepIdx: state.simulation.scenarioCurrentStepIdx
+    scenarioCurrentStepIdx: state.simulation.scenarioCurrentStepIdx,
+    locale: state.ui.locale,
 })
 
 export default connect(mapStateToProps, {selectScenarioStepAction: selectScenarioStep})(ScenarioPlayer);

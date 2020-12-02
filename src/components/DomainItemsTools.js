@@ -44,7 +44,7 @@ const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
                         <ChoosePresets close={onCloseReq}/>
                 </Popup>                
             </DropdownContainer>
-            <Div marginRight="20px">
+            <Div margin="0px 20px">
                 <Button color={theme["topbarSliderButton"]} size="small" circular icon={compareDomainItemsMode  ? "log out" : "check"}
                         onClick={onCompareClick}/>
                 {

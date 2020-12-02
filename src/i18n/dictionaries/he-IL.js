@@ -25,12 +25,23 @@ export default {
         "creationTime":"זמן יצירה",
         "next":"הבא",
         "prev":"קודם",
-        "simulation_sigint": "סימולציית סיגינט",
+        "simulation_sigint": "סימולציית",
         "pre_load": "טרום טעינה",
         "step": "שלב {number}",
         "create_scenario": "צור תרחיש",
         "select_to_compare": "בחר בבקשה לכל היותר {max_items_to_compare} פריטים להשוואה",
         "priority": "תעדוף",
-        "score": "ציון"
+        "score": "ציון",
+        "settings": "הגדרות",
+        "language": "שפה",
+        "hebrew": "עברית",
+        "english": "english",
+        "dark": "כהה",
+        "white": "בהיר",
+        "open": "פתח",
+        "loading": "טוען",
+        "processing": "מעבד",
+        "close": "סגור",
+        "theme": "ערכת נושא"
     }
 }

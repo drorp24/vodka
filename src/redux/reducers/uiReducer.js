@@ -8,7 +8,8 @@ import {
     TOGGLE_COMPARE_DOMAIN_ITEMS_MODE,
     CLEAR_ALL_SELECTED_ITEMS_FOR_COMPARISON,
     TOGGLE_CREATE_SCENARIO,
-    CREATE_SCENARIO} from "../actions/actionTypes"
+    CREATE_SCENARIO,
+    SELECT_LOCALE} from "../actions/actionTypes"
 
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 import {startupTheme} from '../../configLoader';
@@ -18,7 +19,8 @@ const initialState = {
     themeId: startupTheme,
     compareDomainItemsMode: false,
     selectedDomainItemsIdsForCmp: [],
-    createScenarioOpen: false
+    createScenarioOpen: false,
+    locale: "he-IL"
 }
 
 const createScenariosTriple = new LoadingSuccessFailureActionType(CREATE_SCENARIO)
@@ -69,6 +71,9 @@ export default function ui(ui = initialState, action) {
         case createScenariosTriple.failure:
         case createScenariosTriple.success: {
             return set('createScenarioOpen', false, ui)
+        }
+        case SELECT_LOCALE: {
+            return set('locale', action.payload.locale, ui)
         }
         default:
             return ui

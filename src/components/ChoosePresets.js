@@ -83,7 +83,7 @@ const ChoosePresets = (
             <Header>{translate("choose_presets", true)}</Header>
             </FlexRows>
             <Divider/>
-            <Loader size="massive" active={presetsLoading} content="Loading"/>
+            <Loader size="massive" active={presetsLoading} content={translate("loading")}/>
             <FlexRows marginBottom="10px">
                 <Div marginBottom="5px">
                     {translate("priority_parameters", true)}

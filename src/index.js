@@ -11,8 +11,8 @@ import asyncRestCallMiddleware from './redux/middlewares/asyncRestCallMiddleware
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={createStore(rootReducer, compose(
-    applyMiddleware(asyncRestCallMiddleware),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()))}>
+      applyMiddleware(asyncRestCallMiddleware),
+      window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()))}>
       <App/>
     </Provider>    
   </React.StrictMode>,

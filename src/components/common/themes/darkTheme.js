@@ -12,6 +12,7 @@ export const selectForCompareColor = 'orange'
 export const radarStroke = 'gray'
 export const iconButtonColor = "#e0e1e2"
 export const iconButtonColorIcon = "rgba(0,0,0,.6)"
+export const topbarSliderButton = "grey"
 
 
 // labels full styles

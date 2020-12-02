@@ -5,8 +5,8 @@ import {FlexRows, FlexColumns} from './common/CommonComponents';
 import styled from 'styled-components';
 import {Button} from 'semantic-ui-react';
 import {map, keys} from 'lodash/fp'
-import {selectScenario} from '../redux/actions/actions'
 import translate from '../i18n/translate'
+import {selectScenario} from '../redux/actions/actions'
 
 export const StyledScenarioContainer = styled(Div)`    
     margin-left: 10px;
@@ -27,13 +27,12 @@ function Scenario({scenario, selected, selectScenarioAction}) {
     }
 
     const handleSelectScenario = () => {
-        selectScenarioAction(scenario.id)
+        selectScenarioAction(scenario.id)        
     }
 
     return (
         <StyledScenarioContainer width="500px">
             <FlexRows>
-                {/* <Button basic={!selected} color={selected ? "green" : "sdandard"} onClick={handleSelectScenario}> */}
                 <Button basic={!selected} color="black" onClick={handleSelectScenario}>
                     <FlexRows alignItems="flex-start">
                         {

@@ -9,6 +9,7 @@ import List from 'react-virtualized/dist/commonjs/List';
 import { FlexRows, FlexColumns } from './common/CommonComponents';
 import DomainItem from './DomainItem'
 import DomainItemsTools from './DomainItemsTools'
+import translate from '../i18n/translate'
 
 const StyledFlexRowsContainer = styled(FlexRows)`
 *,*:focus,*:hover{
@@ -71,7 +72,7 @@ class DomainItems extends React.Component {
           {
             this.props.loadingItems ?
             <FlexColumns height="100%" width="100%" alignItems="center" justifyContent="center">
-              <Loader active inline size="massive" content="Loading"/>
+              <Loader active inline size="massive" content={translate("loading")}/>
             </FlexColumns> : 
             <AutoSizer>
                 {({width, height}) => (

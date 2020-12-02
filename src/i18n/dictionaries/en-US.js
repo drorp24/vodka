@@ -31,6 +31,17 @@ export default {
         "create_scenario": "create scenario",
         "select_to_compare": "please select up to {max_items_to_compare} items to compare",
         "priority": "priority",
-        "score": "score"
+        "score": "score",        
+        "settings": "settings",
+        "language": "language",
+        "hebrew": "עברית",
+        "english": "english",
+        "dark": "dark",
+        "white": "white",
+        "open": "open",
+        "loading": "loading",
+        "processing": "Processing",
+        "close": "close",
+        "theme": "theme"
     }
 }
