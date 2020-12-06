@@ -31,7 +31,7 @@ const AppContainer = styled(FlexRows)`
 
 function App({themeId, compareDomainItemsMode, locale}) {
   return (
-    <IntlProvider messages={dictionaries[locale]}>
+    <IntlProvider messages={dictionaries[locale]} locale={locale}>
       <ThemeProvider theme={themes[themeId]}>
         <AppContainer height="100%" themedbackgroundcolor="windowBackground" locale={locale}>
           <TopBar/> 

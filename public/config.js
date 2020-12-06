@@ -4,5 +4,7 @@ window.__myapp = {
   max_items_to_compare: 7,
   amount_of_items_to_load: 1000,
   default_map_center: [31.7972, 34.6482],
-  default_username: "shayde"
+  default_username: "shayde",
+  default_locale: "he-IL",
+  reveal_markers_zoom_threshold: 15
 }

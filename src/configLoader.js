@@ -5,3 +5,5 @@ export const amount_of_items_to_load = getOr(100, "amount_of_items_to_load", win
 export const default_map_center = getOr([32.0, 34.0], "default_map_center", window.__myapp)
 export const server_host_url = getOr("http://localhost:5000", "server_host_url", window.__myapp)
 export const default_username = getOr(null, "default_username", window.__myapp)
+export const default_locale = getOr(null, "default_locale", window.__myapp)
+export const reveal_markers_zoom_threshold = getOr(15, "reveal_markers_zoom_threshold", window.__myapp)

@@ -13,6 +13,7 @@ import {
 
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 import {startupTheme} from '../../configLoader';
+import {default_locale} from '../../configLoader';
 
 const initialState = {
     sideBarOpen: false,
@@ -20,7 +21,7 @@ const initialState = {
     compareDomainItemsMode: false,
     selectedDomainItemsIdsForCmp: [],
     createScenarioOpen: false,
-    locale: "he-IL"
+    locale: default_locale
 }
 
 const createScenariosTriple = new LoadingSuccessFailureActionType(CREATE_SCENARIO)
