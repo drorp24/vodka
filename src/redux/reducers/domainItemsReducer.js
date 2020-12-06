@@ -18,6 +18,7 @@ import { WEIGHT_UPDATED,
   LOAD_FILTER_PRESETS,
   LOAD_GEO_PRESETS} from "../actions/actionTypes"
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
+import { isNil } from "lodash"
 
 /**INITIAL STATE */
 const initialState = {
@@ -58,7 +59,10 @@ const convertToDomainItems = (state, items, weights) => {
     domainItem.prevIdx = previousDomainItem !== null ? previousDomainItem.currIdx : idx
     domainItem.currIdx = idx
     return domainItem
-  }, flow([sortBy(["score"]), reverse])(items))
+  }, 
+  // flow([sortBy(["score"]), reverse])(items)
+    flow([filter(item => !isNil(item.center_x) && !isNil(item.center_y) && !isNil(item.location)), sortBy(["score"]), reverse])(items)
+  )
 }
 
 const convertNeighborsToDomainItems = (state, items, weights) => {
@@ -70,7 +74,10 @@ const convertNeighborsToDomainItems = (state, items, weights) => {
     }, weightKeys)
     const domainItem = new DomainItemType(item.full_id, item.name, item.description, [item.center_y, item.center_x], JSON.parse(item.location), weightedAttributes, item.score)
     return domainItem
-  }, items)
+  }, 
+  // items
+  filter(item => !isNil(item.center_x) && !isNil(item.center_y) && !isNil(item.location), items)
+  )
 }
 
 const convertToWeights = (weights) => {

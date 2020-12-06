@@ -153,8 +153,11 @@ class Map extends React.Component {
 
 
   const mapStateToProps = state => ({
-    domainItems: filter((item) => !isNil(getOr(null, "center[0]", item)) && !isNil(item.geojson), state.domainItems.items),
-    neighbors: filter((nei) => !isNil(getOr(null, "center[0]", nei)) && !isNil(nei.geojson), state.domainItems.neighbors),
+    // FOLOWING CAUSE PERFORMACE ISSUE SHOULD USE SELECTOR
+    // domainItems: filter((item) => !isNil(getOr(null, "center[0]", item)) && !isNil(item.geojson), state.domainItems.items),
+    // neighbors: filter((nei) => !isNil(getOr(null, "center[0]", nei)) && !isNil(nei.geojson), state.domainItems.neighbors),
+    domainItems: state.domainItems.items,
+    neighbors: state.domainItems.neighbors,
     selectedDomainItemID: state.domainItems.selectedDomainItemID
   })
 
