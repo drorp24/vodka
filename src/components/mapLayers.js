@@ -37,11 +37,10 @@ export default class MapLayers {
         });
     }
 
-    addLayer(key, items, layerParameters, top, calcIconCallBack) {
-        const actualTop = isNil(top) ? items.length : top
+    addLayer(key, items, layerParameters, calcIconCallBack) {
         const layerConfig = this.layersConfigMapByKey[key]
-        layerConfig.type === LAYER_TYPE.GEOJSON ? this._addGeojsonLayer(key, items, actualTop, layerParameters) : 
-                                                  this._addMarkersLayer(key, items, actualTop, layerParameters, calcIconCallBack)
+        layerConfig.type === LAYER_TYPE.GEOJSON ? this._addGeojsonLayer(key, items, layerParameters) : 
+                                                  this._addMarkersLayer(key, items, layerParameters, calcIconCallBack)
     }
 
     addLayersControl(leafletMap) {
@@ -64,10 +63,9 @@ export default class MapLayers {
         this.selectedItemLayer.leafletLayerGroup.addLayer(marker)
     }
 
-    _addGeojsonLayer(key, items, top, layerParameters) {
+    _addGeojsonLayer(key, items, layerParameters) {
         const layerConfig = this.layersConfigMapByKey[key]
         const geoJsonItems = flow([
-            take(top),
             map((item) => {
                 const type = "Feature"
                 const properties = {...omit(layerParameters.geoPropPath, item)}
@@ -86,10 +84,9 @@ export default class MapLayers {
         this._addLayerToGroup(geojsonLayer, key)
     }
 
-    _addMarkersLayer(key, items, top, layerParameters, calcIconCallBack) {
+    _addMarkersLayer(key, items, layerParameters, calcIconCallBack) {
         const layerConfig = this.layersConfigMapByKey[key]
         const markersArray = flow([
-            take(top),
             map((item) => {
                 const iconUrl = calcIconCallBack ? calcIconCallBack(item) : layerConfig.iconUrl
                 const markerOptions = {icon: L.icon({iconUrl, iconSize: [layerConfig.iconSize, layerConfig.iconSize], iconAnchor: [layerConfig.iconAnchorX, layerConfig.iconAnchorY]})}

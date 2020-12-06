@@ -4,17 +4,7 @@ export const LAYER_TYPE = {
 }
 
 export default {
-    layers: [
-        {
-            key: "buildings",
-            name: "Buildings",
-            type: LAYER_TYPE.GEOJSON,
-            style: {
-                "color": "black",
-                "weight": 0,
-                "fillOpacity": 0.4
-            }
-        },
+    layers: [        
         {
             key: "tasks",
             name: "Tasks",
@@ -28,7 +18,8 @@ export default {
         },
         {
             key: "tfi",
-            name: "Activity",
+            by_attr: "tfi",
+            name: "tfi",
             type: LAYER_TYPE.MARKERS,
             iconUrl: "high_tfi.svg",
             iconSize: 25,
@@ -37,7 +28,8 @@ export default {
         },
         {
             key: "mer",
-            name: "Centrality",
+            by_attr: "mer",
+            name: "mer",
             type: LAYER_TYPE.MARKERS,
             iconUrl: "selected-map-marker.svg",
             iconSize: 25,

@@ -6,5 +6,6 @@ window.__myapp = {
   default_map_center: [31.7972, 34.6482],
   default_username: "shayde",
   default_locale: "he-IL",
-  reveal_markers_zoom_threshold: 15
+  reveal_geolayer_zoom_threshold: 15,
+  reveal_markerlayer_zoom_threshold: 18
 }

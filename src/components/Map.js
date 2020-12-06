@@ -8,11 +8,12 @@ import {Div} from './common/StyledElements';
 import { Map as LeafletMap, TileLayer } from 'react-leaflet'
 import { CoordinatesControl } from 'react-leaflet-coordinates'
 import { connect } from "react-redux"
-import {getOr, find, concat, filter, isNil, flow, map, max, min} from "lodash/fp"
+import {getOr, find, concat, filter, isNil, flow, map, max, min, keyBy, take, sortBy, reverse} from "lodash/fp"
 import {handleMapClicked} from '../redux/actions/actions'
-import {default_map_center} from '../configLoader';
+import {default_map_center, reveal_geolayer_zoom_threshold, reveal_markerlayer_zoom_threshold} from '../configLoader';
 import MapLayers from "./mapLayers"
 import {LayerParameters} from "./mapLayersConfig"
+import layersConfig from "./mapLayersConfig"
 
 const MAX_ZOOM = 18
 const MIN_ZOOM = 1
@@ -55,21 +56,28 @@ class Map extends React.Component {
       this.refreshLayers()      
     }
 
-    _calcAttrLayerItems = (attrName) => {
-      const items = filter((domainItem)=> {
-        const attr = find((attr) => attr.key === attrName  ,domainItem.weightedAttributes)
-        return !isNil(attr.value) &&  attr.value > 0
-      }, this.props.domainItems)
-      return items
+    _calcWeightedAttrLayerItems = (top, attrName,includedItems) => {      
+      return flow([
+        filter((item) => {
+          const weightedAttrValue = find(weightedAttr => weightedAttr.key === attrName, item.weightedAttributes).value
+          return !isNil(weightedAttrValue) && weightedAttrValue > 0
+        }),
+        sortBy((item) => find(weightedAttr => weightedAttr.key === attrName,item.weightedAttributes).value),
+        reverse,
+        take(top)
+      ])(includedItems)
     }
 
-    _addAttrLayer = (layerKey, items, attrName, topItemsCount, icons) => {
+    _addAttrLayer = (layerKey, items, allItem, attrName, icons) => {
+      if(isNil(items) || items.length < 1) return
       const maxAttrScore = flow([
         map((item) => find((attr)=> attr.key === attrName, item.weightedAttributes).value),
         max
-      ])(this.props.domainItems)
-      const minAttrScore = flow([map((item) =>  find((attr)=> attr.key === attrName, item.weightedAttributes).value), min])(this.props.domainItems)
-      this.mapLayers.addLayer(layerKey, items, new LayerParameters("center", []), topItemsCount, (domainItem) => {
+      ])(allItem)
+      const minAttrScore = flow([map((item) =>  find((attr)=> attr.key === attrName, item.weightedAttributes).value), 
+        min
+      ])(allItem)
+      this.mapLayers.addLayer(layerKey, items, new LayerParameters("center", []), (domainItem) => {
         const itemAttrValue = find((attr)=> attr.key === attrName, domainItem.weightedAttributes).value
         const relativ_score = (itemAttrValue - minAttrScore) / (maxAttrScore - minAttrScore)        
         let iconCnt = 0
@@ -82,31 +90,35 @@ class Map extends React.Component {
       })
     }
 
-    refreshLayers = () => {
-      const topItemsCount = this.calcMarkersCount()
+    refreshLayers = () => {      
+      const layersConfigMapByKey = keyBy("key", layersConfig.layers)
       const popupConf = [{key: this.props.intl.formatMessage({id: "name"}), path: "name"}, {key: this.props.intl.formatMessage({id: "score"}), path: "score"}, {key: this.props.intl.formatMessage({id: "priority"}), path: "currIdx", countFromOne: true}]
       this.mapLayers.clearLayers()
-      // Buildings layer
-      const buildings = concat(this.props.neighbors, this.props.domainItems)
-      this.mapLayers.addLayer("buildings", buildings, new LayerParameters("geojson", []), topItemsCount)
       // Tasks layer
-      this.mapLayers.addLayer("tasks", this.props.domainItems, new LayerParameters("geojson", popupConf), topItemsCount)
+      const topItemsCount = this.calcItemsCountPerZoom(reveal_geolayer_zoom_threshold, this.props.domainItems)
+      const taskItems = take(topItemsCount, this.props.domainItems)
+      this.mapLayers.addLayer("tasks", taskItems, new LayerParameters("geojson", popupConf))
       // "tfi" layer
-      const tfiItems = this._calcAttrLayerItems("tfi")
-      this._addAttrLayer("tfi", tfiItems, "tfi", topItemsCount, ["low_act.svg", "med_act.svg", "high_act.svg"])
+      const itemsAndNeighbors = concat(this.props.domainItems, this.props.neighbors)
+      const tfiConf = layersConfigMapByKey["tfi"]
+      const topTfiMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, itemsAndNeighbors)
+      const tfiItems = this._calcWeightedAttrLayerItems(topTfiMarkersCount, tfiConf.by_attr, itemsAndNeighbors)
+      this._addAttrLayer(tfiConf.key, tfiItems, itemsAndNeighbors, tfiConf.by_attr, ["low_act.svg", "med_act.svg", "high_act.svg"])
       // "mer" layer
-      const merItems = this._calcAttrLayerItems("mer")
-      this._addAttrLayer("mer", merItems, "mer", topItemsCount, ["low_cen.svg", "med_cen.svg", "high_cen.svg"])
+      const merConf = layersConfigMapByKey["mer"]
+      const topMerMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, this.props.domainItems)
+      const merItems = this._calcWeightedAttrLayerItems(topMerMarkersCount, merConf.by_attr, this.props.domainItems)
+      this._addAttrLayer(merConf.key, merItems, this.props.domainItems, merConf.by_attr, ["low_cen.svg", "med_cen.svg", "high_cen.svg"])
       const selectedDomainItem = find({id: this.props.selectedDomainItemID}, this.props.domainItems)
       this.mapLayers.updateSelectedItem(selectedDomainItem, new LayerParameters("center", popupConf))
     }
 
-    calcMarkersCount = () => {
+    calcItemsCountPerZoom = (max_zoom, items) => {
       let currZoom = Math.max(this.getMapZoom(), MIN_ZOOM + 1)
-      currZoom = Math.min(currZoom, MAX_ZOOM)
-      const degree = Math.round(Math.sqrt(this.props.domainItems.length))
-      let topMarkersCount =  Math.ceil((Math.pow((currZoom - MIN_ZOOM), degree) / Math.pow(MAX_ZOOM - MIN_ZOOM, degree)) * this.props.domainItems.length)      
-      return topMarkersCount
+      currZoom = Math.min(currZoom, max_zoom)
+      const degree = Math.round(Math.sqrt(items.length))
+      let topItemsCount =  Math.ceil((Math.pow((currZoom - MIN_ZOOM), degree) / Math.pow(max_zoom - MIN_ZOOM, degree)) * items.length)
+      return topItemsCount
     }
 
     handleZoomEnd = (eventParams) => {      
@@ -141,8 +153,8 @@ class Map extends React.Component {
 
 
   const mapStateToProps = state => ({
-    domainItems: state.domainItems.items,
-    neighbors: state.domainItems.neighbors,
+    domainItems: filter((item) => !isNil(getOr(null, "center[0]", item)) && !isNil(item.geojson), state.domainItems.items),
+    neighbors: filter((nei) => !isNil(getOr(null, "center[0]", nei)) && !isNil(nei.geojson), state.domainItems.neighbors),
     selectedDomainItemID: state.domainItems.selectedDomainItemID
   })
 
