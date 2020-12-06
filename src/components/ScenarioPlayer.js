@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux"
 import {Button, Icon, Label} from 'semantic-ui-react';
-import styled from 'styled-components';
+import styled, {withTheme} from 'styled-components';
 import {find} from 'lodash/fp'
 import { Div } from "./common/StyledElements"
 import {FlexColumns} from './common/CommonComponents';
@@ -16,7 +16,7 @@ export const SimulationPlayerContainer = styled(FlexColumns)`
     border-radius: 10px;
 `;
 
-const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, priorityPresetId, filterPresetId, geoPresetId, domainItems, locale}) => {
+const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, priorityPresetId, filterPresetId, geoPresetId, domainItems, locale, theme}) => {
     const scenarioSelected = scenarioId !== null
     const prevDisabled = !priorityPresetId || scenarioCurrentStepIdx <= 0    
     const currentScenario = find((scenario) => scenario.id === scenarioId, scenarios)
@@ -46,14 +46,14 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
                 {translate("simulation_sigint")}:
             </Div>
             <Div marginLeft="10px">
-                <Button size="tiny" icon labelPosition={locale === LOCALES.HEBREW? 'right' : 'left'} basic color="orange" disabled={prevDisabled} circular onClick={handlePrevRequest}>
+                <Button size="tiny" icon labelPosition={locale === LOCALES.HEBREW? 'right' : 'left'} basic color={theme["secondaryButtonColor"]} disabled={prevDisabled} circular onClick={handlePrevRequest}>
                     <Icon name={`caret square ${locale === LOCALES.HEBREW ? 'right' : 'left'}`} />
                     {translate("prev")}
                 </Button>
             </Div>
-            <Div marginLeft="10px"><Label circular color="orange" >{currentText}</Label></Div>
+            <Div marginLeft="10px"><Label circular color={theme["secondaryButtonColor"]} >{currentText}</Label></Div>
             <Div marginLeft="10px">
-                <Button disabled={nextDisabled} size="tiny" icon labelPosition={locale === LOCALES.HEBREW? 'left' : 'right'} basic color="orange"  circular onClick={handleNextRequest}>
+                <Button disabled={nextDisabled} size="tiny" icon labelPosition={locale === LOCALES.HEBREW? 'left' : 'right'} basic color={theme["secondaryButtonColor"]}  circular onClick={handleNextRequest}>
                     <Icon name={`caret square ${locale === LOCALES.HEBREW ? 'left' : 'right'}`} />
                     {translate("next")}
                 </Button>
@@ -74,4 +74,4 @@ const mapStateToProps = state => ({
     locale: state.ui.locale,
 })
 
-export default connect(mapStateToProps, {selectScenarioStepAction: selectScenarioStep})(ScenarioPlayer);
+export default connect(mapStateToProps, {selectScenarioStepAction: selectScenarioStep})(withTheme(ScenarioPlayer));

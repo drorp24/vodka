@@ -21,7 +21,7 @@ const ScenariosModal = ({open, closeCB, theme}) => {
                     <Scenarios closeCB={closeCB}/>
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button color={theme["createButtonColor"]} onClick={closeCB}>
+                    <Button color={theme["primaryButtonColor"]} onClick={closeCB}>
                         {translate("close", true)}
                     </Button>
                 </Modal.Actions>      

@@ -130,7 +130,7 @@ class CreateScenarioForm extends React.Component {
                 <Button onClick={this.props.toggleCreateScenarioAction} color={this.props.theme["cancelButtonColor"]}>
                         {translate("cancel", true)}
                     </Button>
-                    <Button onClick={this.onCreate} color={this.props.theme["createButtonColor"]}>
+                    <Button onClick={this.onCreate} color={this.props.theme["primaryButtonColor"]}>
                         {translate("create", true)}
                     </Button>
                 </Modal.Actions>

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from "react-redux"
 import {Div} from './common/StyledElements';
 import {FlexRows, FlexColumns} from './common/CommonComponents';
-import styled from 'styled-components';
+import styled, {withTheme} from 'styled-components';
 import {Button} from 'semantic-ui-react';
 import {map, keys} from 'lodash/fp'
 import translate from '../i18n/translate'
@@ -14,7 +14,7 @@ export const StyledScenarioContainer = styled(Div)`
     border-radius: 3px;
 `;
 
-function Scenario({scenario, selected, selectScenarioAction}) {
+function Scenario({scenario, selected, selectScenarioAction, theme}) {
     const renderAttr = (name, value, selected, key) => {
         return <FlexColumns key={key} styleType="label3" marginBottom='10px' justifyContent="flex-start">
                     <Div width="220px" display="flex" styleType={selected ? "selectedScenarioLabelKey" : "scenarioLabelKey"}>
@@ -33,7 +33,7 @@ function Scenario({scenario, selected, selectScenarioAction}) {
     return (
         <StyledScenarioContainer width="500px">
             <FlexRows>
-                <Button basic={!selected} color="black" onClick={handleSelectScenario}>
+                <Button basic={!selected} color={theme["secondaryButtonColor"]} onClick={handleSelectScenario}>
                     <FlexRows alignItems="flex-start">
                         {
                             map((key) => renderAttr(key, scenario[key], selected, key), keys(scenario))
@@ -45,4 +45,4 @@ function Scenario({scenario, selected, selectScenarioAction}) {
     )
 }
 
-export default connect(null, {selectScenarioAction: selectScenario})(Scenario);
+export default connect(null, {selectScenarioAction: selectScenario})(withTheme(Scenario));

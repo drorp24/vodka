@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from "react-redux"
 import {map, getOr, isNil} from 'lodash/fp'
 import {Dropdown, Divider, Button, Loader, Header} from 'semantic-ui-react';
+import {withTheme} from 'styled-components';
 import {Div} from './common/StyledElements';
 import {FlexRows} from './common/CommonComponents';
 import {
@@ -32,7 +33,8 @@ const ChoosePresets = (
         close,
         initialPriorityPresetId,
         initialFilterPresetId,
-        initialGeoPresetId
+        initialGeoPresetId,
+        theme
     }) => {
 
     const [priorityPresetId, setPriorityPresetId] = React.useState(null)
@@ -126,7 +128,7 @@ const ChoosePresets = (
                         onChange={(event, data) => {handleChoose(data, setGeoPresetId)}}
                     />
                 </FlexRows>
-            <Button color="orange" fluid disabled={!enableLoad} onClick={handlePresetsSelected}>{translate("load", true)}</Button>
+            <Button color={theme["primaryButtonColor"]} fluid disabled={!enableLoad} onClick={handlePresetsSelected}>{translate("load", true)}</Button>
         </FlexRows>
     )
 }
@@ -151,4 +153,4 @@ export default connect(mapStateToProps, {
     loadFilterPresetsAction: loadFilterPresets,
     loadGeoPresetsAction: loadGeoPresets,
     selectPresetGroupAction: selectPresetGroup
-})(ChoosePresets);    
+})(withTheme(ChoosePresets));
