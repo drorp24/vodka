@@ -14,6 +14,7 @@ import LOCALES from "../i18n/locales"
 
 export const TopBarContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
+    background-color: ${({ theme }) => theme["topbarBackground"]};
 `;
 
 const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme, 
