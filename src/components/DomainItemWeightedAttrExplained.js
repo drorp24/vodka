@@ -38,7 +38,7 @@ const DomainItemWeightedAttrExplained = ({domainItem, weights}) => {
                 [flow([replace("_", " "), capitalize])(weightedAttribute.key),
                   weightedAttribute.value, 
                   weightedAttribute.weight.value,
-                  isNumber(weightedAttribute.value) ? parseInt(weightedAttribute.value * weightedAttribute.weight.value) : ""]
+                  isNumber(weightedAttribute.value) ? weightedAttribute.value * weightedAttribute.weight.value : ""]
               )
           ), attributesWeighted)
         }

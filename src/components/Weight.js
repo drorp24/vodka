@@ -38,7 +38,7 @@ class Weight extends React.Component {
     const min = getOr(0, "min", this.props.weight)
     const max = getOr(0, "max", this.props.weight)
     let step = get("step", this.props.weight)
-    step = isNaN(step) ? 1 : step
+    step = isNaN(step) ? 0.01 : step
 
     return (
       <FlexRows margin="5px">
@@ -47,7 +47,7 @@ class Weight extends React.Component {
               <LabelSem color={this.props.theme["weightLabel"]} circular>{this.getValue()}</LabelSem>
           </FlexColumns>
           <SemanticSlider disabled={this.props.disabled} value={this.getValue()} min={min} max={max} step={step} onChange={this.handleSliderChanging} onAfterChange={this.handleSliderDoneChanging}/>
-          <Divider color="black"/>
+          <Divider color={this.props.theme["secondaryButtonColor"]}/>
         </FlexRows>
     )
   }
