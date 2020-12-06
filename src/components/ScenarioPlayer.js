@@ -43,7 +43,7 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
     return (
         <SimulationPlayerContainer visibility={!scenarioSelected ? "collapse" : "visible"} padding="5px" marginRight="15px" alignItems="center" styleType={scenarioSelected ? "simPlayerBorderDisabled": "simPlayerBorder"}>
             <Div styleType={!scenarioSelected ? "simPlayerLabelDisabled": "simPlayerLabel"} marginLeft="5px">
-                {translate("simulation_sigint")}:
+                {translate("simulation")}:
             </Div>
             <Div marginLeft="10px">
                 <Button size="tiny" icon labelPosition={locale === LOCALES.HEBREW? 'right' : 'left'} basic color={theme["secondaryButtonColor"]} disabled={prevDisabled} circular onClick={handlePrevRequest}>

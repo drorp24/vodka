@@ -25,7 +25,7 @@ export default {
         "creationTime":"creation time",
         "next":"next",
         "prev":"prev",
-        "simulation_sigint": "com simultaion",
+        "simulation": "simultaion",
         "pre_load": "pre load",
         "step": "step {number}",
         "create_scenario": "create scenario",

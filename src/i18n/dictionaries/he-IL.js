@@ -25,7 +25,7 @@ export default {
         "creationTime":"זמן יצירה",
         "next":"הבא",
         "prev":"קודם",
-        "simulation_sigint": "סימולציה",
+        "simulation": "סימולציה",
         "pre_load": "טרום טעינה",
         "step": "שלב {number}",
         "create_scenario": "צור תרחיש",
