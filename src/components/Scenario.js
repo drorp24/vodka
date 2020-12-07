@@ -9,7 +9,7 @@ import translate from '../i18n/translate'
 import {selectScenario} from '../redux/actions/actions'
 
 export const StyledScenarioContainer = styled(Div)`    
-    margin-left: 10px;
+    
     margin-bottom: 10px;
     border-radius: 3px;
 `;
@@ -33,7 +33,7 @@ function Scenario({scenario, selected, selectScenarioAction, theme}) {
     return (
         <StyledScenarioContainer width="500px">
             <FlexRows>
-                <Button basic={!selected} color={theme["secondaryButtonColor"]} onClick={handleSelectScenario}>
+                <Button basic={!selected} color={theme["scenarioButtonColor"]} onClick={handleSelectScenario}>
                     <FlexRows alignItems="flex-start">
                         {
                             map((key) => renderAttr(key, scenario[key], selected, key), keys(scenario))

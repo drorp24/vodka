@@ -2,18 +2,23 @@ import { css } from 'styled-components';
 
 // colors
 export const temporarySignalColor = `rgba(200, 200, 200, 0.3)`
+export const selectedItemBackgroundColor = "rgba(69, 89, 105, 0.3)"
 export const borderColor = "#2d3339"
 export const backgroudHoverColor = "#455969"
 export const windowBackground = "rgba(0, 0, 0, 0.85)"
-export const sliderTarck = "#455969"
-export const sliderHandle = '#455969'
-export const sliderRail = "#2d3339"
+export const sliderTarck = "rgba(69, 89, 105, 1)"
+export const sliderTarckDisabled = "rgba(69, 89, 105, 0.3)"
+export const sliderHandle = "rgba(69, 89, 105, 1)"
+export const sliderHandleDisabled = "rgba(69, 89, 105, 0.7)"
+export const sliderRail = "rgba(69, 89, 105, 0.2)"
+export const sliderRailDisabled = "rgba(69, 89, 105, 0.1)"
 export const selectForCompareColor = 'orange'
 export const radarStroke = 'gray'
 export const iconButtonColor = "#e0e1e2"
 export const iconButtonColorIcon = "rgba(0,0,0,.6)"
 export const primaryButtonColor = "orange"
 export const secondaryButtonColor = "orange"
+export const scenarioButtonColor = "black"
 export const topbarSliderButton = null
 
 
@@ -45,6 +50,17 @@ color: white;
 
 export const labelDefaultDisabled = css`
 color: gray;
+`;
+
+export const scenarioLabelValue = css`
+${labelDefaultDisabled}
+font-size: 14px;
+`;
+
+export const selectedScenarioLabelValue = css`
+${labelDefaultDisabled}
+font-size: 14px;
+color: #bbb5b5;
 `;
 
 export const scenarioLabelKey = css`

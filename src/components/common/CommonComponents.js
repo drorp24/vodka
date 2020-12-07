@@ -17,7 +17,7 @@ export const SemanticSlider = styled(Slider)`
         background-color: ${({ theme, disabled }) => theme[disabled ? "sliderTarckDisabled" : "sliderTarck"]};
     }
     .rc-slider-rail {
-        background-color: ${({ theme, disabled }) => theme["sliderRail"]};
+        background-color: ${({ theme, disabled }) => theme[disabled ? "sliderRailDisabled": "sliderRail"]};
     }
     .rc-slider-handle {
         border: 0px;

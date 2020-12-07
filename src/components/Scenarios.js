@@ -13,7 +13,7 @@ const Scenarios = ({scenarios, selectedScenarioId, loadScenariosAction, scenario
         loadScenariosAction(new AsyncRestParams("/simulation/scenario", "GET"))
     }, [loadScenariosAction])
     return (
-            <FlexRows maxHeight="50vh">
+            <FlexRows maxHeight="50vh" alignItems="center">
                 <Dimmer active={scenariosLoading} inverted>
                     <Loader size="massive" content={translate("loading")}/>
                 </Dimmer>                

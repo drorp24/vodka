@@ -18,6 +18,7 @@ export const iconButtonColor = "black"
 export const iconButtonColorIcon = "white"
 export const primaryButtonColor = "orange"
 export const secondaryButtonColor = "black"
+export const scenarioButtonColor = "black"
 export const cancelButtonColor = "black"
 
 
