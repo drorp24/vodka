@@ -36,8 +36,8 @@ function App({themeId, compareDomainItemsMode, locale}) {
   return (
     <IntlProvider messages={dictionaries[locale]} locale={locale}>
       <ThemeProvider theme={themes[themeId]}>
-        <AppContainer height="100%" themedbackgroundcolor="windowBackground" locale={locale}>
-          <BrowserRouter>
+        <BrowserRouter>
+          <AppContainer height="100%" themedbackgroundcolor="windowBackground" locale={locale}>
             <Switch>
               <ProtectedRoute exact path="/">
                 <TopBar/> 
@@ -57,8 +57,8 @@ function App({themeId, compareDomainItemsMode, locale}) {
                 <Login />
               </Route>
             </Switch>
-          </BrowserRouter>   
-        </AppContainer>
+          </AppContainer>
+        </BrowserRouter>   
       </ThemeProvider>
     </IntlProvider>
 
