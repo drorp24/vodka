@@ -40,7 +40,7 @@ const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
                     on='click'
                     basic
                     flowing
-                    trigger={<Button onClick={() => setChoosePresetIsOpen(!choosePresetIsOpen)}  basic color={theme["topbarSliderButton"]} content={translate("choose_presets", true)}/>}>
+                    trigger={<Button onClick={() => setChoosePresetIsOpen(!choosePresetIsOpen)}  basic color={theme["secondaryButtonColor"]} content={translate("choose_presets", true)}/>}>
                         <ChoosePresets close={onCloseReq}/>
                 </Popup>                
             </DropdownContainer>

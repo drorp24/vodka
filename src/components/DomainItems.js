@@ -72,7 +72,7 @@ class DomainItems extends React.Component {
           {
             this.props.loadingItems ?
             <FlexColumns height="100%" width="100%" alignItems="center" justifyContent="center">
-              <Loader active inline size="massive" content={translate("loading")}/>
+              <Loader inverted={this.props.themeId === "darkTheme" ? true : false} active inline size="massive" content={translate("loading")}/>
             </FlexColumns> : 
             <AutoSizer>
                 {({width, height}) => (
@@ -96,7 +96,8 @@ const mapStateToProps = state => ({
   domainItems: state.domainItems.items,
   weights: state.domainItems.weights,
   actualTextFilter: state.domainItems.actualTextFilter,
-  loadingItems: state.domainItems.loadingItems
+  loadingItems: state.domainItems.loadingItems,
+  themeId: state.ui.themeId
 })
 
 export default connect(mapStateToProps, {})(DomainItems);
