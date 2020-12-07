@@ -39,7 +39,7 @@ function App({themeId, compareDomainItemsMode, locale}) {
         <AppContainer height="100%" themedbackgroundcolor="windowBackground" locale={locale}>
           <BrowserRouter>
             <Switch>
-              <ProtectedRoute path="/simulator">
+              <ProtectedRoute exact path="/">
                 <TopBar/> 
                 <FlexColumns height="100%">            
                   <Div width="40%">
@@ -53,7 +53,7 @@ function App({themeId, compareDomainItemsMode, locale}) {
                   </Sidebar.Pushable>
                 </FlexColumns>
               </ProtectedRoute>
-              <Route path="/">
+              <Route path="/login">
                 <Login />
               </Route>
             </Switch>
