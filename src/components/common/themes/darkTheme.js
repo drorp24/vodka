@@ -50,6 +50,11 @@ color: white;
 
 export const labelDefaultDisabled = css`
 color: gray;
+text-overflow: ellipsis;
+overflow: hidden;
+white-space: nowrap;
+line-height: normal;
+text-align: left;
 `;
 
 export const scenarioLabelValue = css`
