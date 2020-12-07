@@ -21,6 +21,9 @@ const useStyles = makeStyles(theme => ({
     marginTop: '2vh !important',
     textAlign: 'center !important',
   },
+  msgHeader: {
+    marginBottom: '0.75em !important',
+  },
 }));
 
 export default function Login() {
@@ -92,12 +95,14 @@ export default function Login() {
         {translate('Sign in', true)}
       </Button>
 
-      <Message
-        error
-        style={{ display: logginError ? 'block' : 'none' }}
-        header={translate('Login error', true)}
-        content={translate('Wrong user or password. Please try again', true)}
-      />
+      <Message error style={{ display: logginError ? 'block' : 'none' }}>
+        <Message.Header className={classes.msgHeader}>
+          {translate('Login error', true)}
+        </Message.Header>
+        <Message.Content>
+          {translate('Wrong user or password. Please try again', true)}
+        </Message.Content>
+      </Message>
     </Form>
   );
 }
