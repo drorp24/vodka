@@ -7,17 +7,20 @@ import {Div} from './common/StyledElements';
 import { toggleCompareDomainItemsMode, clearAllSelectedItemsForComparison } from '../redux/actions/actions'
 import ChoosePresets from './ChoosePresets'
 import translate from "../i18n/translate"
+import LOCALES from "../i18n/locales"
 
 export const DomainItemsToolsContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
 `;
 
 export const DropdownContainer = styled(FlexColumns)`
-    border-right: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
+    border-color: ${({ theme }) => `${theme["borderColor"]}`};
+    border-width: ${({ locale }) => locale === LOCALES.HEBREW ? "0px 0px 0px 1px" : "0px 1px 0px 0px"};
+    border-style: solid
 `;
 
 const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
-    toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, theme}) => {
+    toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, theme, locale}) => {
     
     const [choosePresetIsOpen, setChoosePresetIsOpen] = React.useState(false)
     const onCompareClick = () => {
@@ -33,7 +36,7 @@ const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
 
     return (
         <DomainItemsToolsContainer alignItems="center" justifyContent="space-between">
-            <DropdownContainer marginLeft="10px" minHeight="40px" alignItems="center" flexBasis="70%" justifyContent="space-between">                
+            <DropdownContainer locale={locale} margin="0px 10px" minHeight="40px" alignItems="center" flexBasis="70%" justifyContent="space-between">                
                 <Popup
                     open={choosePresetIsOpen}
                     position="bottom left"
@@ -59,7 +62,8 @@ const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
 const mapStateToProps = state => {
     return {        
         compareDomainItemsMode: state.ui.compareDomainItemsMode,
-        selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp        
+        selectedDomainItemsIdsForCmp: state.ui.selectedDomainItemsIdsForCmp,
+        locale: state.ui.locale
     }
 }
 
