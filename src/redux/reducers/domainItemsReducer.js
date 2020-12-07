@@ -16,7 +16,8 @@ import { WEIGHT_UPDATED,
   LOAD_PRIORITY_PRESETS,
   SELECT_SCENARIO_STEP, 
   LOAD_FILTER_PRESETS,
-  LOAD_GEO_PRESETS} from "../actions/actionTypes"
+  LOAD_GEO_PRESETS,
+  LOAD_MORE_DOMAIN_ITEMS} from "../actions/actionTypes"
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 import { isNil } from "lodash"
 
@@ -24,6 +25,7 @@ import { isNil } from "lodash"
 const initialState = {
   loadingItems: false,
   items: [],
+  itemsAmount: 0,
   neighbors: [],
   weights: [],
   textFilterValue: "",
@@ -91,7 +93,8 @@ const weightUpdatedTriple = new LoadingSuccessFailureActionType(WEIGHT_UPDATED)
 const loadPriorityPresetsTriple = new LoadingSuccessFailureActionType(LOAD_PRIORITY_PRESETS)
 const loadFilterPresetsTriple = new LoadingSuccessFailureActionType(LOAD_FILTER_PRESETS)
 const loadGeoPresetsTriple = new LoadingSuccessFailureActionType(LOAD_GEO_PRESETS)
-const selectScenarioStep = new LoadingSuccessFailureActionType(SELECT_SCENARIO_STEP)
+const selectScenarioStepTriple = new LoadingSuccessFailureActionType(SELECT_SCENARIO_STEP)
+const loadMoreDomainItemsTriple = new LoadingSuccessFailureActionType(LOAD_MORE_DOMAIN_ITEMS)
 
 
 const actionHandlers = {}
@@ -103,6 +106,8 @@ const loadItemsLoadingActionHandler = (state, action) => {
 
 const loadItemsSuccessActionHandler = (state, action) => {
   const selectedDomainItemID = getOr(null, "full_id", find({full_id: state.selectedDomainItemID}, action.payload.tasks_data))
+  const items = convertToDomainItems(state, getOr([], "payload.tasks_data", action), state.weights)
+  const itemsAmount = getOr(0, "length", items)
   return {
     ...state,
     selectedDomainItemID,
@@ -110,9 +115,10 @@ const loadItemsSuccessActionHandler = (state, action) => {
     selectedFilterPresetId: getOr(null, "previousAction.payload.body.parameters_filter_preset_id", action),
     selectedGeoPresetId: getOr(null, "previousAction.payload.body.aoi_id", action),
     loadingItems: false,
-    items: convertToDomainItems(state, getOr([], "payload.tasks_data", action), state.weights),
+    items,
     neighbors: convertNeighborsToDomainItems(state, getOr([], "payload.neighbors_data", action), state.weights),
-    weights: convertToWeights(getOr(state.weights, "previousAction.payload.body.weights", action))
+    weights: convertToWeights(getOr(state.weights, "previousAction.payload.body.weights", action)),
+    itemsAmount
   }
 }
 
@@ -122,8 +128,11 @@ actionHandlers[selectPresetGroupTriple.success] = loadItemsSuccessActionHandler
 actionHandlers[weightUpdatedTriple.loading] = loadItemsLoadingActionHandler
 actionHandlers[weightUpdatedTriple.success] = loadItemsSuccessActionHandler
 
-actionHandlers[selectScenarioStep.loading] = loadItemsLoadingActionHandler
-actionHandlers[selectScenarioStep.success] = loadItemsSuccessActionHandler
+actionHandlers[selectScenarioStepTriple.loading] = loadItemsLoadingActionHandler
+actionHandlers[selectScenarioStepTriple.success] = loadItemsSuccessActionHandler
+
+actionHandlers[loadMoreDomainItemsTriple.loading] = loadItemsLoadingActionHandler
+actionHandlers[loadMoreDomainItemsTriple.success] = loadItemsSuccessActionHandler
 
 
 /**SPECIFIC ACTION HANDLERS */

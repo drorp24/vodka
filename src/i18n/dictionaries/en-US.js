@@ -7,6 +7,7 @@ export default {
         "filters": "filters",
         "geographic_filter": "graphic filters",
         "load": "load",
+        "load_more": "load more",
         "search": "search",
         "create": "create",
         "cancel": "cancel",
@@ -42,6 +43,7 @@ export default {
         "loading": "loading",
         "processing": "Processing",
         "close": "close",
-        "theme": "theme"
+        "theme": "theme",
+        "items": "items"
     }
 }
