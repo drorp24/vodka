@@ -1,14 +1,7 @@
 import LOCALES from "../locales"
 
 export default {
-    [LOCALES.HEBREW] : {
-        "Wrong user or password. Please try again": "שם משתמש וסיסמה לא מתאימים. אנא נסו שנית",
-        "Login error": "שגיאה",
-        "Sign in": "כניסה",
-        "User name": "שם משתמש",
-        "Password": "סיסמה",
-        "Password is required": "יש למלא סיסמה",
-        "User name is required": "יש למלא שם משתמש",
+    [LOCALES.HEBREW] : {        
         "choose_presets": "בחר חוקים",
         "priority_parameters": "חוקי תעדוף",
         "filters": "סינונים",
@@ -49,6 +42,14 @@ export default {
         "loading": "טוען",
         "processing": "מעבד",
         "close": "סגור",
-        "theme": "ערכת נושא"
+        "theme": "ערכת נושא",
+        "Wrong user or password. Please try again": "שם משתמש וסיסמה לא מתאימים. אנא נסו שנית",
+        "Login error": "שגיאה",
+        "Sign in": "כניסה",
+        "User name": "שם משתמש",
+        "Password": "סיסמה",
+        "Password is required": "יש למלא סיסמה",
+        "User name is required": "יש למלא שם משתמש",
+        "logout": "יציאה"
     }
 }

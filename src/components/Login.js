@@ -1,11 +1,11 @@
 import React from 'react';
 import { Redirect, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUser } from '../redux/reducers/usersReducer';
 import { useForm } from 'react-hook-form';
-
+import {withTheme} from 'styled-components';
 import { Form, Button, Message } from 'semantic-ui-react';
 import { Div } from './common/StyledElements';
+import { fetchUser } from '../redux/reducers/usersReducer';
 
 import { makeStyles } from '@material-ui/core/styles';
 import translate from '../i18n/translate';
@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Login() {
+const Login = ({theme}) => {
   const loggedIn = useSelector(store => !!store.users.loggedIn.username);
   const logginError = useSelector(store => store.users.error);
   const dispatch = useDispatch();
@@ -87,6 +87,7 @@ export default function Login() {
       </Form.Input>
 
       <Button
+        color={theme["secondaryButtonColor"]}
         type="submit"
         className={classes.submit}
         active={!formHasErrors}
@@ -106,3 +107,4 @@ export default function Login() {
     </Form>
   );
 }
+ export default withTheme(Login)

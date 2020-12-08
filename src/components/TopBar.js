@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from "react-redux"
 import styled, {withTheme} from 'styled-components';
 import {Button, Dropdown} from 'semantic-ui-react';
+import { useDispatch } from 'react-redux';
 import {FlexColumns} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
 import {toggleSideBar, switchTheme, toggleCreateScenario, selectLocale} from '../redux/actions/actions'
@@ -11,7 +12,7 @@ import CreateScenarioForm from './CreateScenarioForm'
 import ScenariosModal from './ScenariosModal'
 import translate from '../i18n/translate'
 import LOCALES from "../i18n/locales"
-import Logout from './Logout'
+import { logout } from '../redux/reducers/usersReducer';
 
 export const TopBarContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
@@ -21,6 +22,11 @@ export const TopBarContainer = styled(FlexColumns)`
 const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme, 
                 switchThemeAction, compareDomainItemsMode, toggleCreateScenarioAction, selectLocaleAction, locale}) => {
     const [scenariosIsOpen, setScenariosIsOpen] = React.useState(false)
+    const dispatch = useDispatch();
+    
+    const handleLogout = () => {
+        dispatch(logout());
+      };
     return (
         <TopBarContainer minHeight="60px" alignItems="center"  width="100%" position="relative" justifyContent="space-between">
             <Div  margin="0px 10px">
@@ -58,6 +64,8 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </Dropdown.Item>
+                            <Dropdown.Divider/>
+                            <Dropdown.Item icon='power' text={translate("logout", true)} onClick={handleLogout}/>
                         </Dropdown.Menu>
                     </Dropdown>
             </Div>
@@ -69,7 +77,7 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
                             onClick={() => toggleSideBarAction()}/>
                 </Div>
             </FlexColumns>
-            <Logout />
+            {/* <Logout /> */}
             {createScenarioOpen && <CreateScenarioForm/>}
             <ScenariosModal open={scenariosIsOpen} closeCB={()=>setScenariosIsOpen(false)}/>
             
