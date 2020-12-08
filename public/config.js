@@ -8,5 +8,6 @@ window.__myapp = {
   default_locale: "he-IL",
   reveal_geolayer_zoom_threshold: 15,
   reveal_markerlayer_zoom_threshold: 18,
-  use_redux_toolkit: true
+  use_redux_toolkit: true,
+  logged_in: true
 }

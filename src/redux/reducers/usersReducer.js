@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { server_host_url } from '../../configLoader';
+import { server_host_url, logged_in } from '../../configLoader';
 
 export const fetchUser = createAsyncThunk(
   'user/fetch',
@@ -30,7 +30,10 @@ const initialState = {
   currentRequestId: undefined,
   loading: 'idle',
   error: null,
-  loggedIn: {},
+  loggedIn: logged_in ? {
+    password: "test123",
+    username: "test"
+  } : {},
 };
 
 const usersSlice = createSlice({
