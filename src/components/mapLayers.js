@@ -1,6 +1,6 @@
 import layersConfig, {LAYER_TYPE} from "./mapLayersConfig"
 import L from 'leaflet'
-import {keyBy, flow, take, map, find, isNil, isEmpty, omit} from 'lodash/fp'
+import {keyBy, flow, map, find, isEmpty, omit} from 'lodash/fp'
 
 class LayerGroupWrapper {
     constructor(key, leafletLayerGroup){
