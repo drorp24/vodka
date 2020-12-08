@@ -158,7 +158,7 @@ actionHandlers[DOMAIN_ITEM_PRESSED] = (state, action) => {
     state.items)
   return {
     ...state,
-    selectedDomainItemID: action.payload.id === state.selectedDomainItemID ? null : action.payload.id,
+    selectedDomainItemID: action.payload.id,
     items
   }
 }
