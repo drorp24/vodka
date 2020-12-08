@@ -10,7 +10,8 @@ export default {
         //     name: "wms",
         //     attribution: null,
         //     url: "http://ows.mundialis.de/services/service?",
-        //     layers: "TOPO-OSM-WMS"
+        //     layers: "TOPO-OSM-WMS",
+        //     format: "image/jpeg"
         // },
         {
             type: "vector",
