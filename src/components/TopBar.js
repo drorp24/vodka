@@ -42,7 +42,7 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
                             <Dropdown.Header  content={translate("settings", true)} />
                             <Dropdown.Divider/>
                             <Dropdown.Item>
-                                <Dropdown text={translate("language", true)} direction={locale === LOCALES.HEBREW ? "left" : "right"}>
+                                <Dropdown text={translate("language", true).props.children()} direction={locale === LOCALES.HEBREW ? "left" : "right"}>
                                     <Dropdown.Menu direction={locale === LOCALES.HEBREW ? "left" : "right"}>
                                         <Dropdown.Item text={translate("hebrew", true)} onClick={()=>{selectLocaleAction(LOCALES.HEBREW)}}/>
                                         <Dropdown.Item text={translate("english", true)} onClick={()=>{selectLocaleAction(LOCALES.ENGLISH)}}/>
@@ -50,7 +50,7 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
                                 </Dropdown>
                             </Dropdown.Item>
                             <Dropdown.Item>
-                                <Dropdown text={translate("theme", true)} direction={locale === LOCALES.HEBREW ? "left" : "right"}>
+                                <Dropdown text={translate("theme", true).props.children()} direction={locale === LOCALES.HEBREW ? "left" : "right"}>
                                     <Dropdown.Menu direction={locale === LOCALES.HEBREW ? "left" : "right"}>
                                         <Dropdown.Item text={translate("dark", true)} onClick={() => switchThemeAction('darkTheme')}/>
                                         <Dropdown.Item text={translate("white", true)} onClick={() => switchThemeAction('defaultTheme')}/>
