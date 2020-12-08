@@ -4,12 +4,13 @@ import './index.css';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 import { createStore, applyMiddleware, compose } from "redux";
-import { Provider } from "react-redux"
-import rootReducer from "./redux/reducers/rootReducer"
+import { Provider } from "react-redux";
+import rootReducer from "./redux/reducers/rootReducer";
 import asyncRestCallMiddleware from './redux/middlewares/asyncRestCallMiddleware';
 import { use_redux_toolkit } from './configLoader';
+import thunkMiddleware from 'redux-thunk';
 
-let middlewares = compose(applyMiddleware(asyncRestCallMiddleware))
+let middlewares = compose(applyMiddleware(asyncRestCallMiddleware, thunkMiddleware))
 if(use_redux_toolkit){
   middlewares = compose(middlewares, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
 }
@@ -18,7 +19,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={createStore(rootReducer, middlewares)}>
       <App/>
-    </Provider>    
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

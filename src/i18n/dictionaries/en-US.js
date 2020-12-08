@@ -1,7 +1,7 @@
 import LOCALES from "../locales"
 
 export default {
-    [LOCALES.ENGLISH] : {
+    [LOCALES.ENGLISH]: {        
         "choose_presets": `choose presets`,
         "priority_parameters": "priority parameters",
         "filters": "filters",
@@ -44,6 +44,14 @@ export default {
         "processing": "Processing",
         "close": "close",
         "theme": "theme",
+        "Wrong user or password. Please try again": "Wrong user or password. Please try again",
+        "Login error": "Login error",
+        "Sign in": "Sign in",
+        "User name": "user name",
+        "Password": "Password",
+        "Pasword is required": "Password is required",
+        "User name is required": "User name is required",
+        "logout": "logout",
         "items": "items"
     }
 }
