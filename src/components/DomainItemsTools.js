@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from "react-redux"
 import {Popup, Button} from 'semantic-ui-react';
 import styled, {withTheme} from 'styled-components';
-import {getOr, map} from 'lodash/fp'
+import {map} from 'lodash/fp'
 import {FlexColumns} from './common/CommonComponents';
 import { toggleCompareDomainItemsMode, clearAllSelectedItemsForComparison, loadMoreDomainItems } from '../redux/actions/actions'
 import ChoosePresets from './ChoosePresets'
