@@ -29,19 +29,20 @@ class Map extends React.Component {
           }
         this.leafletMap = null
         this.mapLayers = new MapLayers()
-        this.layersControlAdded = false
     }
 
     componentDidUpdate(){
       if(this.leafletMap){
         this.refreshLayers()
+        let center = null
+        const selectedId = getOr(null, "selectedDomainItemID", this.props)
+        if(!isNil(selectedId)){
+          center = find({id: selectedId}, this.props.domainItems).center
+          this.leafletMap.setZoom(MAX_ZOOM)
+          this.leafletMap.flyTo(center)
+        }
       }
-    }
-
-    getMapZoom = () => {
-      if(this.leafletMap === null) return null
-      return this.leafletMap.getZoom()
-    }    
+    }   
 
     handleClick = () => {
       if (this.leafletMap) {
@@ -114,7 +115,8 @@ class Map extends React.Component {
     }
 
     calcItemsCountPerZoom = (max_zoom, items) => {
-      let currZoom = Math.max(this.getMapZoom(), MIN_ZOOM + 1)
+      const mapZoom = isNil(this.leafletMap) ? null : this.leafletMap.getZoom()
+      let currZoom = Math.max(mapZoom, MIN_ZOOM + 1)
       currZoom = Math.min(currZoom, max_zoom)
       const degree = Math.round(Math.sqrt(items.length))
       let topItemsCount =  Math.ceil((Math.pow((currZoom - MIN_ZOOM), degree) / Math.pow(max_zoom - MIN_ZOOM, degree)) * items.length)
@@ -124,19 +126,8 @@ class Map extends React.Component {
     handleZoomEnd = (eventParams) => {      
       this.refreshLayers()
     }
-
-    refreshMap = () => {
-      if(!this.leafletMap) return
-      const zoom = getOr(null, "selectedDomainItemID", this.props) ? MAX_ZOOM : INITIAL_ZOOM_LEVEL
-      this.leafletMap.setZoom(zoom)
-      const center = getOr(null, "selectedDomainItemID", this.props) ? find({id: this.props.selectedDomainItemID}, this.props.domainItems).center : 
-      [this.state.lat, this.state.lng]
-      this.leafletMap.flyTo(center)
-    }
-
     
     render() {
-      this.refreshMap()
       return (
         <Div height="calc(100vh - 60px)">
             <LeafletMap maxZoom={MAX_ZOOM} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}} center={[this.state.lat, this.state.lng]} zoom={INITIAL_ZOOM_LEVEL}>
