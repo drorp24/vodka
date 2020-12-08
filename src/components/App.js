@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { ThemeProvider } from 'styled-components';
 import {IntlProvider} from "react-intl"
 import { Sidebar } from 'semantic-ui-react'
@@ -15,6 +16,8 @@ import Map from './Map'
 import CompareDomainItems from './CompareDomainItems'
 import dictionaries from "../i18n/dictionaries"
 import LOCALES from "../i18n/locales"
+import Login from './Login'
+import ProtectedRoute from './common/ProtectedRoute'
 
 const themes = {
   defaultTheme,
@@ -33,22 +36,32 @@ function App({themeId, compareDomainItemsMode, locale}) {
   return (
     <IntlProvider messages={dictionaries[locale]} locale={locale}>
       <ThemeProvider theme={themes[themeId]}>
-        <AppContainer height="100%" themedbackgroundcolor="windowBackground" locale={locale}>
-          <TopBar/> 
-          <FlexColumns height="100%">            
-            <Div width="40%">
-              <DomainItems/>
-            </Div>
-            <Sidebar.Pushable as={Div} width="100%" height="100%">
-              <SideBar/>
-              <Sidebar.Pusher>
-                {compareDomainItemsMode ? <CompareDomainItems/> : <Map/>}
-              </Sidebar.Pusher>
-            </Sidebar.Pushable>
-          </FlexColumns>
-        </AppContainer>
+        <BrowserRouter>
+          <AppContainer height="100%" themedbackgroundcolor="windowBackground" locale={locale}>
+            <Switch>
+              <ProtectedRoute exact path="/">
+                <TopBar/> 
+                <FlexColumns height="100%">            
+                  <Div width="40%">
+                    <DomainItems/>
+                  </Div>
+                  <Sidebar.Pushable as={Div} width="100%" height="100%">
+                    <SideBar/>
+                    <Sidebar.Pusher>
+                      {compareDomainItemsMode ? <CompareDomainItems/> : <Map/>}
+                    </Sidebar.Pusher>
+                  </Sidebar.Pushable>
+                </FlexColumns>
+              </ProtectedRoute>
+              <Route path="/login">
+                <Login />
+              </Route>
+            </Switch>
+          </AppContainer>
+        </BrowserRouter>   
       </ThemeProvider>
     </IntlProvider>
+
     );
 }
 
