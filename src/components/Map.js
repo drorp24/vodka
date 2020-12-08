@@ -5,14 +5,14 @@ import {injectIntl} from "react-intl"
 import "../third_party/leaflet_conditional_layer"
 import './leaflet_layers_control_style.css'
 import {Div} from './common/StyledElements';
-import { Map as LeafletMap, TileLayer } from 'react-leaflet'
+import { Map as LeafletMap, TileLayer, WMSTileLayer } from 'react-leaflet'
 import { CoordinatesControl } from 'react-leaflet-coordinates'
 import { connect } from "react-redux"
 import {getOr, find, concat, filter, isNil, flow, map, max, min, keyBy, take, sortBy, reverse} from "lodash/fp"
 import {handleMapClicked} from '../redux/actions/actions'
 import {default_map_center, reveal_geolayer_zoom_threshold, reveal_markerlayer_zoom_threshold} from '../configLoader';
 import MapLayers from "./mapLayers"
-import {LayerParameters} from "./mapLayersConfig"
+import mapLayersConfig, {LayerParameters} from "./mapLayersConfig"
 import layersConfig from "./mapLayersConfig"
 
 const MAX_ZOOM = 18
@@ -131,10 +131,13 @@ class Map extends React.Component {
       return (
         <Div height="calc(100vh - 60px)">
             <LeafletMap maxZoom={MAX_ZOOM} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}} center={[this.state.lat, this.state.lng]} zoom={INITIAL_ZOOM_LEVEL}>
-                <TileLayer
-                    attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
+                {
+                  map((tile)=> {
+                    return tile.type === "wms" ? 
+                    <WMSTileLayer url={tile.url} attribution={tile.attribution} layers={tile.layers} format={tile.format}/> : 
+                    <TileLayer url={tile.url} attribution={tile.attribution}/>
+                  }, mapLayersConfig.tiles)
+                }
                 <CoordinatesControl position="bottomleft"/>
             </LeafletMap>
         </Div>
