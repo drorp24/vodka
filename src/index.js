@@ -7,12 +7,16 @@ import { createStore, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux"
 import rootReducer from "./redux/reducers/rootReducer"
 import asyncRestCallMiddleware from './redux/middlewares/asyncRestCallMiddleware';
+import { use_redux_toolkit } from './configLoader';
+
+let middlewares = compose(applyMiddleware(asyncRestCallMiddleware))
+if(use_redux_toolkit){
+  middlewares = compose(middlewares, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
+}
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={createStore(rootReducer, compose(
-      applyMiddleware(asyncRestCallMiddleware),
-      window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()))}>
+    <Provider store={createStore(rootReducer, middlewares)}>
       <App/>
     </Provider>    
   </React.StrictMode>,
