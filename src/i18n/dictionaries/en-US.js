@@ -7,6 +7,7 @@ export default {
         "filters": "filters",
         "geographic_filter": "graphic filters",
         "load": "load",
+        "load_more": "load more",
         "search": "search",
         "create": "create",
         "cancel": "cancel",
@@ -50,6 +51,7 @@ export default {
         "Password": "Password",
         "Pasword is required": "Password is required",
         "User name is required": "User name is required",
-        "logout": "logout"
+        "logout": "logout",
+        "items": "items"
     }
 }

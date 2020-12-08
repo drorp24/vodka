@@ -7,6 +7,7 @@ export default {
         "filters": "סינונים",
         "geographic_filter": "סינון גאוגרפי",
         "load": "טען",
+        "load_more": "טען עוד",
         "search": "חפש",
         "create": "צור",
         "cancel": "בטל",
@@ -50,6 +51,7 @@ export default {
         "Password": "סיסמה",
         "Password is required": "יש למלא סיסמה",
         "User name is required": "יש למלא שם משתמש",
-        "logout": "יציאה"
+        "logout": "יציאה",
+        "items": "פריטים"
     }
 }

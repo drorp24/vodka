@@ -21,7 +21,8 @@ import {
   LOAD_PRIORITY_PRESETS,
   LOAD_FILTER_PRESETS,
   LOAD_GEO_PRESETS,
-  SELECT_LOCALE} from "./actionTypes"
+  SELECT_LOCALE,
+  LOAD_MORE_DOMAIN_ITEMS} from "./actionTypes"
 
 function makeActionCreator(type, ...argNames) {
   return function(...args) {
@@ -60,3 +61,4 @@ export const loadPriorityPresets = makeActionCreator(LOAD_PRIORITY_PRESETS, 'met
 export const loadFilterPresets = makeActionCreator(LOAD_FILTER_PRESETS, 'meta', 'body')
 export const loadGeoPresets = makeActionCreator(LOAD_GEO_PRESETS, 'meta', 'body')
 export const selectLocale = makeActionCreator(SELECT_LOCALE, 'locale')
+export const loadMoreDomainItems = makeActionCreator(LOAD_MORE_DOMAIN_ITEMS, 'meta', 'body')
