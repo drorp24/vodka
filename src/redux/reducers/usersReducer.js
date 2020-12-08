@@ -40,7 +40,7 @@ const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    logout: () => initialState,
+    logout: () => ({...initialState, loggedIn: {}}),
   },
   extraReducers: {
     [fetchUser.pending]: (state, { meta: { requestId } }) => {
