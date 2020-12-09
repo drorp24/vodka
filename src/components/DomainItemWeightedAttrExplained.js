@@ -44,7 +44,7 @@ const DomainItemWeightedAttrExplained = ({domainItem, weights}) => {
         }
       </FlexRows>            
         {
-          renderRow(["Total", null, null, parseInt(domainItem.score)], true)
+          renderRow(["Total", null, null, domainItem.score], true)
         }
     </StyledContanier>
   )

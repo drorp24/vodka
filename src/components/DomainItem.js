@@ -77,7 +77,7 @@ class DomainItem extends React.Component {
                       <Div styleType="label3">{this.props.domainItem.name}</Div>
                       <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>
                   </Div>
-                  <LabelSem color={this.props.theme["secondaryButtonColor"]} circular>{parseInt(this.props.domainItem.score)}</LabelSem>
+                  <LabelSem color={this.props.theme["secondaryButtonColor"]} circular>{Math.round(this.props.domainItem.score)}</LabelSem>
               </FlexColumns>
               <DomainItemWeightedAttrExplained  domainItem={this.props.domainItem}/>
           </DomainItemExpandedFlexRows>
