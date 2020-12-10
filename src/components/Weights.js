@@ -6,6 +6,7 @@ import Weight from './Weight'
 import { weightUpdated, loadWeights } from '../redux/actions/actions'
 import AsyncRestParams from '../types/asyncRestParams';
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
+import { isNil } from 'lodash';
 
 
 class Weights extends React.Component {
@@ -15,7 +16,7 @@ class Weights extends React.Component {
       this.props.loadWeightsAction(new AsyncRestParams("/config/weights", "GET"))
   }
 
-  handleWeightUpdate = (key, value) => {
+  handleWeightUpdate = (key, value) => {    
     const weights = map((weight) => {
       if(key !== weight.key) return weight
       return set('value', value, weight)
@@ -32,7 +33,10 @@ class Weights extends React.Component {
     this.props.weightUpdatedAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
   }
 
-  renderWeight = (weight) => (<Weight disabled={this.props.loadingItems} key={weight.key} weight={weight} onChange={this.handleWeightUpdate}/>)
+  renderWeight = (weight) => {
+    const noScorePresetChoosen = isNil(this.props.priorityPresetId)
+    return <Weight disabled={this.props.loadingItems || noScorePresetChoosen} key={weight.key} weight={weight} onChange={this.handleWeightUpdate}/>
+  }
 
   render() {
     return (
