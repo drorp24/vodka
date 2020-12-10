@@ -38,8 +38,8 @@ function makeActionCreator(type, ...argNames) {
   }
 }
 
-export const selectPresetGroup = makeActionCreator(SELECT_PRESET_GROUP, 'meta', 'body')
-export const weightUpdated = makeActionCreator(WEIGHT_UPDATED, 'meta', 'body')
+export const selectPresetGroup = makeActionCreator(SELECT_PRESET_GROUP, 'meta', 'body', 'origWeights')
+export const weightUpdated = makeActionCreator(WEIGHT_UPDATED, 'meta', 'body', 'origWeights')
 export const loadWeights = makeActionCreator(LOAD_WEIGHTS, 'meta', 'body')
 export const handleDomainItemPressed = makeActionCreator(DOMAIN_ITEM_PRESSED, 'id')
 export const selectDomainItemForComparison = makeActionCreator(SELECT_DOMAIN_ITEM_FOR_COMPARISON, 'id')
@@ -53,7 +53,7 @@ export const textFilterStartSearch = makeActionCreator(TEXT_FILTER_START_SEARCH,
 export const textFilterFinishSearch = makeActionCreator(TEXT_FILTER_FINISH_SEARCH, 'textFilterValue')
 export const textFilterUpdateSelection = makeActionCreator(TEXT_FILTER_UPDATE_SELECTION, 'id', 'textFilterValue')
 export const selectScenario = makeActionCreator(SELECT_SCENARIO, 'id')
-export const selectScenarioStep = makeActionCreator(SELECT_SCENARIO_STEP, 'meta', 'body')
+export const selectScenarioStep = makeActionCreator(SELECT_SCENARIO_STEP, 'meta', 'body', 'origWeights')
 export const toggleCreateScenario = makeActionCreator(TOGGLE_CREATE_SCENARIO)
 export const createScenario = makeActionCreator(CREATE_SCENARIO, 'meta', 'body')
 export const loadScenarios = makeActionCreator(LOAD_SCENARIOS, 'meta', 'body')
@@ -61,4 +61,4 @@ export const loadPriorityPresets = makeActionCreator(LOAD_PRIORITY_PRESETS, 'met
 export const loadFilterPresets = makeActionCreator(LOAD_FILTER_PRESETS, 'meta', 'body')
 export const loadGeoPresets = makeActionCreator(LOAD_GEO_PRESETS, 'meta', 'body')
 export const selectLocale = makeActionCreator(SELECT_LOCALE, 'locale')
-export const loadMoreDomainItems = makeActionCreator(LOAD_MORE_DOMAIN_ITEMS, 'meta', 'body')
+export const loadMoreDomainItems = makeActionCreator(LOAD_MORE_DOMAIN_ITEMS, 'meta', 'body', 'origWeights')

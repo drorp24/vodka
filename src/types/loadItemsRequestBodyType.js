@@ -1,5 +1,6 @@
-import {getOr, isNil} from 'lodash/fp'
+import {getOr, isNil, map, sumBy} from 'lodash/fp'
 import {amount_of_items_to_load} from '../configLoader';
+import WeightType from './weightType';
 
 const mandatories = ["parameters_scores_preset_id", "parameters_filter_preset_id", "aoi_id", "weights"]
 
@@ -34,6 +35,11 @@ const getLoadItemsRequestBody = (params) => {
         }
     });
     const weights = getOr(requestBodyDefaults.weights, "weights", params)
+    const sumWeights = sumBy("value", weights)
+    const normedWeights = map((weight) => {        
+        return new WeightType(weight.key, weight.value / sumWeights, weight.min, weight.max)
+    },
+    weights)
     const parameters_scores_preset_id = getOr(requestBodyDefaults.parameters_scores_preset_id, "priorityPresetId", params)
     const parameters_filter_preset_id = getOr(requestBodyDefaults.parameters_filter_preset_id, "filterPresetId", params)
     const aio_id = getOr(requestBodyDefaults.aio_id, "geoPresetId", params)
@@ -47,7 +53,7 @@ const getLoadItemsRequestBody = (params) => {
         scenario_id = null
         scenario_step = null
     }
-    return new LoadItemsRequestBodyType(weights, parameters_scores_preset_id, parameters_filter_preset_id, aio_id,
+    return new LoadItemsRequestBodyType(normedWeights, parameters_scores_preset_id, parameters_filter_preset_id, aio_id,
         amount, scenario_id, scenario_step, ids)
 }
 

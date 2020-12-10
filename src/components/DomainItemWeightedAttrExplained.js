@@ -51,7 +51,7 @@ const DomainItemWeightedAttrExplained = ({domainItem, weights}) => {
 }
 
 const mapStateToProps = state => ({
-  weights: state.domainItems.weights
+  weights: state.domainItems.actualWeights
 })
 
 export default connect(mapStateToProps, {})(DomainItemWeightedAttrExplained);

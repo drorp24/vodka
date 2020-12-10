@@ -40,7 +40,7 @@ const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
     const handleLoadMore = () => {
         const ids = map((domainItem)=> domainItem.id, domainItems)
         const loadItemsRequestBody = getLoadItemsRequestBody({amount: domainItemsAmount + 10, priorityPresetId, filterPresetId, geoPresetId, weights, scenarioId, scenarioStepIdx, ids})
-        loadMoreDomainItemsAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
+        loadMoreDomainItemsAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody, weights)
     }    
     return (
         <DomainItemsToolsContainer alignItems="center" justifyContent="space-between">

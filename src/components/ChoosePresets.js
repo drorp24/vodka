@@ -67,7 +67,7 @@ const ChoosePresets = (
 
     const handlePresetsSelected = () => {
         const loadItemsRequestBody = getLoadItemsRequestBody({priorityPresetId: actualPriorityPresetId, filterPresetId: actualFilterPresetId, geoPresetId: actualGeoPresetId, weights, scenarioId, scenarioStepIdx})
-        selectPresetGroupAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
+        selectPresetGroupAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody, weights)
         close()
     }    
 

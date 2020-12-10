@@ -30,7 +30,7 @@ class Weights extends React.Component {
       scenarioId: this.props.scenarioId, 
       scenarioStepIdx: this.props.scenarioStepIdx, 
       ids})
-    this.props.weightUpdatedAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
+    this.props.weightUpdatedAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody, weights)
   }
 
   renderWeight = (weight) => {

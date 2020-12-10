@@ -28,6 +28,7 @@ const initialState = {
   itemsAmount: 0,
   neighbors: [],
   weights: [],
+  actualWeights: [],
   textFilterValue: "",
   actualTextFilter: {
     term: "",
@@ -117,7 +118,8 @@ const loadItemsSuccessActionHandler = (state, action) => {
     loadingItems: false,
     items,
     neighbors: convertNeighborsToDomainItems(state, getOr([], "payload.neighbors_data", action), state.weights),
-    weights: convertToWeights(getOr(state.weights, "previousAction.payload.body.weights", action)),
+    weights: convertToWeights(getOr(state.weights, "previousAction.payload.origWeights.weights", action)),
+    actualWeights: getOr(null, "previousAction.payload.body.weights", action),
     itemsAmount
   }
 }
@@ -138,7 +140,7 @@ actionHandlers[loadMoreDomainItemsTriple.success] = loadItemsSuccessActionHandle
 /**SPECIFIC ACTION HANDLERS */
 
 actionHandlers[loadWeightsTriple.success] = (state, action) => {
-  const weights = map(weight => new WeightType(weight.key, weight.value, weight.minimum, weight.maximum), action.payload.weights)
+  const weights = map(weight => new WeightType(weight.key, 50, 0, 100), action.payload.weights)
   return {
     ...state,
     weights

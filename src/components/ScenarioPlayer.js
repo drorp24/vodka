@@ -32,7 +32,7 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
     const handleScenarionStepRequest = (scenarioStepIdx) => {
         const ids = map((domainItem)=> domainItem.id, domainItems)
         const loadItemsRequestBody = getLoadItemsRequestBody({priorityPresetId, filterPresetId, geoPresetId, weights, scenarioId, scenarioStepIdx, ids})
-        selectScenarioStepAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody)
+        selectScenarioStepAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody, weights)
     }
     const handleNextRequest = () => {
         handleScenarionStepRequest(scenarioCurrentStepIdx + 1)
