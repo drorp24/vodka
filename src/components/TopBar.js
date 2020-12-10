@@ -16,7 +16,7 @@ import { logout } from '../redux/reducers/usersReducer';
 
 export const TopBarContainer = styled(FlexColumns)`
     border-bottom: ${({ theme }) => `1px solid ${theme["borderColor"]}`};
-    background-color: ${({ theme }) => theme["topbarBackground"]};
+    background-color: ${({ theme }) => theme["topbarBackground"]};    
 `;
 
 const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme, 
@@ -27,6 +27,8 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
     const handleLogout = () => {
         dispatch(logout());
       };
+
+    const itemByLocaleStyle = {"text-align": locale === LOCALES.HEBREW ? "right" : "left"}
     return (
         <TopBarContainer minHeight="60px" alignItems="center"  width="100%" position="relative" justifyContent="space-between">
             <Div  margin="0px 10px">
@@ -37,35 +39,35 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
                         button
                         style={{"background":`${theme["iconButtonColor"]}`, "color": `${theme["iconButtonColorIcon"]}`}}>
                         <Dropdown.Menu direction={locale === LOCALES.HEBREW ? "left" : "right"}>
-                            <Dropdown.Header  content={translate("create", true)} />
+                            <Dropdown.Header  content={translate("create", true)}/>
                             <Dropdown.Divider/>                            
-                            <Dropdown.Item icon='filter' text={translate("rules_preset", true)} />
+                            <Dropdown.Item style={itemByLocaleStyle} icon='filter' text={translate("rules_preset", true)}/>
                             <Dropdown.Header  content={translate("open", true)} />
                             <Dropdown.Divider/>
-                            <Dropdown.Item text={translate("scenarios", true)} onClick={()=>setScenariosIsOpen(true)} icon="film"/>
+                            <Dropdown.Item style={itemByLocaleStyle} text={translate("scenarios", true)} onClick={()=>setScenariosIsOpen(true)} icon="film"/>
                             <Dropdown.Header  content={translate("simulation", true)} />
                             <Dropdown.Divider/>
-                            <Dropdown.Item icon='film' text={translate("create_scenario", true)} onClick={()=>{toggleCreateScenarioAction()}}/>
+                            <Dropdown.Item style={itemByLocaleStyle} icon='film' text={translate("create_scenario", true)} onClick={()=>{toggleCreateScenarioAction()}}/>
                             <Dropdown.Header  content={translate("settings", true)} />
                             <Dropdown.Divider/>
-                            <Dropdown.Item>
-                                <Dropdown text={translate("language", true)} direction={locale === LOCALES.HEBREW ? "left" : "right"}>
-                                    <Dropdown.Menu direction={locale === LOCALES.HEBREW ? "left" : "right"}>
-                                        <Dropdown.Item text={translate("hebrew", true)} onClick={()=>{selectLocaleAction(LOCALES.HEBREW)}}/>
-                                        <Dropdown.Item text={translate("english", true)} onClick={()=>{selectLocaleAction(LOCALES.ENGLISH)}}/>
+                            <Dropdown.Item style={itemByLocaleStyle}>
+                                <Dropdown text={translate("language", true)} style={{width: "100%"}}>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item  text={translate("hebrew", true)} onClick={()=>{selectLocaleAction(LOCALES.HEBREW)}}/>
+                                        <Dropdown.Item  text={translate("english", true)} onClick={()=>{selectLocaleAction(LOCALES.ENGLISH)}}/>
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </Dropdown.Item>
-                            <Dropdown.Item>
-                                <Dropdown text={translate("theme", true)} direction={locale === LOCALES.HEBREW ? "left" : "right"}>
-                                    <Dropdown.Menu direction={locale === LOCALES.HEBREW ? "left" : "right"}>
+                            <Dropdown.Item style={itemByLocaleStyle}>
+                                <Dropdown text={translate("theme", true)} style={{width: "100%"}}>
+                                    <Dropdown.Menu>
                                         <Dropdown.Item text={translate("dark", true)} onClick={() => switchThemeAction('darkTheme')}/>
                                         <Dropdown.Item text={translate("white", true)} onClick={() => switchThemeAction('defaultTheme')}/>
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </Dropdown.Item>
                             <Dropdown.Divider/>
-                            <Dropdown.Item icon='power' text={translate("logout", true)} onClick={handleLogout}/>
+                            <Dropdown.Item style={itemByLocaleStyle} icon='power' text={translate("logout", true)} onClick={handleLogout}/>
                         </Dropdown.Menu>
                     </Dropdown>
             </Div>
