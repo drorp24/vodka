@@ -105,12 +105,12 @@ const loadItemsLoadingActionHandler = (state, action) => {
 }
 
 const loadItemsSuccessActionHandler = (state, action) => {
-  const selectedDomainItemID = getOr(null, "full_id", find({full_id: state.selectedDomainItemID}, action.payload.tasks_data))
+  // const selectedDomainItemID = getOr(null, "full_id", find({full_id: state.selectedDomainItemID}, action.payload.tasks_data))
   const items = convertToDomainItems(state, getOr([], "payload.tasks_data", action), state.weights)
   const itemsAmount = getOr(0, "length", items)
   return {
     ...state,
-    selectedDomainItemID,
+    selectedDomainItemID: null,
     selectedPriorityPresetId: getOr(null, "previousAction.payload.body.parameters_scores_preset_id", action),
     selectedFilterPresetId: getOr(null, "previousAction.payload.body.parameters_filter_preset_id", action),
     selectedGeoPresetId: getOr(null, "previousAction.payload.body.aoi_id", action),
