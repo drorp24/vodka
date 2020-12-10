@@ -52,6 +52,9 @@ export default {
         "Password is required": "יש למלא סיסמה",
         "User name is required": "יש למלא שם משתמש",
         "logout": "יציאה",
-        "items": "פריטים"
+        "items": "פריטים",
+        "tfi": "אקטיבי",
+        "mer": "סנטרלי",
+        "tasks": "משימה"
     }
 }

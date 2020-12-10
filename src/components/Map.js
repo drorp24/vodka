@@ -52,9 +52,8 @@ class Map extends React.Component {
 
     whenReadyCB = (obj) => {
       this.leafletMap = obj.target
-      this.mapLayers.initialize(this.leafletMap)
-      this.mapLayers.addLayersControl(this.leafletMap)
-      this.refreshLayers()      
+      this.mapLayers.initialize(this.leafletMap)      
+      this.refreshLayers()
     }
 
     _calcWeightedAttrLayerItems = (top, attrName,includedItems) => {      
@@ -95,6 +94,7 @@ class Map extends React.Component {
       const layersConfigMapByKey = keyBy("key", layersConfig.layers)
       const popupConf = [{key: this.props.intl.formatMessage({id: "name"}), path: "name"}, {key: this.props.intl.formatMessage({id: "score"}), path: "score"}, {key: this.props.intl.formatMessage({id: "priority"}), path: "currIdx", countFromOne: true}]
       this.mapLayers.clearLayers()
+      this.mapLayers.removeLayersControl(this.leafletMap)
       // Tasks layer
       const topItemsCount = this.calcItemsCountPerZoom(reveal_geolayer_zoom_threshold, this.props.domainItems)
       const taskItems = take(topItemsCount, this.props.domainItems)
@@ -112,6 +112,7 @@ class Map extends React.Component {
       this._addAttrLayer(merConf.key, merItems, this.props.domainItems, merConf.by_attr, ["low_cen.svg", "med_cen.svg", "high_cen.svg"])
       const selectedDomainItem = find({id: this.props.selectedDomainItemID}, this.props.domainItems)
       this.mapLayers.updateSelectedItem(selectedDomainItem, new LayerParameters("center", popupConf))
+      this.mapLayers.addLayersControl(this.leafletMap, this.props.intl)
     }
 
     calcItemsCountPerZoom = (max_zoom, items) => {
@@ -134,7 +135,7 @@ class Map extends React.Component {
                 {
                   map((tile)=> {
                     return tile.type === "wms" ? 
-                    <WMSTileLayer url={tile.url} attribution={tile.attribution} layers={tile.layers} format={tile.format}/> : 
+                    <WMSTileLayer crs={tile.crs} url={tile.url} attribution={tile.attribution} layers={tile.layers} format={tile.format}/> : 
                     <TileLayer url={tile.url} attribution={tile.attribution}/>
                   }, mapLayersConfig.tiles)
                 }

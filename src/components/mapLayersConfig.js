@@ -1,3 +1,4 @@
+import L from 'leaflet'
 export const LAYER_TYPE = {
     GEOJSON: "geojson",
     MARKERS: "markers"
@@ -11,7 +12,8 @@ export default {
         //     attribution: null,
         //     url: "http://ows.mundialis.de/services/service?",
         //     layers: "TOPO-OSM-WMS",
-        //     format: "image/jpeg"
+        //     format: "image/jpeg",
+        //     crs: L.CRS.EPSG4326
         // },
         {
             type: "vector",
@@ -20,24 +22,23 @@ export default {
             url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         }
     ],
-    layers: [        
+    layers: [
         {
             key: "tasks",
-            name: "Tasks",
             type: LAYER_TYPE.GEOJSON,
             style: {
                 "color": "#ff7800",
                 "weight": 5,
                 "opacity": 1,
                 "fillOpacity": 0
-            }
+            },
+            iconUrl: "polygon.svg"
         },
         {
             key: "tfi",
             by_attr: "tfi",
-            name: "tfi",
             type: LAYER_TYPE.MARKERS,
-            iconUrl: "high_tfi.svg",
+            iconUrl: "med_act.svg",
             iconSize: 25,
             iconAnchorX: 9,
             iconAnchorY: 9
@@ -45,9 +46,8 @@ export default {
         {
             key: "mer",
             by_attr: "mer",
-            name: "mer",
             type: LAYER_TYPE.MARKERS,
-            iconUrl: "selected-map-marker.svg",
+            iconUrl: "med_cen.svg",
             iconSize: 25,
             iconAnchorX: 20,
             iconAnchorY: 20

@@ -6,6 +6,7 @@ class LayerGroupWrapper {
     constructor(key, leafletLayerGroup){
         this.key = key
         this.leafletLayerGroup = leafletLayerGroup
+        this.layersControl = null
     }
 }
 
@@ -43,13 +44,21 @@ export default class MapLayers {
                                                   this._addMarkersLayer(key, items, layerParameters, calcIconCallBack)
     }
 
-    addLayersControl(leafletMap) {
+    addLayersControl(leafletMap, intl) {
         const overlayers = {}
         layersConfig.layers.forEach(layerConfig => {
+            const layerNameAndIconHtml = `<div style="display: inline-block"><img style="margin: 0px 10px 0px 0px" src="${layerConfig.iconUrl}" width="20" height="20"> &nbsp ${intl.formatMessage({id: layerConfig.key})}</div>`
             const layerGroupWrrapers = find({key: layerConfig.key}, this.layerGroupWrrapers)
-            overlayers[layerConfig.name] = layerGroupWrrapers.leafletLayerGroup
+            overlayers[layerNameAndIconHtml] = layerGroupWrrapers.leafletLayerGroup
         });
-        L.control.layers(null, overlayers).addTo(leafletMap)        
+        this.layersControl = L.control.layers(null, overlayers, {collapsed:false})
+        this.layersControl.addTo(leafletMap)
+    }
+
+    removeLayersControl(leafletMap) {
+        if(this.layersControl){
+            this.layersControl.remove()
+        }
     }
 
     updateSelectedItem(item, layerParameters) {

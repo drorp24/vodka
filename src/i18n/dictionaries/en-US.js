@@ -52,6 +52,9 @@ export default {
         "Pasword is required": "Password is required",
         "User name is required": "User name is required",
         "logout": "logout",
-        "items": "items"
+        "items": "items",
+        "tfi": "active",
+        "mer": "centerl",
+        "task": "task"
     }
 }
