@@ -118,7 +118,7 @@ const loadItemsSuccessActionHandler = (state, action) => {
     loadingItems: false,
     items,
     neighbors: convertNeighborsToDomainItems(state, getOr([], "payload.neighbors_data", action), state.weights),
-    weights: convertToWeights(getOr(state.weights, "previousAction.payload.origWeights.weights", action)),
+    weights: convertToWeights(getOr(state.weights, "previousAction.payload.origWeights", action)),
     actualWeights: getOr(null, "previousAction.payload.body.weights", action),
     itemsAmount
   }
