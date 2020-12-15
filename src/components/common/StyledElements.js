@@ -34,6 +34,7 @@ align-items: ${({ alignItems }) => alignItems};
 justify-content: ${({ justifyContent }) => justifyContent};
 align-content: ${({ alignContent }) => alignContent};
 white-space: ${({ whiteSpace }) => whiteSpace};
+direction: ${({ direction }) => direction};
 `;
 
 // Colors and Fonts attributes logicaly named and taken from active theme

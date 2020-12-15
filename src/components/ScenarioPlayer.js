@@ -13,10 +13,11 @@ import translate from '../i18n/translate'
 import LOCALES from "../i18n/locales"
 
 export const SimulationPlayerContainer = styled(FlexColumns)`
+    margin-top: 10px;
     border-radius: 10px;
 `;
 
-const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, priorityPresetId, filterPresetId, geoPresetId, domainItems, locale, theme}) => {
+const ScenarioPlayer = ({parentScenarioId, scenarioId, scenarios, scenarioCurrentStepIdx, selectScenarioStepAction, weights, priorityPresetId, filterPresetId, geoPresetId, domainItems, locale, theme}) => {
     const scenarioSelected = scenarioId !== null
     const prevDisabled = !priorityPresetId || scenarioCurrentStepIdx <= 0    
     const currentScenario = find((scenario) => scenario.id === scenarioId, scenarios)
@@ -41,10 +42,7 @@ const ScenarioPlayer = ({scenarioId, scenarios, scenarioCurrentStepIdx, selectSc
         handleScenarionStepRequest(scenarioCurrentStepIdx - 1)
     }
     return (
-        <SimulationPlayerContainer visibility={!scenarioSelected ? "collapse" : "visible"} padding="5px" marginRight="15px" alignItems="center" styleType={scenarioSelected ? "simPlayerBorderDisabled": "simPlayerBorder"}>
-            <Div styleType={!scenarioSelected ? "simPlayerLabelDisabled": "simPlayerLabel"} marginLeft="5px">
-                {translate("simulation")}:
-            </Div>
+        <SimulationPlayerContainer justifyContent="center" visibility={scenarioSelected && parentScenarioId === scenarioId ? "visible" : "collapse"} padding="5px" alignItems="center" styleType={scenarioSelected ? "simPlayerBorderDisabled": "simPlayerBorder"}>            
             <Div marginLeft="10px">
                 <Button size="tiny" icon labelPosition={locale === LOCALES.HEBREW? 'right' : 'left'} basic color={theme["secondaryButtonColor"]} disabled={prevDisabled} circular onClick={handlePrevRequest}>
                     <Icon name={`caret square ${locale === LOCALES.HEBREW ? 'right' : 'left'}`} />

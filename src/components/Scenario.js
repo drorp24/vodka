@@ -7,6 +7,7 @@ import {Button} from 'semantic-ui-react';
 import {map, keys} from 'lodash/fp'
 import translate from '../i18n/translate'
 import {selectScenario} from '../redux/actions/actions'
+import ScenarioPlayer from './ScenarioPlayer'
 
 export const StyledScenarioContainer = styled(Div)`    
     
@@ -33,7 +34,7 @@ function Scenario({scenario, selected, selectScenarioAction, theme}) {
     return (
         <StyledScenarioContainer width="500px">
             <FlexRows>
-                <Button basic={!selected} color={theme["scenarioButtonColor"]} onClick={handleSelectScenario}>
+                <Button style={{"margin": "0px"}} basic={!selected} color={theme["scenarioButtonColor"]} onClick={handleSelectScenario}>
                     <FlexRows alignItems="flex-start">
                         {
                             map((key) => renderAttr(key, scenario[key], selected, key), keys(scenario))
@@ -41,6 +42,7 @@ function Scenario({scenario, selected, selectScenarioAction, theme}) {
                     </FlexRows>                    
                 </Button>
             </FlexRows>
+            <ScenarioPlayer parentScenarioId={scenario.id}/>
         </StyledScenarioContainer>
     )
 }

@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import {FlexColumns} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
 import {toggleSideBar, switchTheme, toggleCreateScenario, selectLocale} from '../redux/actions/actions'
-import ScenarioPlayer from './ScenarioPlayer'
 import CreateScenarioForm from './CreateScenarioForm'
 import ScenariosModal from './ScenariosModal'
 import translate from '../i18n/translate'
@@ -70,8 +69,7 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
                         </Dropdown.Menu>
                     </Dropdown>
             </Div>            
-            <FlexColumns>
-                <ScenarioPlayer/>
+            <FlexColumns>                
                 <Div margin="0px 10px">
                     <Button disabled={compareDomainItemsMode ? true : false} color={theme["topbarSliderButton"]} circular icon={sideBarOpen ? `angle double ${locale === LOCALES.HEBREW ? 'left' : 'right'}` : `angle double ${locale === LOCALES.HEBREW ? 'right' : 'left'}`}
                             onClick={() => toggleSideBarAction()}/>
