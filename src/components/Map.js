@@ -116,17 +116,17 @@ class Map extends React.Component {
           "fillOpacity": 0
         }        
       }, 
-      (item) => {        
-        const nefScore = find(weightedAttr => weightedAttr.key === "nef", item.weightedAttributes).value
-        const tfiScore = find(weightedAttr => weightedAttr.key === "tfi", item.weightedAttributes).value
-        const merScore = find(weightedAttr => weightedAttr.key === "mer", item.weightedAttributes).value
+      (item) => {                
         const popupKeyValueArr = [
           {key: this.props.intl.formatMessage({id: "name"}), value: item.name}, 
           {key: this.props.intl.formatMessage({id: "score"}), value: item.score}, 
           {key: this.props.intl.formatMessage({id: "priority"}), value: item.currIdx, countFromOne: true},
-          {key: this.props.intl.formatMessage({id: "nef"}), value: nefScore},
-          {key: this.props.intl.formatMessage({id: "tfi"}), value: tfiScore},
-          {key: this.props.intl.formatMessage({id: "mer"}), value: merScore}]
+        ]
+        this.props.weights.forEach((weight) => {
+          const weightedAttrScore = find(weightedAttr => weightedAttr.key === weight.key, item.weightedAttributes).value
+          const keyValue = {key: this.props.intl.formatMessage({id: weight.key}), value: weightedAttrScore}
+          popupKeyValueArr.push(keyValue)
+        })
         return filter((item) => !isNil(item.value), popupKeyValueArr)
       })
 
@@ -184,6 +184,7 @@ class Map extends React.Component {
     // domainItems: filter((item) => !isNil(getOr(null, "center[0]", item)) && !isNil(item.geojson), state.domainItems.items),
     // neighbors: filter((nei) => !isNil(getOr(null, "center[0]", nei)) && !isNil(nei.geojson), state.domainItems.neighbors),
     domainItems: state.domainItems.items,
+    weights: state.domainItems.weights,
     neighbors: state.domainItems.neighbors,
     selectedDomainItemID: state.domainItems.selectedDomainItemID
   })
