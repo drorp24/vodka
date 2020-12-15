@@ -7,7 +7,6 @@ import {FlexColumns} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
 import {toggleSideBar, switchTheme, toggleCreateScenario, selectLocale} from '../redux/actions/actions'
 import ScenarioPlayer from './ScenarioPlayer'
-import DomainItemsSearch from './DomainItemsSearch'
 import CreateScenarioForm from './CreateScenarioForm'
 import ScenariosModal from './ScenariosModal'
 import translate from '../i18n/translate'
@@ -70,8 +69,7 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
                             <Dropdown.Item style={itemByLocaleStyle} icon='power' text={translate("logout", true)} onClick={handleLogout}/>
                         </Dropdown.Menu>
                     </Dropdown>
-            </Div>
-            <DomainItemsSearch/>             
+            </Div>            
             <FlexColumns>
                 <ScenarioPlayer/>
                 <Div margin="0px 10px">

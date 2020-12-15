@@ -78,7 +78,7 @@ class DomainItems extends React.Component {
                 {({width, height}) => (
               <List
                 ref={this.listRef}
-                height={height - 40}
+                height={height - 80}
                 rowCount={this.filteredDomainItems.length}
                 rowHeight={this.calcRowHeight}
                 rowRenderer={this.rowRenderer}

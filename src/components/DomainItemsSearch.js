@@ -67,7 +67,7 @@ const DomainItemsSerach = ({
         }
         const intl = useIntl()
         return (
-            <FlexColumns position="absolute" left="calc(50% - 30vh)" marginRight="10px" height="50px" alignItems="center" marginLeft="5px" justifyContent="space-between">
+            <FlexColumns height="40px" margin="5px 10px" alignItems="center" justifyContent="space-between">
                 <SearchStyled
                         placeholder={intl.formatMessage({id: "search"})}
                         ref={ref}
