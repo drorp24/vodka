@@ -44,6 +44,9 @@ color: gray;
 
 
 export const labelDefaultText = css`
+text-overflow: ellipsis;
+overflow: hidden;
+white-space: nowrap;
 `;
 
 export const labelDefaultDisabled = css`
