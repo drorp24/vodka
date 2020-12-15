@@ -55,6 +55,10 @@ export default {
         "items": "items",
         "tfi": "active",
         "mer": "centerl",
+        "nef": "nef",
+        "ksh": "ksh",
+        "mah": "mah",
+        "yec": "yec",
         "task": "task"
     }
 }

@@ -6,6 +6,7 @@ import "semantic-ui-css/semantic.min.css";
 import { get, getOr } from 'lodash/fp'
 import { FlexRows, FlexColumns, SemanticSlider } from './common/CommonComponents';
 import { Label } from './common/StyledElements';
+import translate from '../i18n/translate'
 
 
 class Weight extends React.Component {
@@ -43,7 +44,7 @@ class Weight extends React.Component {
     return (
       <FlexRows margin="5px">
           <FlexColumns marginBottom="5px" justifyContent="space-between">
-              <Label styleType="label2" marginLeft="10px">{this.props.weight.displayName()}</Label>
+              <Label styleType="label2" marginLeft="10px">{translate(this.props.weight.key, true)}</Label>
               <LabelSem color={this.props.theme["weightLabel"]} circular>{this.getValue()}</LabelSem>
           </FlexColumns>
           <SemanticSlider disabled={this.props.disabled} value={this.getValue()} min={min} max={max} step={step} onChange={this.handleSliderChanging} onAfterChange={this.handleSliderDoneChanging}/>
