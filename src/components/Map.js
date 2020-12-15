@@ -8,11 +8,10 @@ import {Div} from './common/StyledElements';
 import { Map as LeafletMap, TileLayer, WMSTileLayer } from 'react-leaflet'
 import { CoordinatesControl } from 'react-leaflet-coordinates'
 import { connect } from "react-redux"
-import {getOr, find, concat, filter, isNil, flow, map, max, min, keyBy, take, sortBy, reverse} from "lodash/fp"
+import {getOr, find, filter, isNil, flow, map, max, min, keyBy, take, sortBy, reverse} from "lodash/fp"
 import {handleMapClicked} from '../redux/actions/actions'
-import {default_map_center, reveal_geolayer_zoom_threshold, reveal_markerlayer_zoom_threshold} from '../configLoader';
+import {default_map_center, reveal_geolayer_zoom_threshold, reveal_markerlayer_zoom_threshold, active_threshold, task_colors} from '../configLoader';
 import MapLayers from "./mapLayers"
-import mapLayersConfig, {LayerParameters} from "./mapLayersConfig"
 import layersConfig from "./mapLayersConfig"
 
 const MAX_ZOOM = 18
@@ -68,50 +67,83 @@ class Map extends React.Component {
       ])(includedItems)
     }
 
-    _addAttrLayer = (layerKey, items, allItem, attrName, icons) => {
+    _addAttrLayer = (layerKey, items, allItem, attrName, activeAttrName, iconName, levelsCount) => {
       if(isNil(items) || items.length < 1) return
-      const maxAttrScore = flow([
-        map((item) => find((attr)=> attr.key === attrName, item.weightedAttributes).value),
-        max
-      ])(allItem)
-      const minAttrScore = flow([map((item) =>  find((attr)=> attr.key === attrName, item.weightedAttributes).value), 
-        min
-      ])(allItem)
-      this.mapLayers.addLayer(layerKey, items, new LayerParameters("center", []), (domainItem) => {
+      const attrScores = map((item) => find((attr)=> attr.key === attrName, item.weightedAttributes).value, allItem)
+      const maxAttrScore = max(attrScores)
+      const minAttrScore = min(attrScores)      
+      this.mapLayers.addLayer(layerKey, items, "center", (domainItem) => {
         const itemAttrValue = find((attr)=> attr.key === attrName, domainItem.weightedAttributes).value
-        const relativ_score = (itemAttrValue - minAttrScore) / (maxAttrScore - minAttrScore)        
-        let iconCnt = 0
-        const iconLength = icons.length
-        while (iconCnt < iconLength){
-          if(relativ_score <= (iconCnt + 1)/iconLength) return icons[iconCnt]
-          iconCnt += 1
+        const relativScore = (itemAttrValue - minAttrScore) / (maxAttrScore - minAttrScore)
+        console.log(`relative score for ${attrName} is ${relativScore}`)
+        let level = 1
+        while (level < levelsCount){          
+          if(relativScore <= level/levelsCount) break
+          level += 1
         }
-        return null
+        let useActiveIcons = false
+        if(find((attr)=> attr.key === activeAttrName, domainItem.weightedAttributes).value > active_threshold){
+          useActiveIcons = true
+        }          
+        return useActiveIcons ? `${iconName}${level}_active.svg` : `${iconName}${level}.svg`
       })
     }
 
     refreshLayers = () => {      
-      const layersConfigMapByKey = keyBy("key", layersConfig.layers)
-      const popupConf = [{key: this.props.intl.formatMessage({id: "name"}), path: "name"}, {key: this.props.intl.formatMessage({id: "score"}), path: "score"}, {key: this.props.intl.formatMessage({id: "priority"}), path: "currIdx", countFromOne: true}]
+      const layersConfigMapByKey = keyBy("key", layersConfig.layers)      
       this.mapLayers.clearLayers()
       this.mapLayers.removeLayersControl(this.leafletMap)
       // Tasks layer
       const topItemsCount = this.calcItemsCountPerZoom(reveal_geolayer_zoom_threshold, this.props.domainItems)
       const taskItems = take(topItemsCount, this.props.domainItems)
-      this.mapLayers.addLayer("tasks", taskItems, new LayerParameters("geojson", popupConf))
-      // "tfi" layer
-      const itemsAndNeighbors = concat(this.props.domainItems, this.props.neighbors)
-      const tfiConf = layersConfigMapByKey["tfi"]
-      const topTfiMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, itemsAndNeighbors)
-      const tfiItems = this._calcWeightedAttrLayerItems(topTfiMarkersCount, tfiConf.by_attr, itemsAndNeighbors)
-      this._addAttrLayer(tfiConf.key, tfiItems, itemsAndNeighbors, tfiConf.by_attr, ["low_act.svg", "med_act.svg", "high_act.svg"])
+      this.mapLayers.addLayer("tasks", taskItems, "geojson", (domainItem) => {
+        if(isNil(domainItem)){
+          return
+        }
+        const scores = map((item) => item.score, taskItems)
+        const maxScore = max(scores)
+        const minScore = min(scores)        
+        const relativeScore = (domainItem.score - minScore) / (maxScore - minScore)        
+        let level = 1
+        while (level < task_colors.length){          
+          if(relativeScore <= level/task_colors.length) break
+          level += 1
+        }
+        return {
+          "color": task_colors[level - 1],
+          "weight": 5,
+          "opacity": 1,
+          "fillOpacity": 0
+        }        
+      }, 
+      (item) => {        
+        const nefScore = find(weightedAttr => weightedAttr.key === "nef", item.weightedAttributes).value
+        const tfiScore = find(weightedAttr => weightedAttr.key === "tfi", item.weightedAttributes).value
+        const merScore = find(weightedAttr => weightedAttr.key === "mer", item.weightedAttributes).value
+        const popupKeyValueArr = [
+          {key: this.props.intl.formatMessage({id: "name"}), value: item.name}, 
+          {key: this.props.intl.formatMessage({id: "score"}), value: item.score}, 
+          {key: this.props.intl.formatMessage({id: "priority"}), value: item.currIdx, countFromOne: true},
+          {key: this.props.intl.formatMessage({id: "nef"}), value: nefScore},
+          {key: this.props.intl.formatMessage({id: "tfi"}), value: tfiScore},
+          {key: this.props.intl.formatMessage({id: "mer"}), value: merScore}]
+        return filter((item) => !isNil(item.value), popupKeyValueArr)
+      })
+
       // "mer" layer
       const merConf = layersConfigMapByKey["mer"]
       const topMerMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, this.props.domainItems)
       const merItems = this._calcWeightedAttrLayerItems(topMerMarkersCount, merConf.by_attr, this.props.domainItems)
-      this._addAttrLayer(merConf.key, merItems, this.props.domainItems, merConf.by_attr, ["low_cen.svg", "med_cen.svg", "high_cen.svg"])
+      this._addAttrLayer(merConf.key, merItems, this.props.domainItems, merConf.by_attr, "tfi", "stars", 10)
+
+      // "nef" layer
+      const nefConf = layersConfigMapByKey["nef"]
+      const topNefMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, this.props.domainItems)
+      const nefItems = this._calcWeightedAttrLayerItems(topNefMarkersCount, nefConf.by_attr, this.props.domainItems)      
+      this._addAttrLayer(nefConf.key, nefItems, this.props.domainItems, nefConf.by_attr, "tfi", "bars", 6)
+
       const selectedDomainItem = find({id: this.props.selectedDomainItemID}, this.props.domainItems)
-      this.mapLayers.updateSelectedItem(selectedDomainItem, new LayerParameters("center", popupConf))
+      this.mapLayers.updateSelectedItem(selectedDomainItem, "center")
       this.mapLayers.addLayersControl(this.leafletMap, this.props.intl)
     }
 
@@ -137,7 +169,7 @@ class Map extends React.Component {
                     return tile.type === "wms" ? 
                     <WMSTileLayer crs={tile.crs} url={tile.url} attribution={tile.attribution} layers={tile.layers} format={tile.format}/> : 
                     <TileLayer url={tile.url} attribution={tile.attribution}/>
-                  }, mapLayersConfig.tiles)
+                  }, layersConfig.tiles)
                 }
                 <CoordinatesControl position="bottomleft"/>
             </LeafletMap>

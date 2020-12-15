@@ -9,5 +9,7 @@ window.__myapp = {
   reveal_geolayer_zoom_threshold: 15,
   reveal_markerlayer_zoom_threshold: 18,
   use_redux_toolkit: true,
-  logged_in: true
+  logged_in: true,
+  active_threshold: 5,
+  task_colors: ["red", "orange", "green"]
 }

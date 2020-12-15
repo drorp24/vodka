@@ -10,3 +10,5 @@ export const reveal_geolayer_zoom_threshold = getOr(15, "reveal_geolayer_zoom_th
 export const reveal_markerlayer_zoom_threshold = getOr(15, "reveal_markerlayer_zoom_threshold", window.__myapp)
 export const use_redux_toolkit = getOr(false, "use_redux_toolkit", window.__myapp)
 export const logged_in = getOr(false, "logged_in", window.__myapp)
+export const active_threshold = getOr(false, "active_threshold", window.__myapp)
+export const task_colors = getOr(false, "task_colors", window.__myapp)

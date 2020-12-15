@@ -55,6 +55,7 @@ export default {
         "items": "פריטים",
         "tfi": "אקטיבי",
         "mer": "סנטרלי",
+        "nef": "נפח",
         "tasks": "משימה"
     }
 }

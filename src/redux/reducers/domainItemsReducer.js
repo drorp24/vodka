@@ -4,7 +4,7 @@ import PriorityPresetType from "../../types/priorityPresetType"
 import FilterPresetType from "../../types/filterPresetType"
 import GeoPresetType from "../../types/geoPresetType"
 import KeyValueType from "../../types/keyValueType"
-import { map, getOr, keyBy, flow, set, filter, reverse, sortBy, find } from 'lodash/fp'
+import { map, getOr, keyBy, flow, set, filter, reverse, sortBy, uniqBy } from 'lodash/fp'
 import { WEIGHT_UPDATED,
   DOMAIN_ITEM_PRESSED, 
   LOAD_WEIGHTS,
@@ -64,7 +64,7 @@ const convertToDomainItems = (state, items, weights) => {
     return domainItem
   }, 
   // flow([sortBy(["score"]), reverse])(items)
-    flow([filter(item => !isNil(item.center_x) && !isNil(item.center_y) && !isNil(item.location)), sortBy(["score"]), reverse])(items)
+    flow([uniqBy("full_id"), filter(item => !isNil(item.center_x) && !isNil(item.center_y) && !isNil(item.location)), sortBy(["score"]), reverse])(items)
   )
 }
 

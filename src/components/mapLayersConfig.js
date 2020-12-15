@@ -35,19 +35,19 @@ export default {
             iconUrl: "polygon.svg"
         },
         {
-            key: "tfi",
-            by_attr: "tfi",
-            type: LAYER_TYPE.MARKERS,
-            iconUrl: "med_act.svg",
-            iconSize: 25,
-            iconAnchorX: 9,
-            iconAnchorY: 9
-        },
-        {
             key: "mer",
             by_attr: "mer",
             type: LAYER_TYPE.MARKERS,
-            iconUrl: "med_cen.svg",
+            iconUrl: "stars.svg",
+            iconSize: 45,
+            iconAnchorX: 25,
+            iconAnchorY: 45
+        },
+        {
+            key: "nef",
+            by_attr: "nef",
+            type: LAYER_TYPE.MARKERS,
+            iconUrl: "bars6.svg",
             iconSize: 25,
             iconAnchorX: 20,
             iconAnchorY: 20
@@ -61,12 +61,5 @@ export default {
         iconSize: 25,
         iconAnchorX: 15,
         iconAnchorY: 15
-    }
-}
-
-export class LayerParameters {
-    constructor(geoPropPath, popupKeyAndPathArr) {
-        this.geoPropPath = geoPropPath
-        this.popupKeyAndPathArr = popupKeyAndPathArr        
     }
 }

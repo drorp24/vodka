@@ -1,6 +1,6 @@
 import layersConfig, {LAYER_TYPE} from "./mapLayersConfig"
 import L from 'leaflet'
-import {keyBy, flow, map, find, isEmpty, omit} from 'lodash/fp'
+import {keyBy, flow, map, find, isEmpty, omit, isNil} from 'lodash/fp'
 
 class LayerGroupWrapper {
     constructor(key, leafletLayerGroup){
@@ -38,10 +38,11 @@ export default class MapLayers {
         });
     }
 
-    addLayer(key, items, layerParameters, calcIconCallBack) {
+    addLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr) {
         const layerConfig = this.layersConfigMapByKey[key]
-        layerConfig.type === LAYER_TYPE.GEOJSON ? this._addGeojsonLayer(key, items, layerParameters) : 
-                                                  this._addMarkersLayer(key, items, layerParameters, calcIconCallBack)
+        layerConfig.type === LAYER_TYPE.GEOJSON ? 
+                        this._addGeojsonLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr) : 
+                        this._addMarkersLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr)
     }
 
     addLayersControl(leafletMap, intl) {
@@ -61,31 +62,33 @@ export default class MapLayers {
         }
     }
 
-    updateSelectedItem(item, layerParameters) {
+    updateSelectedItem(item, geomertyPath) {
         if(!this.selectedItemLayer) return
         this.selectedItemLayer.leafletLayerGroup.clearLayers()
         if(!item) return
         const layerConfig = layersConfig.selected_item_layer
         const markerOptions = {icon: L.icon({iconUrl: layerConfig.iconUrl, iconSize: [layerConfig.iconSize, layerConfig.iconSize], iconAnchor: [layerConfig.iconAnchorX, layerConfig.iconAnchorY]})}
-        const marker = L.marker(item[layerParameters.geoPropPath], markerOptions)
+        const marker = L.marker(item[geomertyPath], markerOptions)
         marker.setZIndexOffset(1000)
         this.selectedItemLayer.leafletLayerGroup.addLayer(marker)
     }
 
-    _addGeojsonLayer(key, items, layerParameters) {
+    _addGeojsonLayer(key, items, geomertyPath, calcStyleCallBack, calcPopupKeyValueArr) {
         const layerConfig = this.layersConfigMapByKey[key]
         const geoJsonItems = flow([
             map((item) => {
                 const type = "Feature"
-                const properties = {...omit(layerParameters.geoPropPath, item)}
-                const geometry = item[layerParameters.geoPropPath]
+                const properties = {...omit(geomertyPath, item)}
+                const geometry = item[geomertyPath]
                 return {type, geometry, properties}
             })
           ])(items)
         const geojsonLayer = L.geoJSON(geoJsonItems, {
-            style: layerConfig.style,
+            style: (feature) => {
+                return isNil(calcStyleCallBack) ? layerConfig.style : calcStyleCallBack(feature.properties)
+            },
             onEachFeature: (feature, layer) => {
-                const popupString = this._buildPopupString(feature.properties, layerParameters.popupKeyAndPathArr)
+                const popupString = this._buildPopupString(calcPopupKeyValueArr, feature.properties)
                 if(!isEmpty(popupString))
                     layer.bindPopup(popupString);
               }
@@ -93,14 +96,14 @@ export default class MapLayers {
         this._addLayerToGroup(geojsonLayer, key)
     }
 
-    _addMarkersLayer(key, items, layerParameters, calcIconCallBack) {
+    _addMarkersLayer(key, items, geomertyPath, calcIconCallBack, calcPopupKeyValueArr) {
         const layerConfig = this.layersConfigMapByKey[key]
         const markersArray = flow([
             map((item) => {
                 const iconUrl = calcIconCallBack ? calcIconCallBack(item) : layerConfig.iconUrl
                 const markerOptions = {icon: L.icon({iconUrl, iconSize: [layerConfig.iconSize, layerConfig.iconSize], iconAnchor: [layerConfig.iconAnchorX, layerConfig.iconAnchorY]})}
-                const marker = L.marker(item[layerParameters.geoPropPath], markerOptions)
-                const popupString = this._buildPopupString(item, layerParameters.popupKeyAndPathArr)
+                const marker = L.marker(item[geomertyPath], markerOptions)
+                const popupString = this._buildPopupString(calcPopupKeyValueArr, item)
                 if(!isEmpty(popupString))
                     marker.bindPopup(popupString)
                 return marker
@@ -115,10 +118,14 @@ export default class MapLayers {
         layerGroupWrapper.leafletLayerGroup.addLayer(leafletLayer)
     }
 
-    _buildPopupString(item, popupKeyAndPathArr){
+    _buildPopupString(cb, item){
+        if(isNil(cb)){
+            return ""
+        }
+        const popupKeyValueArr = cb(item)
         let popupString = ''
-        popupKeyAndPathArr.forEach(popupKeyAndPath => {
-            popupString += `${popupKeyAndPath.key}: ${popupKeyAndPath.countFromOne ? item[popupKeyAndPath.path] + 1 : item[popupKeyAndPath.path]} <br/>`
+        popupKeyValueArr.forEach(keyValue => {
+            popupString += `${keyValue.key}: ${keyValue.countFromOne ? keyValue.value + 1 : keyValue.value} <br/>`
         });
         return popupString
     }
