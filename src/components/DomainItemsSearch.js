@@ -13,8 +13,9 @@ import {useIntl} from "react-intl"
 
 
 export const SearchStyled = styled(Search)`
+    width: 100%;
     .ui.icon.input {
-        width: 50vh;
+        width: 100%;
     }
 `
 
@@ -67,7 +68,7 @@ const DomainItemsSerach = ({
         }
         const intl = useIntl()
         return (
-            <FlexColumns height="40px" margin="5px 10px" alignItems="center" justifyContent="space-between">
+            <FlexColumns height="40px" margin="5px 0px" padding="0px 5px" alignItems="center" justifyContent="space-between">
                 <SearchStyled
                         placeholder={intl.formatMessage({id: "search"})}
                         ref={ref}
