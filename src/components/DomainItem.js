@@ -9,7 +9,7 @@ import { handleDomainItemPressed, selectDomainItemForComparison } from '../redux
 import DomainItemWeightedAttrExplained from './DomainItemWeightedAttrExplained'
 import {max_items_to_compare} from '../configLoader';
 
-export const DomainItemFlexColumns = styled(FlexColumns)`
+export const DomainItemFlexColumns = styled(FlexColumns)`    
     border-bottom: ${({theme}) => `1px solid ${theme["borderColor"]}`};
     :hover  {
         cursor: pointer;
@@ -67,9 +67,9 @@ class DomainItem extends React.Component {
     return (
     this.props.domainItem.expanded ?
       (
-        <DomainItemExpandedFlexRows position="relative" style={this.props.style} themedbackgroundcolor={this.props.domainItem.id === this.props.selectedDomainItemID ? "selectedItemBackgroundColor": backgroundColor}>
+        <DomainItemExpandedFlexRows  style={this.props.style} themedbackgroundcolor={this.props.domainItem.id === this.props.selectedDomainItemID ? "selectedItemBackgroundColor": backgroundColor}>
               <FlexColumns  alignItems="center" padding={this.props.compareDomainItemsMode ? "10px 10px 10px 5px" : "10px"}  onClick={this.onItemClick}>
-              {   this.props.compareDomainItemsMode ? <Div>
+              {   this.props.compareDomainItemsMode ? <Div margin="0px 10px">
                     <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.checkDisabled()} size="large" 
                           name={selectedForComparison ? "check circle outline" : "circle outline"}/>
                   </Div> : null}
@@ -84,8 +84,8 @@ class DomainItem extends React.Component {
       )
       :
       (
-        <DomainItemFlexColumns position="relative" style={this.props.style} themedbackgroundcolor={this.props.domainItem.id === this.props.selectedDomainItemID ? "selectedItemBackgroundColor": backgroundColor} alignItems="center" padding={this.props.compareDomainItemsMode ? "10px 10px 10px 5px" : "10px"}  onClick={this.onItemClick}>
-          {this.props.compareDomainItemsMode ? <Div>
+        <DomainItemFlexColumns style={this.props.style} themedbackgroundcolor={this.props.domainItem.id === this.props.selectedDomainItemID ? "selectedItemBackgroundColor": backgroundColor} alignItems="center" padding={this.props.compareDomainItemsMode ? "10px 10px 10px 5px" : "10px"}  onClick={this.onItemClick}>
+          {this.props.compareDomainItemsMode ? <Div margin="0px 10px">
               <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.checkDisabled()} size="large" 
                     name={selectedForComparison ? "check circle outline" : "circle outline"}/>
             </Div> : null}
@@ -93,7 +93,7 @@ class DomainItem extends React.Component {
                 <Div styleType={this.props.compareDomainItemsMode ? "label3disabled" : "label3"}>{this.props.domainItem.name}</Div>
                 <Div styleType="labelDefaultDisabled">{this.props.domainItem.description}</Div>
             </Div>
-            <LabelSem color={this.props.theme["secondaryButtonColor"]} circular>{parseInt(this.props.domainItem.score)}</LabelSem>            
+            <LabelSem color={this.props.theme["secondaryButtonColor"]} circular>{Math.round(this.props.domainItem.score)}</LabelSem>            
         </DomainItemFlexColumns>
       )
     )
