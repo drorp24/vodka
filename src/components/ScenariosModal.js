@@ -22,7 +22,7 @@ const ScenariosModal = ({open, closeCB, theme, locale}) => {
                 <Modal.Content scrolling>
                     <Scenarios closeCB={closeCB}/>
                 </Modal.Content>
-                <Modal.Actions style={{"direction": "rtl"}}>
+                <Modal.Actions style={{"direction": locale === LOCALES.HEBREW ? "rtl" : "ltr"}}>
                     <Button color={theme["primaryButtonColor"]} onClick={closeCB}>
                         {translate("close", true)}
                     </Button>
