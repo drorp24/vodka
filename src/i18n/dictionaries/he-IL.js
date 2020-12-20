@@ -59,6 +59,10 @@ export default {
         "ksh": "כשר",
         "mah": "מהותי",
         "yec": "יחיד",
-        "tasks": "משימה"
+        "tasks": "משימה",
+        "attribute": "תכונה",
+        "value": "ערך",
+        "weight": "משקל",
+        "contribution": "תרומה"
     }
 }
