@@ -7,7 +7,8 @@ import { FlexColumns, FlexRows } from './common/CommonComponents';
 import { Div } from './common/StyledElements';
 import { handleDomainItemPressed, selectDomainItemForComparison } from '../redux/actions/actions'
 import DomainItemWeightedAttrExplained from './DomainItemWeightedAttrExplained'
-import {max_items_to_compare} from '../configLoader';
+import {max_items_to_compare, task_colors} from '../configLoader';
+import LOCALES from "../i18n/locales"
 
 export const DomainItemFlexColumns = styled(FlexColumns)`    
     border-bottom: ${({theme}) => `1px solid ${theme["borderColor"]}`};
@@ -15,6 +16,7 @@ export const DomainItemFlexColumns = styled(FlexColumns)`
         cursor: pointer;
         background-color: ${({theme}) => `${theme["backgroudHoverColor"]}`};
       }
+      ${({scoreColor, locale}) => locale === LOCALES.HEBREW ? `border-left: 5px solid ${scoreColor}` : `border-right: 5px solid ${scoreColor}`};
 `;
 
 export const DomainItemExpandedFlexRows = styled(FlexRows)`
@@ -22,10 +24,20 @@ export const DomainItemExpandedFlexRows = styled(FlexRows)`
     :hover  {
         cursor: pointer;
         background-color: ${({theme}) => `${theme["backgroudHoverColor"]}`};
-      }
+    }
+    ${({scoreColor, locale}) => locale === LOCALES.HEBREW ? `border-left: 5px solid ${scoreColor}` : `border-right: 5px solid ${scoreColor}`};    
 `;
 
 class DomainItem extends React.Component {
+
+  calcColor = (relativeScore) => {
+    let level = 1
+    while (level < task_colors.length){          
+      if(relativeScore <= level/task_colors.length) break
+      level += 1
+    }
+    return task_colors[level - 1]
+  }
 
   onItemClick = (event, data) => {
     if(this.props.compareDomainItemsMode){
@@ -67,7 +79,7 @@ class DomainItem extends React.Component {
     return (
     this.props.domainItem.expanded ?
       (
-        <DomainItemExpandedFlexRows  style={this.props.style} themedbackgroundcolor={this.props.domainItem.id === this.props.selectedDomainItemID ? "selectedItemBackgroundColor": backgroundColor}>
+        <DomainItemExpandedFlexRows locale={this.props.locale} scoreColor={this.calcColor(this.props.relativeScore)} style={this.props.style} themedbackgroundcolor={this.props.domainItem.id === this.props.selectedDomainItemID ? "selectedItemBackgroundColor": backgroundColor}>
               <FlexColumns  alignItems="center" padding={this.props.compareDomainItemsMode ? "10px 10px 10px 5px" : "10px"}  onClick={this.onItemClick}>
               {   this.props.compareDomainItemsMode ? <Div margin="0px 10px">
                     <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.checkDisabled()} size="large" 
@@ -84,7 +96,7 @@ class DomainItem extends React.Component {
       )
       :
       (
-        <DomainItemFlexColumns style={this.props.style} themedbackgroundcolor={this.props.domainItem.id === this.props.selectedDomainItemID ? "selectedItemBackgroundColor": backgroundColor} alignItems="center" padding={this.props.compareDomainItemsMode ? "10px 10px 10px 5px" : "10px"}  onClick={this.onItemClick}>
+        <DomainItemFlexColumns locale={this.props.locale} scoreColor={this.calcColor(this.props.relativeScore)} style={this.props.style} themedbackgroundcolor={this.props.domainItem.id === this.props.selectedDomainItemID ? "selectedItemBackgroundColor": backgroundColor} alignItems="center" padding={this.props.compareDomainItemsMode ? "10px 10px 10px 5px" : "10px"}  onClick={this.onItemClick}>
           {this.props.compareDomainItemsMode ? <Div margin="0px 10px">
               <Icon color={this.props.theme["selectForCompareColor"]} disabled={this.checkDisabled()} size="large" 
                     name={selectedForComparison ? "check circle outline" : "circle outline"}/>

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from "react-redux"
-import { isEmpty, getOr, filter, isNumber} from 'lodash/fp'
+import { isEmpty, getOr, filter, isNumber, map, max, min} from 'lodash/fp'
 import 'react-virtualized/styles.css';
 import {Loader} from 'semantic-ui-react';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
@@ -27,9 +27,10 @@ class DomainItems extends React.Component {
     this.listRef = React.createRef();
   }
 
-  rowRenderer = ({index, isScrolling, key, style}) => {
+  rowRenderer = ({index, isScrolling, key, style, maxScore, minScore}) => {
     const domainItem = this.filteredDomainItems[index]
-    return <DomainItem key={domainItem.id} domainItem={domainItem} style={{...style, direction: this.props.locale === LOCALES.HEBREW ? "rtl" : "ltr"}}/>
+    const relativeScore = (domainItem.score - minScore) / (maxScore - minScore)
+    return <DomainItem relativeScore={relativeScore} locale={this.props.locale} key={domainItem.id} domainItem={domainItem} style={{...style, direction: this.props.locale === LOCALES.HEBREW ? "rtl" : "ltr"}}/>
   }
 
 
@@ -66,7 +67,10 @@ class DomainItems extends React.Component {
   render() {
     if(!this.props.loadingItems){
       this.setFilteredDomainItems()
-    }    
+    }
+    const scores = map((item) => item.score, this.filteredDomainItems)
+    const maxScore = max(scores)
+    const minScore = min(scores)    
     return (
       <StyledFlexRowsContainer height="100%" width="100%">
           <DomainItemsTools/>
@@ -82,7 +86,7 @@ class DomainItems extends React.Component {
                 height={height - 80}
                 rowCount={this.filteredDomainItems.length}
                 rowHeight={this.calcRowHeight}
-                rowRenderer={this.rowRenderer}
+                rowRenderer={(props) => {return this.rowRenderer({...props, maxScore, minScore})}}
                 width={width}
               />
             )}
