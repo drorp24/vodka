@@ -14,6 +14,7 @@ import {
 import AsyncRestParams from '../types/asyncRestParams';
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
 import translate from '../i18n/translate'
+import LOCALES from "../i18n/locales"
 
 const ChoosePresets = (
     {
@@ -34,7 +35,8 @@ const ChoosePresets = (
         initialPriorityPresetId,
         initialFilterPresetId,
         initialGeoPresetId,
-        theme
+        theme,
+        locale
     }) => {
 
     const [priorityPresetId, setPriorityPresetId] = React.useState(null)
@@ -80,7 +82,7 @@ const ChoosePresets = (
     const presetsLoading = loadingPriorityPresets || loadingFilterPresets || loadingGeoPresets
 
     return (
-        <FlexRows width="300px" ref={popupRef}>
+        <FlexRows width="300px" ref={popupRef} direction={locale === LOCALES.HEBREW ? "rtl" : "ltr"}>
             <FlexRows alignItems="center">
             <Header>{translate("choose_presets", true)}</Header>
             </FlexRows>
@@ -146,6 +148,7 @@ const mapStateToProps = state => ({
     weights: state.domainItems.weights,
     scenarioId: state.simulation.selectedScenarioId,
     scenarioStepIdx: state.simulation.scenarioCurrentStepIdx,
+    locale: state.ui.locale
 })
 
 export default connect(mapStateToProps, {
