@@ -75,8 +75,7 @@ class Map extends React.Component {
       const minAttrScore = min(attrScores)      
       this.mapLayers.addLayer(layerKey, items, "center", (domainItem) => {
         const itemAttrValue = find((attr)=> attr.key === attrName, domainItem.weightedAttributes).value
-        const relativScore = (itemAttrValue - minAttrScore) / (maxAttrScore - minAttrScore)
-        console.log(`relative score for ${attrName} is ${relativScore}`)
+        const relativScore = (itemAttrValue - minAttrScore) / (maxAttrScore - minAttrScore)        
         let level = 1
         while (level < levelsCount){          
           if(relativScore <= level/levelsCount) break
@@ -105,7 +104,7 @@ class Map extends React.Component {
         const scores = map((item) => item.score, taskItems)
         const maxScore = max(scores)
         const minScore = min(scores)        
-        const relativeScore = (domainItem.score - minScore) / (maxScore - minScore)        
+        const relativeScore = (domainItem.score - minScore) / (maxScore - minScore)
         let level = 1
         while (level < task_colors.length){          
           if(relativeScore <= level/task_colors.length) break
