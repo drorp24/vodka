@@ -57,7 +57,6 @@ text-overflow: ellipsis;
 overflow: hidden;
 white-space: nowrap;
 line-height: normal;
-text-align: left;
 `;
 
 export const scenarioLabelValue = css`
