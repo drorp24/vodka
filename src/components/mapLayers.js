@@ -73,10 +73,21 @@ export default class MapLayers {
         this.selectedItemLayer.leafletLayerGroup.clearLayers()
         if(!item) return
         const layerConfig = layersConfig.selected_item_layer
-        const markerOptions = {icon: L.icon({iconUrl: layerConfig.iconUrl, iconSize: [layerConfig.iconSize, layerConfig.iconSize], iconAnchor: [layerConfig.iconAnchorX, layerConfig.iconAnchorY]})}
-        const marker = L.marker(item[geomertyPath], markerOptions)
-        marker.setZIndexOffset(1000)
-        this.selectedItemLayer.leafletLayerGroup.addLayer(marker)
+        if(geomertyPath === "center"){
+            const markerOptions = {icon: L.icon({iconUrl: layerConfig.iconUrl, iconSize: [layerConfig.iconSize, layerConfig.iconSize], iconAnchor: [layerConfig.iconAnchorX, layerConfig.iconAnchorY]})}
+            const marker = L.marker(item[geomertyPath], markerOptions)
+            marker.setZIndexOffset(1000)
+            this.selectedItemLayer.leafletLayerGroup.addLayer(marker)
+        }
+        else if(geomertyPath === "geojson"){
+            const geojsonLayer = L.geoJSON({type: "Feature", geometry: item[geomertyPath]}, {
+                style: (feature) => {
+                    return layerConfig.style
+                }
+            })
+            geojsonLayer.setZIndex(1000)
+            this.selectedItemLayer.leafletLayerGroup.addLayer(geojsonLayer)
+        }
     }
 
     _addGeojsonLayer(key, items, geomertyPath, calcStyleCallBack, calcPopupKeyValueArr) {

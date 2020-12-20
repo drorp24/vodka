@@ -142,8 +142,9 @@ class Map extends React.Component {
       const nefItems = this._calcWeightedAttrLayerItems(topNefMarkersCount, nefConf.by_attr, this.props.domainItems)      
       this._addAttrLayer(nefConf.key, nefItems, this.props.domainItems, nefConf.by_attr, "tfi", "bars", 6)
 
+      // selected layer
       const selectedDomainItem = find({id: this.props.selectedDomainItemID}, this.props.domainItems)
-      this.mapLayers.updateSelectedItem(selectedDomainItem, "center")
+      this.mapLayers.updateSelectedItem(selectedDomainItem, "geojson")
       this.mapLayers.addLayersControl(this.leafletMap, this.props.intl)
     }
 

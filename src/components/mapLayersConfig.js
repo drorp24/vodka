@@ -52,13 +52,23 @@ export default {
             iconAnchorY: 20
         }        
     ],
+    // selected_item_layer: {
+    //     key: "selected_item",
+    //     name: "Selected Item",
+    //     type: LAYER_TYPE.MARKERS,
+    //     iconUrl: "selected-map-marker.svg",
+    //     iconSize: 25,
+    //     iconAnchorX: 15,
+    //     iconAnchorY: 15
+    // },
     selected_item_layer: {
         key: "selected_item",
-        name: "Selected Item",
-        type: LAYER_TYPE.MARKERS,
-        iconUrl: "selected-map-marker.svg",
-        iconSize: 25,
-        iconAnchorX: 15,
-        iconAnchorY: 15
+        type: LAYER_TYPE.GEOJSON,
+        style: {
+            "weight": 0,
+            "opacity": 0,
+            "fillOpacity": 0.7,
+            "color": "red"
+        }
     }
 }
