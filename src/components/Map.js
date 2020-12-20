@@ -27,11 +27,12 @@ class Map extends React.Component {
             zoom: INITIAL_ZOOM_LEVEL,
           }
         this.leafletMap = null
-        this.mapLayers = new MapLayers()
+        this.mapLayers = new MapLayers(this.props.locale)
     }
 
     componentDidUpdate(){
       if(this.leafletMap){
+        this.mapLayers.updateLocale(this.props.locale)
         this.refreshLayers()
         let center = null
         const selectedId = getOr(null, "selectedDomainItemID", this.props)
@@ -40,8 +41,8 @@ class Map extends React.Component {
           this.leafletMap.setZoom(MAX_ZOOM)
           this.leafletMap.flyTo(center)
         }
-      }
-    }   
+    }
+  }
 
     handleClick = () => {
       if (this.leafletMap) {
@@ -89,11 +90,12 @@ class Map extends React.Component {
       })
     }
 
-    refreshLayers = () => {      
+    refreshLayers = () => {
       const layersConfigMapByKey = keyBy("key", layersConfig.layers)      
       this.mapLayers.clearLayers()
       this.mapLayers.removeLayersControl(this.leafletMap)
       // Tasks layer
+      const domainItemConf = layersConfigMapByKey["tasks"]
       const topItemsCount = this.calcItemsCountPerZoom(reveal_geolayer_zoom_threshold, this.props.domainItems)
       const taskItems = take(topItemsCount, this.props.domainItems)
       this.mapLayers.addLayer("tasks", taskItems, "geojson", (domainItem) => {
@@ -109,11 +111,9 @@ class Map extends React.Component {
           if(relativeScore <= level/task_colors.length) break
           level += 1
         }
-        return {
-          "color": task_colors[level - 1],
-          "weight": 5,
-          "opacity": 1,
-          "fillOpacity": 0
+        return {          
+          ...domainItemConf.style,
+          "color": task_colors[level - 1]
         }        
       }, 
       (item) => {                
@@ -186,7 +186,8 @@ class Map extends React.Component {
     domainItems: state.domainItems.items,
     weights: state.domainItems.weights,
     neighbors: state.domainItems.neighbors,
-    selectedDomainItemID: state.domainItems.selectedDomainItemID
+    selectedDomainItemID: state.domainItems.selectedDomainItemID,
+    locale: state.ui.locale
   })
 
   export default connect(mapStateToProps, {handleMapClickedAction: handleMapClicked})(injectIntl(Map));

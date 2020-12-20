@@ -1,6 +1,7 @@
 import layersConfig, {LAYER_TYPE} from "./mapLayersConfig"
 import L from 'leaflet'
 import {keyBy, flow, map, find, isEmpty, omit, isNil} from 'lodash/fp'
+import LOCALES from "../i18n/locales"
 
 class LayerGroupWrapper {
     constructor(key, leafletLayerGroup){
@@ -11,11 +12,12 @@ class LayerGroupWrapper {
 }
 
 export default class MapLayers {
-    constructor(){
+    constructor(locale){
         this.layerGroupWrrapers = []
         this.layersConfigMapByKey = keyBy("key", layersConfig.layers)
         this.initialized = false
         this.selectedItemLayer = null
+        this.locale = locale
     }
 
     initialize(leafletMap){
@@ -30,6 +32,10 @@ export default class MapLayers {
             this.selectedItemLayer.leafletLayerGroup.addTo(leafletMap)
         }        
         this.initialized = true
+    }
+
+    updateLocale(locale) {
+        this.locale = locale
     }
 
     clearLayers(){
@@ -48,7 +54,7 @@ export default class MapLayers {
     addLayersControl(leafletMap, intl) {
         const overlayers = {}
         layersConfig.layers.forEach(layerConfig => {
-            const layerNameAndIconHtml = `<div style="display: inline-block"><img style="margin: 0px 10px 0px 0px" src="${layerConfig.iconUrl}" width="20" height="20"> &nbsp ${intl.formatMessage({id: layerConfig.key})}</div>`
+            const layerNameAndIconHtml = `<div><i class="circle icon outline unselected"></i> <i class="check circle icon outline selected"></i> <img style="margin: 0px 10px 0px 0px" src="${layerConfig.iconUrl}" width="20" height="20"> &nbsp ${intl.formatMessage({id: layerConfig.key})}</div>`
             const layerGroupWrrapers = find({key: layerConfig.key}, this.layerGroupWrrapers)
             overlayers[layerNameAndIconHtml] = layerGroupWrrapers.leafletLayerGroup
         });
@@ -127,6 +133,6 @@ export default class MapLayers {
         popupKeyValueArr.forEach(keyValue => {
             popupString += `${keyValue.key}: ${keyValue.countFromOne ? keyValue.value + 1 : keyValue.value} <br/>`
         });
-        return popupString
+        return `<div style="text-align: ${this.locale === LOCALES.HEBREW ? 'right' : 'left'}"> ${popupString}</div>`
     }
 }

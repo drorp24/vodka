@@ -27,8 +27,7 @@ export default {
             key: "tasks",
             type: LAYER_TYPE.GEOJSON,
             style: {
-                "color": "#ff7800",
-                "weight": 5,
+                "weight": 3,
                 "opacity": 1,
                 "fillOpacity": 0
             },

@@ -4,6 +4,37 @@
     color: rgba(0,0,0,.87);
   }
 
+.leaflet-control-layers-selector{
+    margin-right: 5px;
+    margin-top: 15px;
+  }
+
+ 
+input[type=checkbox] {
+display: none;
+}
+
+input[type=checkbox] + span .unselected {
+  display: initial;
+}
+
+input[type=checkbox]:checked + span .selected {
+  display: initial;
+}
+
+input[type=checkbox] + span .selected {
+  display: none;
+}
+
+input[type=checkbox]:checked + span .unselected {
+  display: none;
+}
+
+/* input[type=checkbox] + span span {
+  transition: all 0.1s ease-in-out;
+} */
+
+
 /* .leaflet-control-layers-expanded{
   background-color: rgba(234, 235, 230, 1);
   }
@@ -12,8 +43,3 @@
 .leaflet-control-layers-toggle{
   background-color: rgba(234, 235, 230, 1);
   } */
-
-.leaflet-control-layers-selector{
-    margin-right: 5px;
-    margin-top: 15px;
-  }
