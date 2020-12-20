@@ -10,6 +10,7 @@ import { FlexRows, FlexColumns } from './common/CommonComponents';
 import DomainItem from './DomainItem'
 import DomainItemsTools from './DomainItemsTools'
 import translate from '../i18n/translate'
+import LOCALES from "../i18n/locales"
 
 const StyledFlexRowsContainer = styled(FlexRows)`
 *,*:focus,*:hover{
@@ -28,7 +29,7 @@ class DomainItems extends React.Component {
 
   rowRenderer = ({index, isScrolling, key, style}) => {
     const domainItem = this.filteredDomainItems[index]
-    return <DomainItem key={domainItem.id} domainItem={domainItem} style={style}/>
+    return <DomainItem key={domainItem.id} domainItem={domainItem} style={{...style, direction: this.props.locale === LOCALES.HEBREW ? "rtl" : "ltr"}}/>
   }
 
 
@@ -76,7 +77,7 @@ class DomainItems extends React.Component {
             </FlexColumns> : 
             <AutoSizer>
                 {({width, height}) => (
-              <List
+              <List                
                 ref={this.listRef}
                 height={height - 80}
                 rowCount={this.filteredDomainItems.length}
@@ -97,7 +98,8 @@ const mapStateToProps = state => ({
   weights: state.domainItems.weights,
   actualTextFilter: state.domainItems.actualTextFilter,
   loadingItems: state.domainItems.loadingItems,
-  themeId: state.ui.themeId
+  themeId: state.ui.themeId,
+  locale: state.ui.locale
 })
 
 export default connect(mapStateToProps, {})(DomainItems);
