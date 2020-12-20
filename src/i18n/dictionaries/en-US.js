@@ -59,7 +59,7 @@ export default {
         "ksh": "ksh",
         "mah": "mah",
         "yec": "yec",
-        "task": "task",
+        "tasks": "task",
         "attribute": "attribute",
         "value": "value",
         "weight": "weight",
