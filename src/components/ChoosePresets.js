@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from "react-redux"
 import {map, getOr, isNil} from 'lodash/fp'
 import {Dropdown, Divider, Button, Loader, Header} from 'semantic-ui-react';
-import {withTheme} from 'styled-components';
+import styled, {withTheme} from 'styled-components';
 import {Div} from './common/StyledElements';
 import {FlexRows} from './common/CommonComponents';
 import {
@@ -15,6 +15,21 @@ import AsyncRestParams from '../types/asyncRestParams';
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
 import translate from '../i18n/translate'
 import LOCALES from "../i18n/locales"
+
+const StyledDropdown = styled(Dropdown)`
+&.ui.dropdown {
+    text-align: ${({ locale }) => locale === LOCALES.HEBREW ? "right !important" : "left"};
+}
+
+&.ui.selection.dropdown>.dropdown.icon {
+    ${({ locale }) => locale === LOCALES.HEBREW ? "left: 1em !important" : "right: 1em"};
+    ${({ locale }) => locale === LOCALES.HEBREW ? "right: unset !important" : "right: 1em"};
+}
+
+&.ui.dropdown .menu>.item {
+    text-align: ${({ locale }) => locale === LOCALES.HEBREW ? "right !important;" : "left"};
+}
+`
 
 const ChoosePresets = (
     {
@@ -92,7 +107,8 @@ const ChoosePresets = (
                 <Div marginBottom="5px">
                     {translate("priority_parameters", true)}
                 </Div>
-                <Dropdown
+                <StyledDropdown
+                    locale={locale}
                     value={actualPriorityPresetId}
                     clearable
                     fluid
@@ -106,7 +122,8 @@ const ChoosePresets = (
                 <Div marginBottom="5px">
                     {translate("filters", true)}
                 </Div>
-                <Dropdown
+                <StyledDropdown
+                    locale={locale}
                     value={actualFilterPresetId}
                     clearable
                     fluid
@@ -120,7 +137,8 @@ const ChoosePresets = (
                     {translate("geographic_filter", true)}
                 </Div>
                 <FlexRows marginBottom="10px">
-                    <Dropdown
+                    <StyledDropdown
+                        locale={locale}
                         value={actualGeoPresetId}
                         clearable
                         fluid
