@@ -31,6 +31,12 @@ const StyledDropdown = styled(Dropdown)`
 }
 `
 
+const StyledButton = styled(Button)`
+ &.ui.button {
+     margin: 0px;
+ }
+`
+
 const ChoosePresets = (
     {
         loadingPriorityPresets, 
@@ -148,7 +154,7 @@ const ChoosePresets = (
                         onChange={(event, data) => {handleChoose(data, setGeoPresetId)}}
                     />
                 </FlexRows>
-            <Button color={theme["primaryButtonColor"]} fluid disabled={!enableLoad} onClick={handlePresetsSelected}>{translate("load", true)}</Button>
+            <StyledButton color={theme["primaryButtonColor"]} fluid disabled={!enableLoad} onClick={handlePresetsSelected}>{translate("load", true)}</StyledButton>
         </FlexRows>
     )
 }
