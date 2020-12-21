@@ -11,5 +11,5 @@ window.__myapp = {
   use_redux_toolkit: true,
   logged_in: true,
   active_threshold: 5,
-  task_colors: ["#eff3ff", "#bdd7e7", "#6baed6", "#3182bd"]
+  task_colors: ["#bdd7e7", "#6baed6", "#3182bd", "#08519c"]
 }
