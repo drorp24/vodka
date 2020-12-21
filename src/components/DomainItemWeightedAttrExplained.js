@@ -41,7 +41,7 @@ const DomainItemWeightedAttrExplained = ({domainItem, weights}) => {
         {
           map(weightedAttribute => (
             renderRow(
-                [flow([replace("_", " "), capitalize])(weightedAttribute.key),
+                [translate(weightedAttribute.key, true),
                   weightedAttribute.value, 
                   weightedAttribute.weight.value.toFixed(3),
                   isNumber(weightedAttribute.value) ? (weightedAttribute.value * weightedAttribute.weight.value).toFixed(3) : ""]
