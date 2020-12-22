@@ -18,6 +18,8 @@ import {
   TOGGLE_CREATE_SCENARIO,
   CREATE_SCENARIO,
   LOAD_SCENARIOS,
+  UPDATE_SCENARIOS_FILTER,
+  CLEAR_SCENARIOS_FILTER,
   LOAD_PRIORITY_PRESETS,
   LOAD_FILTER_PRESETS,
   LOAD_GEO_PRESETS,
@@ -58,6 +60,8 @@ export const selectScenarioStep = makeActionCreator(SELECT_SCENARIO_STEP, 'meta'
 export const toggleCreateScenario = makeActionCreator(TOGGLE_CREATE_SCENARIO)
 export const createScenario = makeActionCreator(CREATE_SCENARIO, 'meta', 'body')
 export const loadScenarios = makeActionCreator(LOAD_SCENARIOS, 'meta', 'body')
+export const updateScenariosFilter = makeActionCreator(UPDATE_SCENARIOS_FILTER, 'scenariosFilter')
+export const CLEARScenariosFilter = makeActionCreator(CLEAR_SCENARIOS_FILTER)
 export const loadPriorityPresets = makeActionCreator(LOAD_PRIORITY_PRESETS, 'meta', 'body')
 export const loadFilterPresets = makeActionCreator(LOAD_FILTER_PRESETS, 'meta', 'body')
 export const loadGeoPresets = makeActionCreator(LOAD_GEO_PRESETS, 'meta', 'body')

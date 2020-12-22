@@ -1,7 +1,9 @@
 import LOCALES from "../locales"
 
 export default {
-    [LOCALES.ENGLISH]: {        
+    [LOCALES.ENGLISH]: { 
+        "selectScenario": "Select scenario", 
+        "noScenarios": "No scenarios found",      
         "choose_presets": `choose presets`,
         "priority_parameters": "priority parameters",
         "filters": "filters",

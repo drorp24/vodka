@@ -40,10 +40,10 @@ function App({themeId, compareDomainItemsMode, locale}) {
               <ProtectedRoute exact path="/">
                 <TopBar/> 
                 <FlexColumns height="100%">            
-                  <Div width="40%">
+                  <Div width={`${defaultTheme.sideBarWidth}%`}>
                     <DomainItems/>
                   </Div>
-                  <Div  width="100%" height="100%">
+                  <Div width={`${100 - themes.defaultTheme.sideBarWidth}%`} height="100%">
                     {compareDomainItemsMode ? <CompareDomainItems/> : <Map/>}
                   </Div>
                 </FlexColumns>

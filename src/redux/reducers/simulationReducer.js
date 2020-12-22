@@ -1,7 +1,7 @@
 import {set, flow, map, getOr} from 'lodash/fp'
 import LoadingSuccessFailureActionType from '../../types/loadingSuccessFailureActionType'
 import ScenarioType from "../../types/scenarioType"
-import { SELECT_SCENARIO, SELECT_SCENARIO_STEP, CREATE_SCENARIO, LOAD_SCENARIOS, SELECT_PRESET_GROUP
+import { SELECT_SCENARIO, SELECT_SCENARIO_STEP, CREATE_SCENARIO, LOAD_SCENARIOS, SELECT_PRESET_GROUP, UPDATE_SCENARIOS_FILTER, CLEAR_SCENARIOS_FILTER
     } from "../actions/actionTypes"
 
 
@@ -10,7 +10,8 @@ const initialState = {
     scenarioCurrentStepIdx: -1,
     scenariosLoading: false,
     createScenariosProcessing: false,
-    scenarios: []
+    scenarios: [],
+    scenariosFilter: null
 }
 
 const loadScenariosTriple = new LoadingSuccessFailureActionType(LOAD_SCENARIOS)
@@ -59,7 +60,11 @@ export default function simulation(simulation = initialState, action) {
             return flow([                
                 set("scenarioCurrentStepIdx", -1)
             ])(simulation)
-        }        
+        } 
+        case UPDATE_SCENARIOS_FILTER:
+            return set("scenariosFilter", action.payload.scenariosFilter, simulation)
+        case CLEAR_SCENARIOS_FILTER:       
+        return set("scenariosFilter", null, simulation)
         default:
             return simulation
     }

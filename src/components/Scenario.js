@@ -31,6 +31,7 @@ function Scenario({scenario, selected, selectScenarioAction, theme}) {
         selectScenarioAction(scenario.id)        
     }
 
+
     return (
         <StyledScenarioContainer width="500px">
             <FlexRows>
