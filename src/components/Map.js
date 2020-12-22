@@ -9,7 +9,7 @@ import { Map as LeafletMap, TileLayer, WMSTileLayer } from 'react-leaflet'
 import { CoordinatesControl } from 'react-leaflet-coordinates'
 import { connect } from "react-redux"
 import {getOr, find, filter, isNil, flow, map, max, min, keyBy, take, sortBy, reverse} from "lodash/fp"
-import {handleMapClicked} from '../redux/actions/actions'
+import {handleMapClicked, scrollToIndex} from '../redux/actions/actions'
 import {default_map_center, reveal_geolayer_zoom_threshold, reveal_markerlayer_zoom_threshold, active_threshold, task_colors} from '../configLoader';
 import MapLayers from "./mapLayers"
 import layersConfig from "./mapLayersConfig"
@@ -28,9 +28,14 @@ class Map extends React.Component {
           }
         this.leafletMap = null
         this.mapLayers = new MapLayers(this.props.locale)
+        this.mapRequestScroll = false
     }
 
     componentDidUpdate(){
+      if(this.mapRequestScroll){
+        this.mapRequestScroll = false
+        return
+      }
       if(this.leafletMap){
         this.mapLayers.updateLocale(this.props.locale)
         this.refreshLayers()
@@ -41,7 +46,7 @@ class Map extends React.Component {
           this.leafletMap.setZoom(MAX_ZOOM)
           this.leafletMap.flyTo(center)
         }
-    }
+      }
   }
 
     handleClick = () => {
@@ -89,10 +94,31 @@ class Map extends React.Component {
       })
     }
 
+    _buildPopup = (item) => {
+      const popupKeyValueArr = [
+        {key: this.props.intl.formatMessage({id: "name"}), value: item.name}, 
+        {key: this.props.intl.formatMessage({id: "score"}), value: item.score}, 
+        {key: this.props.intl.formatMessage({id: "priority"}), value: item.currIdx, countFromOne: true},
+      ]
+      this.props.weights.forEach((weight) => {
+        const weightedAttrScore = find(weightedAttr => weightedAttr.key === weight.key, item.weightedAttributes).value
+        const keyValue = {key: this.props.intl.formatMessage({id: weight.key}), value: weightedAttrScore}
+        popupKeyValueArr.push(keyValue)
+      })
+      return filter((item) => !isNil(item.value), popupKeyValueArr)
+    }
+
+    _handlePolygonClicked = (e) => {
+      this.mapRequestScroll = true
+      const indexToScroll = getOr(null, "sourceTarget.feature.properties.currIdx", e)
+      const id = getOr(null, "sourceTarget.feature.properties.id", e)
+      this.props.scrollToIndexAction(indexToScroll, id, true)      
+    }
+
     refreshLayers = () => {
       const layersConfigMapByKey = keyBy("key", layersConfig.layers)      
       this.mapLayers.clearLayers()
-      this.mapLayers.removeLayersControl(this.leafletMap)
+      this.mapLayers.removeMapControl(this.leafletMap)
       // Tasks layer
       const domainItemConf = layersConfigMapByKey["tasks"]
       const topItemsCount = this.calcItemsCountPerZoom(reveal_geolayer_zoom_threshold, this.props.domainItems)
@@ -114,20 +140,10 @@ class Map extends React.Component {
           ...domainItemConf.style,
           "color": task_colors[level - 1]
         }        
-      }, 
-      (item) => {                
-        const popupKeyValueArr = [
-          {key: this.props.intl.formatMessage({id: "name"}), value: item.name}, 
-          {key: this.props.intl.formatMessage({id: "score"}), value: item.score}, 
-          {key: this.props.intl.formatMessage({id: "priority"}), value: item.currIdx, countFromOne: true},
-        ]
-        this.props.weights.forEach((weight) => {
-          const weightedAttrScore = find(weightedAttr => weightedAttr.key === weight.key, item.weightedAttributes).value
-          const keyValue = {key: this.props.intl.formatMessage({id: weight.key}), value: weightedAttrScore}
-          popupKeyValueArr.push(keyValue)
-        })
-        return filter((item) => !isNil(item.value), popupKeyValueArr)
-      })
+      },
+        this._buildPopup, 
+        this._handlePolygonClicked      
+      )
 
       // "mer" layer
       const merConf = layersConfigMapByKey["mer"]
@@ -143,8 +159,8 @@ class Map extends React.Component {
 
       // selected layer
       const selectedDomainItem = find({id: this.props.selectedDomainItemID}, this.props.domainItems)
-      this.mapLayers.updateSelectedItem(selectedDomainItem, "geojson")
-      this.mapLayers.addLayersControl(this.leafletMap, this.props.intl)
+      this.mapLayers.updateSelectedItem(selectedDomainItem, "geojson", this._buildPopup, this._handlePolygonClicked)
+      this.mapLayers.addMapControls(this.leafletMap, this.props.intl)
     }
 
     calcItemsCountPerZoom = (max_zoom, items) => {
@@ -163,7 +179,7 @@ class Map extends React.Component {
     render() {
       return (
         <Div height="calc(100vh - 60px)">
-            <LeafletMap maxZoom={MAX_ZOOM} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}} center={[this.state.lat, this.state.lng]} zoom={INITIAL_ZOOM_LEVEL}>
+            <LeafletMap  zoomControl={false} maxZoom={MAX_ZOOM + 2} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}} center={[this.state.lat, this.state.lng]} zoom={INITIAL_ZOOM_LEVEL}>
                 {
                   map((tile)=> {
                     return tile.type === "wms" ? 
@@ -190,4 +206,5 @@ class Map extends React.Component {
     locale: state.ui.locale
   })
 
-  export default connect(mapStateToProps, {handleMapClickedAction: handleMapClicked})(injectIntl(Map));
+  export default connect(mapStateToProps, 
+    {handleMapClickedAction: handleMapClicked, scrollToIndexAction: scrollToIndex})(injectIntl(Map));

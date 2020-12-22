@@ -17,7 +17,8 @@ import { WEIGHT_UPDATED,
   SELECT_SCENARIO_STEP, 
   LOAD_FILTER_PRESETS,
   LOAD_GEO_PRESETS,
-  LOAD_MORE_DOMAIN_ITEMS} from "../actions/actionTypes"
+  LOAD_MORE_DOMAIN_ITEMS,
+  SCROLL_TO_INDEX_REQUEST} from "../actions/actionTypes"
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
 import { isNil } from "lodash"
 
@@ -45,7 +46,8 @@ const initialState = {
   selectedDomainItemID: null,
   loadingPriorityPresets: false,
   loadingFilterPresets: false,
-  loadingGeoPresets: false
+  loadingGeoPresets: false,
+  requestedIndex: -1
 }
 
 /**HELPERS */
@@ -124,6 +126,25 @@ const loadItemsSuccessActionHandler = (state, action) => {
   }
 }
 
+const handleExpanded = (domainItems, id, keepSelectedExpanded) => {
+  const items = map(
+    (domainItem) => {
+      if (domainItem.id === id) {
+        const newDomainItem = DomainItemType.copyDomainItem(domainItem)
+        newDomainItem.expanded = keepSelectedExpanded ? true : !domainItem.expanded
+        return newDomainItem
+      }
+      if (domainItem.id !== id) {
+        const newDomainItem = DomainItemType.copyDomainItem(domainItem)
+        newDomainItem.expanded = false
+        return newDomainItem
+      }
+      return domainItem
+    },
+    domainItems)
+  return items
+}
+
 actionHandlers[selectPresetGroupTriple.loading] = loadItemsLoadingActionHandler
 actionHandlers[selectPresetGroupTriple.success] = loadItemsSuccessActionHandler
 
@@ -148,16 +169,7 @@ actionHandlers[loadWeightsTriple.success] = (state, action) => {
 }
 
 actionHandlers[DOMAIN_ITEM_PRESSED] = (state, action) => {
-  const items = map(
-    (domainItem) => {
-      if (domainItem.id === action.payload.id) {
-        const newDomainItem = DomainItemType.copyDomainItem(domainItem)
-        newDomainItem.expanded = !domainItem.expanded
-        return newDomainItem
-      }
-      return domainItem
-    },
-    state.items)
+  const items = handleExpanded(state.items, action.payload.id)
   return {
     ...state,
     selectedDomainItemID: action.payload.id,
@@ -238,6 +250,14 @@ actionHandlers[loadGeoPresetsTriple.success] = (state, action) => {
   return flow([
    set("geoPresets", geoPresets),
    set("loadingGeoPresets", false)
+  ])(state)
+}
+
+actionHandlers[SCROLL_TO_INDEX_REQUEST] = (state, action) => {
+  const items = handleExpanded(state.items, action.payload.id, action.payload.keepSelectedExpanded)
+  return flow([
+    set("requestedIndex", action.payload.indexToScroll),
+    set("items", items)
   ])(state)
 }
 

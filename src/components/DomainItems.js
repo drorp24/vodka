@@ -81,13 +81,15 @@ class DomainItems extends React.Component {
             </FlexColumns> : 
             <AutoSizer>
                 {({width, height}) => (
-              <List                
+              <List
+                style={{direction: this.props.locale === LOCALES.HEBREW ? "ltr" : "rtl"}}
                 ref={this.listRef}
                 height={height - 80}
                 rowCount={this.filteredDomainItems.length}
                 rowHeight={this.calcRowHeight}
                 rowRenderer={(props) => {return this.rowRenderer({...props, maxScore, minScore})}}
                 width={width}
+                scrollToIndex={this.props.requestedIndex}
               />
             )}
             </AutoSizer>
@@ -103,7 +105,8 @@ const mapStateToProps = state => ({
   actualTextFilter: state.domainItems.actualTextFilter,
   loadingItems: state.domainItems.loadingItems,
   themeId: state.ui.themeId,
-  locale: state.ui.locale
+  locale: state.ui.locale,
+  requestedIndex: state.domainItems.requestedIndex
 })
 
 export default connect(mapStateToProps, {})(DomainItems);

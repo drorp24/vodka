@@ -10,6 +10,6 @@ window.__myapp = {
   reveal_markerlayer_zoom_threshold: 18,
   use_redux_toolkit: true,
   logged_in: true,
-  active_threshold: 5,
+  active_threshold: 0.5,
   task_colors: ["#bdd7e7", "#6baed6", "#3182bd", "#08519c"]
 }

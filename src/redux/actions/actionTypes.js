@@ -20,6 +20,7 @@ export const LOAD_GEO_PRESETS = "LOAD_GEO_PRESETS"
 
 // Map action types
 export const MAP_CLICKED = "MAP_CLICKED"
+export const SCROLL_TO_INDEX_REQUEST = "SCROLL_TO_INDEX_REQUEST"
 
 // UI actions
 export const TOGGLE_SIDE_BAR = "TOGGLE_SIDE_BAR"

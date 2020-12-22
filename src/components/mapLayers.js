@@ -8,6 +8,7 @@ class LayerGroupWrapper {
         this.key = key
         this.leafletLayerGroup = leafletLayerGroup
         this.layersControl = null
+        this.zoomControl = null
     }
 }
 
@@ -20,7 +21,7 @@ export default class MapLayers {
         this.locale = locale
     }
 
-    initialize(leafletMap){
+    initialize(leafletMap){        
         if(this.initialized) return
         layersConfig.layers.forEach(layerConfig => {
             const layerGroupWrapper = new LayerGroupWrapper(layerConfig.key, L.layerGroup())
@@ -44,31 +45,37 @@ export default class MapLayers {
         });
     }
 
-    addLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr) {
+    addLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr, onItemClick) {
         const layerConfig = this.layersConfigMapByKey[key]
         layerConfig.type === LAYER_TYPE.GEOJSON ? 
-                        this._addGeojsonLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr) : 
-                        this._addMarkersLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr)
+                        this._addGeojsonLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr, onItemClick) : 
+                        this._addMarkersLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr, onItemClick)
     }
 
-    addLayersControl(leafletMap, intl) {
+    addMapControls(leafletMap, intl) {
         const overlayers = {}
         layersConfig.layers.forEach(layerConfig => {
             const layerNameAndIconHtml = `<div><i class="circle icon outline unselected"></i> <i class="check circle icon outline selected"></i> <img style="margin: 0px 10px 0px 0px" src="${layerConfig.iconUrl}" width="20" height="20"> &nbsp ${intl.formatMessage({id: layerConfig.key})}</div>`
             const layerGroupWrrapers = find({key: layerConfig.key}, this.layerGroupWrrapers)
             overlayers[layerNameAndIconHtml] = layerGroupWrrapers.leafletLayerGroup
         });
-        this.layersControl = L.control.layers(null, overlayers, {collapsed:false})
+        //'topleft' | 'topright' | 'bottomleft' | 'bottomright'
+        this.layersControl = L.control.layers(null, overlayers, {collapsed:false, position: this.locale === LOCALES.HEBREW ? "topleft" : "topright"})
         this.layersControl.addTo(leafletMap)
+        this.zoomControl = L.control.zoom({position: this.locale === LOCALES.HEBREW ? "topright" : "topleft"});
+        this.zoomControl.addTo(leafletMap)
     }
 
-    removeLayersControl(leafletMap) {
+    removeMapControl(leafletMap) {
         if(this.layersControl){
             this.layersControl.remove()
         }
+        if(this.zoomControl){
+            this.zoomControl.remove()
+        }
     }
 
-    updateSelectedItem(item, geomertyPath) {
+    updateSelectedItem(item, geomertyPath, calcPopupKeyValueArr, onItemClick) {
         if(!this.selectedItemLayer) return
         this.selectedItemLayer.leafletLayerGroup.clearLayers()
         if(!item) return
@@ -80,17 +87,26 @@ export default class MapLayers {
             this.selectedItemLayer.leafletLayerGroup.addLayer(marker)
         }
         else if(geomertyPath === "geojson"){
-            const geojsonLayer = L.geoJSON({type: "Feature", geometry: item[geomertyPath]}, {
+            const geojsonLayer = L.geoJSON({type: "Feature", geometry: item[geomertyPath], properties: item}, {
                 style: (feature) => {
                     return layerConfig.style
+                },
+                onEachFeature: (feature, layer) => {
+                    const popupString = this._buildPopupString(calcPopupKeyValueArr, feature.properties)
+                    if(!isEmpty(popupString))
+                        layer.bindPopup(popupString);
+                    if(!isNil(onItemClick)){
+                        layer.on({
+                            click: onItemClick
+                        })                    
+                    }                
                 }
-            })
-            geojsonLayer.setZIndex(1000)
+            })            
             this.selectedItemLayer.leafletLayerGroup.addLayer(geojsonLayer)
         }
     }
 
-    _addGeojsonLayer(key, items, geomertyPath, calcStyleCallBack, calcPopupKeyValueArr) {
+    _addGeojsonLayer(key, items, geomertyPath, calcStyleCallBack, calcPopupKeyValueArr, onItemClick) {
         const layerConfig = this.layersConfigMapByKey[key]
         const geoJsonItems = flow([
             map((item) => {
@@ -108,7 +124,12 @@ export default class MapLayers {
                 const popupString = this._buildPopupString(calcPopupKeyValueArr, feature.properties)
                 if(!isEmpty(popupString))
                     layer.bindPopup(popupString);
-              }
+                if(!isNil(onItemClick)){
+                    layer.on({
+                        click: onItemClick
+                    })                    
+                }                
+            }
         })
         this._addLayerToGroup(geojsonLayer, key)
     }
