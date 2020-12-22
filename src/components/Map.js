@@ -65,7 +65,7 @@ class Map extends React.Component {
       return flow([
         filter((item) => {
           const weightedAttrValue = find(weightedAttr => weightedAttr.key === attrName, item.weightedAttributes).value
-          return !isNil(weightedAttrValue) && weightedAttrValue > 0
+          return !isNil(weightedAttrValue)
         }),
         sortBy((item) => find(weightedAttr => weightedAttr.key === attrName,item.weightedAttributes).value),
         reverse,
