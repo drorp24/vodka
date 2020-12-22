@@ -1,7 +1,9 @@
 import LOCALES from "../locales"
 
 export default {
-    [LOCALES.HEBREW] : {        
+    [LOCALES.HEBREW] : { 
+        "selectScenario": "בחר תרחיש",
+        "noScenarios": "לא נמצאו תרחישים",      
         "choose_presets": "בחר חוקים",
         "priority_parameters": "חוקי תעדוף",
         "filters": "סינונים",

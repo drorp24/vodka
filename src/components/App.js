@@ -42,10 +42,10 @@ function App({themeId, compareDomainItemsMode, locale}) {
               <ProtectedRoute exact path="/">
                 <TopBar/> 
                 <FlexColumns height="100%">            
-                  <Div width="40%">
+                  <Div width={`${defaultTheme.sideBarWidth}%`}>
                     <DomainItems/>
                   </Div>
-                  <Sidebar.Pushable as={Div} width="100%" height="100%" preserveAspectRatio="xMinYMin">	                  
+                  <Sidebar.Pushable as={Div} width={`${100 - themes.defaultTheme.sideBarWidth}%`} height="100%" preserveAspectRatio="xMinYMin">	                  
                     <SideBar/>
                     <Sidebar.Pusher>
                       {compareDomainItemsMode ? <CompareDomainItems/> : <Map/>}	

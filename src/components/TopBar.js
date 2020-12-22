@@ -8,6 +8,7 @@ import {Div} from './common/StyledElements';
 import {toggleSideBar, switchTheme, toggleCreateScenario, selectLocale} from '../redux/actions/actions'
 import CreateScenarioForm from './CreateScenarioForm'
 import ScenariosModal from './ScenariosModal'
+import NewScenarios from './NewScenarios'
 import translate from '../i18n/translate'
 import LOCALES from "../i18n/locales"
 import { logout } from '../redux/reducers/usersReducer';
@@ -76,7 +77,7 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
                 </Div>	
             </FlexColumns>
             {createScenarioOpen && <CreateScenarioForm/>}
-            <ScenariosModal open={scenariosIsOpen} closeCB={()=>setScenariosIsOpen(false)}/>
+            <NewScenarios open={scenariosIsOpen} closeCB={()=>setScenariosIsOpen(false)}/>
             
         </TopBarContainer>
     )
