@@ -7,7 +7,7 @@ import LOCALES from '../i18n/locales';
 import translate from '../i18n/translate';
 import AsyncRestParams from '../types/asyncRestParams';
 
-import AppBar from './AppBar';
+import ScenariosAppBar from './ScenariosAppBar';
 import NewScenario from './NewScenario';
 import { sideBarWidth } from './common/themes/defaultTheme';
 import { Loader } from 'semantic-ui-react';
@@ -82,7 +82,7 @@ const NewScenarios = ({ open }) => {
     <ThemeProvider theme={theme}>
       <Language locale={locale}>
         <div className={classes.scenariosContainer}>
-          <AppBar />
+          <ScenariosAppBar />
           {scenariosLoading ? (
             <Loader size="massive" content={translate('loading')} />
           ) : !scenarios || !scenarios.length ? (
