@@ -67,8 +67,8 @@ export default {
         style: {
             "weight": 0,
             "opacity": 0,
-            "fillOpacity": 0.7,
-            "color": "red"
+            "fillOpacity": 0.5,
+            "color": "yellow"
         }
     }
 }
