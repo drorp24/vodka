@@ -2,14 +2,15 @@ import React from 'react';
 import {withTheme} from 'styled-components';
 import { connect } from "react-redux"
 import { ResponsiveRadar } from '@nivo/radar'
-import {filter, map, set, remove , find, flow, concat} from 'lodash/fp'
+import {injectIntl} from "react-intl"
+import {filter, map, set, remove , find, flow, concat, isNil} from 'lodash/fp'
 import {FlexRows} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
 import { toggleCompareDomainItemsMode } from '../redux/actions/actions'
 import {max_items_to_compare} from '../configLoader';
 import translate from '../i18n/translate'
 
-const CompareDomainItems = ({theme, compareDomainItemsMode, selectedDomainItemsIdsForCmp, toggleCompareDomainItemsModeAction, domainItems}) => {
+const CompareDomainItems = ({intl, theme, compareDomainItemsMode, selectedDomainItemsIdsForCmp, toggleCompareDomainItemsModeAction, domainItems}) => {
     
     const renderSelect = () => {        
         return (
@@ -27,13 +28,14 @@ const CompareDomainItems = ({theme, compareDomainItemsMode, selectedDomainItemsI
         let data = []
         selectedDomainItems.forEach(domainItem => {
             domainItem.weightedAttributes.forEach(weightedAttribute => {
-                let attributeSet = find({"attribute": weightedAttribute.key} ,data)
+                const translatedKey = intl.formatMessage({id: weightedAttribute.key})
+                let attributeSet = find({"attribute": translatedKey} ,data)
                 if(!attributeSet){
-                    attributeSet = {"attribute": weightedAttribute.key}
+                    attributeSet = {"attribute": translatedKey}
                 }
-                attributeSet = set(domainItem.name, weightedAttribute.value, attributeSet)
+                attributeSet = set(domainItem.name, isNil(weightedAttribute.value) ? 0 : weightedAttribute.value , attributeSet)
                 data = flow([
-                    remove({"attribute": weightedAttribute.key}),
+                    remove({"attribute": translatedKey}),
                     concat(attributeSet)]
                 )(data)
 
@@ -41,7 +43,7 @@ const CompareDomainItems = ({theme, compareDomainItemsMode, selectedDomainItemsI
         });
         
         return (
-            <FlexRows style={{stroke: theme["radarStroke"]}} alignItems="center" justifyContent="center" width="100%" height="calc(100vh - 60px)">
+            <FlexRows style={{stroke: theme["radarStroke"], direction: "ltr"}} alignItems="center" justifyContent="center" width="100%" height="calc(100vh - 60px)">
                 <ResponsiveRadar
                 data={data}
                 keys={keys}
@@ -119,4 +121,4 @@ const mapStateToProps = state => ({
     domainItems: state.domainItems.items
 })
 
-export default connect(mapStateToProps, {toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode})(withTheme(CompareDomainItems));
+export default connect(mapStateToProps, {toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode})(withTheme(injectIntl(CompareDomainItems)));
