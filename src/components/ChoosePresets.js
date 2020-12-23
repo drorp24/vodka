@@ -29,6 +29,13 @@ const StyledDropdown = styled(Dropdown)`
 &.ui.dropdown .menu>.item {
     text-align: ${({ locale }) => locale === LOCALES.HEBREW ? "right !important;" : "left"};
 }
+
+&.ui.search.dropdown>.text {
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
 `
 
 const StyledButton = styled(Button)`
@@ -160,9 +167,9 @@ const ChoosePresets = (
 }
 
 const mapStateToProps = state => ({
-    priorityPresets: map((priorityPreset)=>({key: priorityPreset.id, text:priorityPreset.name.length > 15 ? `${priorityPreset.name.substring(0,15)}...` : priorityPreset.name, value:priorityPreset.id}), state.domainItems.priorityPresets),
-    filterPresets: map((filterPreset)=>({key: filterPreset.id, text:filterPreset.name.length > 15 ? `${filterPreset.name.substring(0,15)}...` : filterPreset.name, value: filterPreset.id}), state.domainItems.filterPresets),
-    geoPresets: map((geoPreset)=>({key: geoPreset.id, text:geoPreset.name.length > 15 ? `${geoPreset.name.substring(0,15)}...` : geoPreset.name, value:geoPreset.id}), state.domainItems.geoPresets),
+    priorityPresets: map((priorityPreset)=>({key: priorityPreset.id, text: priorityPreset.name, value:priorityPreset.id}), state.domainItems.priorityPresets),
+    filterPresets: map((filterPreset)=>({key: filterPreset.id, text: filterPreset.name, value: filterPreset.id}), state.domainItems.filterPresets),
+    geoPresets: map((geoPreset)=>({key: geoPreset.id, text: `${geoPreset.name} ${isNil(geoPreset.description) ? '' : geoPreset.description}`, value:geoPreset.id}), state.domainItems.geoPresets),
     loadingPriorityPresets: state.domainItems.loadingPriorityPresets,
     loadingFilterPresets: state.domainItems.loadingFilterPresets,
     loadingGeoPresets: state.domainItems.loadingGeoPresets,

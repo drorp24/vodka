@@ -4,5 +4,6 @@ export default class GeoPresetType {
     constructor(geoPreset){
         this.id = geoPreset.id
         this.name = geoPreset.name
+        this.description = geoPreset.description
     }    
 }
