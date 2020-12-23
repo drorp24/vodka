@@ -12,3 +12,4 @@ export const use_redux_toolkit = getOr(false, "use_redux_toolkit", window.__myap
 export const logged_in = getOr(false, "logged_in", window.__myapp)
 export const active_threshold = getOr(false, "active_threshold", window.__myapp)
 export const task_colors = getOr(false, "task_colors", window.__myapp)
+export const max_map_zoom = getOr(false, "max_map_zoom", window.__myapp)

@@ -10,11 +10,10 @@ import { CoordinatesControl } from 'react-leaflet-coordinates'
 import { connect } from "react-redux"
 import {getOr, find, filter, isNil, flow, map, max, min, keyBy, take, sortBy, reverse} from "lodash/fp"
 import {handleMapClicked, scrollToIndex} from '../redux/actions/actions'
-import {default_map_center, reveal_geolayer_zoom_threshold, reveal_markerlayer_zoom_threshold, active_threshold, task_colors} from '../configLoader';
+import {max_map_zoom, default_map_center, reveal_geolayer_zoom_threshold, reveal_markerlayer_zoom_threshold, active_threshold, task_colors} from '../configLoader';
 import MapLayers from "./mapLayers"
 import layersConfig from "./mapLayersConfig"
 
-const MAX_ZOOM = 18
 const MIN_ZOOM = 1
 const INITIAL_ZOOM_LEVEL = 15
 
@@ -42,9 +41,9 @@ class Map extends React.Component {
         let center = null
         const selectedId = getOr(null, "selectedDomainItemID", this.props)
         if(!isNil(selectedId)){
-          center = find({id: selectedId}, this.props.domainItems).center
-          this.leafletMap.setZoom(MAX_ZOOM)
-          this.leafletMap.flyTo(center)
+          center = find({id: selectedId}, this.props.domainItems).center          
+          this.leafletMap.setZoom(max_map_zoom)
+          this.leafletMap.flyTo(center)          
         }
       }
   }
@@ -163,12 +162,12 @@ class Map extends React.Component {
       this.mapLayers.addMapControls(this.leafletMap, this.props.intl)
     }
 
-    calcItemsCountPerZoom = (max_zoom, items) => {
+    calcItemsCountPerZoom = (max_map_zoom, items) => {
       const mapZoom = isNil(this.leafletMap) ? null : this.leafletMap.getZoom()
       let currZoom = Math.max(mapZoom, MIN_ZOOM + 1)
-      currZoom = Math.min(currZoom, max_zoom)
+      currZoom = Math.min(currZoom, max_map_zoom)
       const degree = Math.round(Math.sqrt(items.length))
-      let topItemsCount =  Math.ceil((Math.pow((currZoom - MIN_ZOOM), degree) / Math.pow(max_zoom - MIN_ZOOM, degree)) * items.length)
+      let topItemsCount =  Math.ceil((Math.pow((currZoom - MIN_ZOOM), degree) / Math.pow(max_map_zoom - MIN_ZOOM, degree)) * items.length)
       return topItemsCount
     }
 
@@ -179,12 +178,12 @@ class Map extends React.Component {
     render() {
       return (
         <Div height="calc(100vh - 60px)">
-            <LeafletMap  zoomControl={false} maxZoom={MAX_ZOOM + 2} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}} center={[this.state.lat, this.state.lng]} zoom={INITIAL_ZOOM_LEVEL}>
+            <LeafletMap  zoomControl={false} maxZoom={max_map_zoom} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}} center={[this.state.lat, this.state.lng]} zoom={INITIAL_ZOOM_LEVEL}>
                 {
                   map((tile)=> {
                     return tile.type === "wms" ? 
-                    <WMSTileLayer crs={tile.crs} url={tile.url} attribution={tile.attribution} layers={tile.layers} format={tile.format}/> : 
-                    <TileLayer url={tile.url} attribution={tile.attribution}/>
+                    <WMSTileLayer key={tile.url} crs={tile.crs} url={tile.url} attribution={tile.attribution} layers={tile.layers} format={tile.format}/> : 
+                    <TileLayer key={tile.url} url={tile.url} attribution={tile.attribution}/>
                   }, layersConfig.tiles)
                 }
                 <CoordinatesControl position="bottomleft"/>
