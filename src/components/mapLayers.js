@@ -6,9 +6,7 @@ import LOCALES from "../i18n/locales"
 class LayerGroupWrapper {
     constructor(key, leafletLayerGroup){
         this.key = key
-        this.leafletLayerGroup = leafletLayerGroup
-        this.layersControl = null
-        this.zoomControl = null
+        this.leafletLayerGroup = leafletLayerGroup        
     }
 }
 
@@ -19,6 +17,8 @@ export default class MapLayers {
         this.initialized = false
         this.selectedItemLayer = null
         this.locale = locale
+        this.layersControl = null
+        this.zoomControl = null
     }
 
     initialize(leafletMap){        
