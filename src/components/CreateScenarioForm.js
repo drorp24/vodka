@@ -1,12 +1,34 @@
 import React from 'react';
 import { connect } from "react-redux"
-import {Button, Modal, Segment, Form, FormField, TextArea, Loader, Dimmer} from 'semantic-ui-react';
-import {withTheme} from 'styled-components';
+import {Button, Modal, Segment, Form, FormField, TextArea, Loader, Dimmer, ModalActions} from 'semantic-ui-react';
+import styled, {withTheme} from 'styled-components';
 import {getOr, isEmpty, toNumber, values, flow, compact, isNaN} from 'lodash/fp'
 import {toggleCreateScenario, createScenario} from '../redux/actions/actions'
 import AsyncRestParams from '../types/asyncRestParams';
 import { FlexColumns } from './common/CommonComponents';
 import translate from '../i18n/translate'
+import LOCALES from "../i18n/locales"
+
+// const StyledInput = styled(Form.Input)`
+// &.ui.input>input {
+//     text-align: inherit;
+// }
+// `
+
+const StyledFormInput = styled(Form.Input)`
+input[type=text] {
+    text-align: inherit;
+}
+input[type=number] {
+    text-align: inherit;
+}
+`
+const StyledModalActions = styled(ModalActions)`
+&.actions { 
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}`
 
 const FORM_FIELDS = {
     NAME: "name",
@@ -36,7 +58,7 @@ class CreateScenarioForm extends React.Component {
         const required = getOr(false, "required", props)
         const onChange = getOr(null, "onChange", props)
         return (
-            <Form.Input
+            <StyledFormInput                
                 onChange={onChange}
                 error={error}
                 fluid
@@ -85,6 +107,7 @@ class CreateScenarioForm extends React.Component {
     render() {
         return (
             <Modal
+                style={{direction: this.props.locale === LOCALES.HEBREW ? "rtl" : "ltr", textAlign: this.props.locale === LOCALES.HEBREW ? "right" : "left"}}
                 size="large"
                 open={true}
                 dimmer="blurring">
@@ -126,21 +149,22 @@ class CreateScenarioForm extends React.Component {
                     </Form>
                     }
                 </Modal.Content>
-                <Modal.Actions>
+                <StyledModalActions>
                 <Button onClick={this.props.toggleCreateScenarioAction} color={this.props.theme["cancelButtonColor"]}>
                         {translate("cancel", true)}
                     </Button>
                     <Button onClick={this.onCreate} color={this.props.theme["primaryButtonColor"]}>
                         {translate("create", true)}
                     </Button>
-                </Modal.Actions>
+                </StyledModalActions>
             </Modal>
         )
     }
 }
 
 const mapStateToProps = state => ({
-    createScenariosProcessing: state.simulation.createScenariosProcessing
+    createScenariosProcessing: state.simulation.createScenariosProcessing,
+    locale: state.ui.locale
 })
 
 export default connect(mapStateToProps, {

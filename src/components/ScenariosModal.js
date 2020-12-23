@@ -1,11 +1,18 @@
 import React from 'react';
 import { connect } from "react-redux"
 import {Modal, Button} from 'semantic-ui-react';
-import {withTheme} from 'styled-components';
+import styled, {withTheme} from 'styled-components';
 import Scenarios from './Scenarios'
 import translate from '../i18n/translate'
 import {FlexRows} from './common/CommonComponents';
 import LOCALES from "../i18n/locales"
+
+const StyledModalActions = styled(Modal.Actions)`
+&.actions { 
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}`
 
 const ScenariosModal = ({open, closeCB, theme, locale}) => {    
     return (
@@ -22,11 +29,11 @@ const ScenariosModal = ({open, closeCB, theme, locale}) => {
                 <Modal.Content scrolling>
                     <Scenarios closeCB={closeCB}/>
                 </Modal.Content>
-                <Modal.Actions style={{"direction": locale === LOCALES.HEBREW ? "rtl" : "ltr"}}>
+                <StyledModalActions>
                     <Button color={theme["primaryButtonColor"]} onClick={closeCB}>
                         {translate("close", true)}
                     </Button>
-                </Modal.Actions>      
+                </StyledModalActions>
         </Modal>
     )
 }
