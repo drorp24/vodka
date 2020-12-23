@@ -1,7 +1,9 @@
 import LOCALES from "../locales"
 
 export default {
-    [LOCALES.HEBREW] : { 
+    [LOCALES.HEBREW] : {
+        "Back": "אחורה בזמן", 
+        "Next": "קדימה בזמן",
         "selectScenario": "בחר תרחיש",
         "noScenarios": "לא נמצאו תרחישים",      
         "choose_presets": "בחר חוקים",
@@ -25,7 +27,7 @@ export default {
         "neiPer":"אחוז שכנים",
         "neiRad":"רדיוס לחישוב שכנים",
         "stepsCount":"מספר שלבים",
-        "creationTime":"זמן יצירה",
+        "creationTime":"נוצר",
         "next":"הבא",
         "prev":"קודם",
         "simulation": "סימולציה",

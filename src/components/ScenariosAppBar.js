@@ -5,6 +5,8 @@ import { updateScenariosFilter } from '../redux/actions/actions';
 import { task_colors } from '../configLoader';
 import translate from '../i18n/translate';
 
+import NewScenarioPlayer from './NewScenarioPlayer';
+
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -25,11 +27,22 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     backgroundColor: task_colors[3],
   },
-  toolBar: {
+  toolbar: {
     height: '100%',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr 1fr',
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
+  scenariosPlayer: {
+    height: '50%',
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    borderRadius: theme.shape.borderRadius,
+    color: theme.palette.primary.contrastText,
+    '& > button': {
+      color: theme.palette.primary.contrastText,
+    },
   },
   title: {
     flexGrow: 1,
@@ -37,6 +50,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
+    textAlign: 'center',
   },
   search: {
     position: 'relative',
@@ -47,6 +61,7 @@ const useStyles = makeStyles(theme => ({
     },
     marginLeft: 0,
     width: '100%',
+    height: '50%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(1),
       width: 'auto',
@@ -71,9 +86,9 @@ const useStyles = makeStyles(theme => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      width: '35ch',
+      width: '20vw',
       '&:focus': {
-        width: '50ch',
+        width: '25vw',
       },
     },
   },
@@ -91,14 +106,7 @@ const MyAppBar = () => {
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar className={classes.toolbar}>
-        <IconButton
-          edge="start"
-          className={classes.menuButton}
-          color="inherit"
-          aria-label="open drawer"
-        >
-          <MenuIcon />
-        </IconButton>
+        <NewScenarioPlayer className={classes.scenariosPlayer} />
         <Typography className={classes.title} variant="h6" noWrap>
           {translate('selectScenario', true)}
         </Typography>
