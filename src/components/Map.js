@@ -45,6 +45,16 @@ class Map extends React.Component {
           this.leafletMap.setZoom(max_map_zoom)
           this.leafletMap.flyTo(center)          
         }
+        else {
+          const layerGroupWrapper = getOr(null, "mapLayers.layerGroupWrrapers[0]", this)
+          if(!isNil(layerGroupWrapper)){
+            const bounds = layerGroupWrapper.leafletLayerGroup.getLayers()[0].getBounds()
+            if(bounds.isValid()){              
+              this.leafletMap.fitBounds(bounds)
+            }
+          }
+          
+        }
       }
   }
 
