@@ -40,7 +40,7 @@ class Map extends React.Component {
         this.refreshLayers()
         let center = null
         const selectedId = getOr(null, "selectedDomainItemID", this.props)
-        if(!isNil(selectedId)){
+        if(/* !isNil(selectedId */false){ // ToDo: erases the map
           center = find({id: selectedId}, this.props.domainItems).center          
           this.leafletMap.setZoom(max_map_zoom)
           this.leafletMap.flyTo(center)          

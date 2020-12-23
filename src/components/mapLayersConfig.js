@@ -16,11 +16,18 @@ export default {
         //     crs: L.CRS.EPSG4326
         // },
         {
-            type: "vector",
-            name: "osm",
-            attribution: '&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        }
+            type: "wms",
+            name: "wms",
+            attribution: "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+            url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            // layers: "mapbox.streets"
+        },
+        // {
+        //     type: "vector",
+        //     name: "osm",
+        //     attribution: '&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+        //     url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        // }
     ],
     layers: [
         {
