@@ -63,6 +63,7 @@ export default {
         "attribute": "תכונה",
         "value": "ערך",
         "weight": "משקל",
-        "contribution": "תרומה"
+        "contribution": "תרומה",
+        "total": 'סה"כ'
     }
 }

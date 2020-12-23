@@ -63,6 +63,7 @@ export default {
         "attribute": "attribute",
         "value": "value",
         "weight": "weight",
-        "contribution": "contribution"
+        "contribution": "contribution",
+        "total": "total"
     }
 }

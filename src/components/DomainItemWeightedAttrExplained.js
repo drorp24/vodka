@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import styled from 'styled-components';
 import { FlexRows, FlexColumns } from './common/CommonComponents';
 import { Div } from './common/StyledElements';
-import { map, find, capitalize, replace, flow, isNumber } from 'lodash/fp'
+import { map, find, isNumber } from 'lodash/fp'
 import translate from '../i18n/translate'
 
 export const StyledContanier = styled(FlexRows)`
@@ -14,7 +14,7 @@ const DomainItemWeightedAttrExplained = ({domainItem, weights}) => {
   const renderRow = (columns, header = false) => {
     return (
       <FlexColumns justifyContent="space-between" key={columns[0]}>
-        <Div styleType={header ? "labelDefaultText" : "labelDefaultDisabled"} width="34%" marginBottom="5px">{columns[0]}</Div>
+        <Div styleType={header ? "labelDefaultText" : "labelDefaultDisabled"} width="34%" marginBottom="5px">{translate(columns[0], true)}</Div>
         <Div styleType={header ? "labelDefaultText" : "labelDefaultDisabled"} width="22%" borderLeft={columns[1] ? "1px solid lightgray" : null}  marginBottom="5px" paddingLeft="5px">{columns[1]}</Div>
         <Div styleType={header ? "labelDefaultText" : "labelDefaultDisabled"} width="22%" borderLeft={columns[2] ? "1px solid lightgray" : null}  marginBottom="5px" paddingLeft="5px">{columns[2]}</Div>
         <Div styleType={header ? "labelDefaultText" : "labelDefaultDisabled"} width="22%" borderLeft={columns[3] ? "1px solid lightgray" : null}  marginBottom="5px" paddingLeft="5px">{columns[3]}</Div>                
@@ -32,7 +32,7 @@ const DomainItemWeightedAttrExplained = ({domainItem, weights}) => {
       <FlexRows>
         {
           renderRow([
-            translate("attribute", true),
+            "attribute",
             translate("value", true),
             translate("weight", true),
             translate("contribution", true)], 
@@ -41,7 +41,7 @@ const DomainItemWeightedAttrExplained = ({domainItem, weights}) => {
         {
           map(weightedAttribute => (
             renderRow(
-                [translate(weightedAttribute.key, true),
+                [weightedAttribute.key,
                   weightedAttribute.value, 
                   weightedAttribute.weight.value.toFixed(3),
                   isNumber(weightedAttribute.value) ? (weightedAttribute.value * weightedAttribute.weight.value).toFixed(3) : ""]
@@ -50,7 +50,7 @@ const DomainItemWeightedAttrExplained = ({domainItem, weights}) => {
         }
       </FlexRows>            
         {
-          renderRow(["Total", null, null, domainItem.score.toFixed(3)], true)
+          renderRow(["total", null, null, domainItem.score.toFixed(3)], true)
         }
     </StyledContanier>
   )
