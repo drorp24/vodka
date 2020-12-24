@@ -12,5 +12,5 @@ window.__myapp = {
   logged_in: true,
   active_threshold: 0.5,
   task_colors: ["#bdd7e7", "#6baed6", "#3182bd", "#08519c"],
-  max_map_zoom: 18
+  max_map_zoom: 17
 }

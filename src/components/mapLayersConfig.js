@@ -1,4 +1,3 @@
-import L from 'leaflet'
 export const LAYER_TYPE = {
     GEOJSON: "geojson",
     MARKERS: "markers"
