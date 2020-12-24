@@ -76,9 +76,15 @@ export default class MapLayers {
     }
 
     updateSelectedItem(item, geomertyPath, calcPopupKeyValueArr, onItemClick) {
-        if(!this.selectedItemLayer) return
+        if(!item || !this.selectedItemLayer) return
+
+        console.log('updateSelectedItem:')
+        console.log('item: ', item);
+        console.log('geomertyPath: ', geomertyPath);
+        console.log(" ")
+
         this.selectedItemLayer.leafletLayerGroup.clearLayers()
-        if(!item) return
+        
         const layerConfig = layersConfig.selected_item_layer
         if(geomertyPath === "center"){
             const markerOptions = {icon: L.icon({iconUrl: layerConfig.iconUrl, iconSize: [layerConfig.iconSize, layerConfig.iconSize], iconAnchor: [layerConfig.iconAnchorX, layerConfig.iconAnchorY]})}
@@ -89,9 +95,16 @@ export default class MapLayers {
         else if(geomertyPath === "geojson"){
             const geojsonLayer = L.geoJSON({type: "Feature", geometry: item[geomertyPath], properties: item}, {
                 style: (feature) => {
+                    console.log('updateSelectedItem style:')
+                    console.log('layerConfig.style: ', layerConfig.style);
+                    console.log(" ")
                     return layerConfig.style
                 },
                 onEachFeature: (feature, layer) => {
+                    console.log('updateSelectedItem onEachFeature:')
+                    console.log('feature: ', feature);
+                    console.log('layer: ', layer);
+                    console.log(" ")
                     const popupString = this._buildPopupString(calcPopupKeyValueArr, feature.properties)
                     if(!isEmpty(popupString))
                         layer.bindPopup(popupString);
@@ -107,6 +120,13 @@ export default class MapLayers {
     }
 
     _addGeojsonLayer(key, items, geomertyPath, calcStyleCallBack, calcPopupKeyValueArr, onItemClick) {
+        
+        console.log('_addGeoJsonLayer:')
+        console.log('key: ', key);
+        console.log('items: ', items);
+        console.log('geomertyPath: ', geomertyPath);
+        console.log(" ")
+
         const layerConfig = this.layersConfigMapByKey[key]
         const geoJsonItems = flow([
             map((item) => {
@@ -118,9 +138,25 @@ export default class MapLayers {
           ])(items)
         const geojsonLayer = L.geoJSON(geoJsonItems, {
             style: (feature) => {
-                return isNil(calcStyleCallBack) ? layerConfig.style : calcStyleCallBack(feature.properties)
+                console.log('_addGeojsonLayer style:')
+                if (isNil(calcStyleCallBack)) {
+                    console.log('no calcStyleCallBack for this feature. layConfig.style is used:')
+                    console.log('layerConfig.style: ', layerConfig.style);
+                    return layerConfig.style
+                } else {
+                    console.log('calcStyleCallBack exists for this feature:')
+                    console.log('feature.properties: ', feature.properties);
+                    const style = calcStyleCallBack(feature.properties)
+                    console.log('calcStyleCallBack(feature.properties): ', style);
+                    console.log(" ")
+                    return style
+                }
             },
             onEachFeature: (feature, layer) => {
+                console.log('_addGeojsonLayer onEachFeature:')
+                console.log('feature: ', feature);
+                console.log('layer: ', layer);
+                console.log(" ")      
                 const popupString = this._buildPopupString(calcPopupKeyValueArr, feature.properties)
                 if(!isEmpty(popupString))
                     layer.bindPopup(popupString);

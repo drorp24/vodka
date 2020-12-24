@@ -68,6 +68,10 @@ class Map extends React.Component {
       this.leafletMap = obj.target
       this.mapLayers.initialize(this.leafletMap)      
       this.refreshLayers()
+
+       // ToDo: remove
+       window.map = this.leafletMap
+       window.mapLayers = this.mapLayers
     }
 
     _calcWeightedAttrLayerItems = (top, attrName,includedItems) => {      
@@ -88,6 +92,8 @@ class Map extends React.Component {
       const maxAttrScore = max(attrScores)
       const minAttrScore = min(attrScores)      
       this.mapLayers.addLayer(layerKey, items, "center", (domainItem) => {
+        console.log('calcStyleCallBack for attr: ')
+        console.log('attrName: ', attrName);
         const itemAttrValue = find((attr)=> attr.key === attrName, domainItem.weightedAttributes).value
         const relativScore = (itemAttrValue - minAttrScore) / (maxAttrScore - minAttrScore)        
         let level = 1
@@ -147,7 +153,8 @@ class Map extends React.Component {
         }
         return {          
           ...domainItemConf.style,
-          "color": task_colors[level - 1]
+          "color": /* task_colors[level - 1] */'red',
+          fill: true
         }        
       },
         this._buildPopup, 
