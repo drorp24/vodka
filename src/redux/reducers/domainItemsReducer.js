@@ -173,7 +173,8 @@ actionHandlers[DOMAIN_ITEM_PRESSED] = (state, action) => {
   return {
     ...state,
     selectedDomainItemID: action.payload.id,
-    items
+    items,
+    requestedIndex: -1
   }
 }
 
