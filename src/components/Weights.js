@@ -1,20 +1,37 @@
 import React from 'react';
 import { connect } from "react-redux"
-import { map, isEmpty, set } from 'lodash/fp'
+import { map, isEmpty, set, isNil, getOr } from 'lodash/fp'
 import { FlexRows } from './common/CommonComponents';
 import Weight from './Weight'
 import { weightUpdated, loadWeights } from '../redux/actions/actions'
 import AsyncRestParams from '../types/asyncRestParams';
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
-import { isNil } from 'lodash';
 
 
 class Weights extends React.Component {
 
+  constructor(props) {
+    super(props)
+    this.weightsPopupRef = null
+  }
+
   componentDidMount() {
     if (isEmpty(this.props.weights) || this.props.weights.length < 1)
-      this.props.loadWeightsAction(new AsyncRestParams("/config/weights", "GET"))
+      this.props.loadWeightsAction(new AsyncRestParams("/config/weights", "GET"))    
+    document.addEventListener("click", this.handleClick);    
   }
+
+  componentWillUnmount(){
+    document.removeEventListener("click", this.handleClick);
+  }
+
+  handleClick = e => {
+    console.log("handle clicked is here")
+    const domItemClicked = getOr(null, "weightsPopupRef", this)
+    if (domItemClicked && !domItemClicked.contains(e.target)) {
+      this.props.close();
+    }
+  };
 
   handleWeightUpdate = (key, value) => {    
     const weights = map((weight) => {
@@ -40,7 +57,7 @@ class Weights extends React.Component {
 
   render() {
     return (
-      <FlexRows width="100%">
+      <FlexRows width="300px" ref={(ref) => this.weightsPopupRef = ref}>
           {map(weight => {
         return this.renderWeight(weight)
       },

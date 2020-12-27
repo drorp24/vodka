@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { ThemeProvider } from 'styled-components';
 import {IntlProvider} from "react-intl"
-import { Sidebar } from 'semantic-ui-react'
 import { connect } from "react-redux"
 import styled from 'styled-components';
 import * as defaultTheme from './common/themes/defaultTheme'
@@ -11,7 +10,6 @@ import DomainItems from './DomainItems'
 import { FlexColumns, FlexRows } from "./common/CommonComponents"
 import { Div } from "./common/StyledElements"
 import TopBar from './TopBar';
-import SideBar from './SideBar'
 import Map from './Map'
 import CompareDomainItems from './CompareDomainItems'
 import dictionaries from "../i18n/dictionaries"
@@ -45,12 +43,9 @@ function App({themeId, compareDomainItemsMode, locale}) {
                   <Div width="40%">
                     <DomainItems/>
                   </Div>
-                  <Sidebar.Pushable as={Div} width="100%" height="100%">
-                    <SideBar/>
-                    <Sidebar.Pusher>
-                      {compareDomainItemsMode ? <CompareDomainItems/> : <Map/>}
-                    </Sidebar.Pusher>
-                  </Sidebar.Pushable>
+                  <Div  width="100%" height="100%">
+                    {compareDomainItemsMode ? <CompareDomainItems/> : <Map/>}
+                  </Div>
                 </FlexColumns>
               </ProtectedRoute>
               <Route path="/login">

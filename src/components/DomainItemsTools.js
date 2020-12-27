@@ -10,12 +10,15 @@ import translate from "../i18n/translate"
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
 import AsyncRestParams from '../types/asyncRestParams';
 import DomainItemsSearch from './DomainItemsSearch'
+import Weights from './Weights'
+import LOCALES from "../i18n/locales"
 
 const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
     toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, theme, locale,
     domainItems, scenarioId, scenarioStepIdx, weights, priorityPresetId, filterPresetId, geoPresetId, loadMoreDomainItemsAction, domainItemsAmount}) => {
     
     const [choosePresetIsOpen, setChoosePresetIsOpen] = React.useState(false)
+    const [weightsIsOpen, setWeightsIsOpen] = React.useState(false)
     const onCompareClick = () => {
         toggleCompareDomainItemsModeAction()
     }
@@ -27,6 +30,10 @@ const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
         setChoosePresetIsOpen(false)
     }
 
+    const onCloseWeightsReq = () => {
+        setWeightsIsOpen(false)
+    }
+
     const handleLoadMore = () => {
         const ids = map((domainItem)=> domainItem.id, domainItems)
         const loadItemsRequestBody = getLoadItemsRequestBody({amount: domainItemsAmount + 10, priorityPresetId, filterPresetId, geoPresetId, weights, scenarioId, scenarioStepIdx, ids})
@@ -34,25 +41,35 @@ const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
     }    
     return (
         <FlexRows>
-            <DomainItemsSearch/>
-            <FlexColumns alignItems="center" justifyContent="space-between">
-                
+            <FlexColumns width="100%" alignItems="center" justifyContent="space-around">
+                <DomainItemsSearch/>
+                <Popup                    
+                    open={weightsIsOpen}
+                    position="bottom center"
+                    on='click'
+                    basic
+                    flowing
+                    trigger={<Button style={{margin: "0px 5px"}} basic={!weightsIsOpen} color={theme["topbarSliderButton"]} size="small" circular icon="options" onClick={() => setWeightsIsOpen(!weightsIsOpen)}/>}>
+                        <Weights close={onCloseWeightsReq}/>
+                </Popup>
+            </FlexColumns>            
+            <FlexColumns alignItems="center" justifyContent="space-between">                
                 <FlexColumns locale={locale} margin="0px 10px" height="40px" alignItems="center" flexBasis="75%">
                     <Popup
                         open={choosePresetIsOpen}
-                        position="bottom left"
+                        position={`bottom ${locale === LOCALES.HEBREW ? "right" : "left"}`}
                         on='click'
                         basic
                         flowing
-                        trigger={<Button onClick={() => setChoosePresetIsOpen(!choosePresetIsOpen)}  basic color={theme["secondaryButtonColor"]} content={translate("choose_presets", true)}/>}>
-                            <ChoosePresets close={onCloseReq}/>                        
+                        trigger={<Button onClick={() => setChoosePresetIsOpen(!choosePresetIsOpen)} basic color={theme["secondaryButtonColor"]} content={translate("choose_presets", true)}/>}>
+                            <ChoosePresets close={onCloseReq}/>
                     </Popup>
                     <Button disabled={domainItemsAmount < 1} onClick={handleLoadMore}  basic color={theme["secondaryButtonColor"]}>
                         {domainItemsAmount} {translate("items", true)}, {translate("load_more", true)}
                     </Button>
                 </FlexColumns>
                 <FlexColumns margin="0px 10px">
-                    <Button color={theme["topbarSliderButton"]} size="small" circular icon={compareDomainItemsMode  ? "log out" : "check"}
+                    <Button basic={!compareDomainItemsMode} color={theme["topbarSliderButton"]} size="small" circular icon={compareDomainItemsMode  ? "log out" : "check"}
                             onClick={onCompareClick}/>
                     {
                         selectedDomainItemsIdsForCmp.length > 0 ? 
