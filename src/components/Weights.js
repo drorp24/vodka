@@ -55,7 +55,7 @@ class Weights extends React.Component {
 
   render() {
     return (
-      <FlexRows width="300px" ref={(ref) => this.weightsPopupRef = ref}>
+      <FlexRows width="13vw" ref={(ref) => this.weightsPopupRef = ref}>
           {map(weight => {
         return this.renderWeight(weight)
       },
