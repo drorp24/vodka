@@ -1,3 +1,5 @@
+import purple from '@material-ui/core/colors/purple'
+
 export const LAYER_TYPE = {
     GEOJSON: "geojson",
     MARKERS: "markers"
@@ -33,9 +35,11 @@ export default {
             key: "tasks",
             type: LAYER_TYPE.GEOJSON,
             style: {
+                "stroke": true,
                 "weight": 3,
-                "opacity": 1,
-                "fillOpacity": 0
+                "color": "white",
+                "fill": true,
+                "fillOpacity": 1,
             },
             iconUrl: "polygon.svg"
         },
@@ -71,10 +75,12 @@ export default {
         key: "selected_item",
         type: LAYER_TYPE.GEOJSON,
         style: {
-            "weight": 0,
-            "opacity": 0,
-            "fillOpacity": 0.5,
-            "color": "yellow"
+            "stroke": true,
+            "weight": 3,
+            "color": "white",
+            "fill": true,
+            "fillOpacity": 1,
+            "fillColor": purple.A400
         }
     }
 }

@@ -46,10 +46,14 @@ export default class MapLayers {
     }
 
     addLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr, onItemClick) {
+        console.log('mapLayers.addLayer')
+        console.log('key, items, geometryPath: ', key, items, geometryPath);
+        console.log(' ')
         const layerConfig = this.layersConfigMapByKey[key]
         layerConfig.type === LAYER_TYPE.GEOJSON ? 
                         this._addGeojsonLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr, onItemClick) : 
-                        this._addMarkersLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr, onItemClick)
+                        console.log('this is where the _addMarkersLayer call used to be')
+                        // this._addMarkersLayer(key, items, geometryPath, calcStyleCallBack, calcPopupKeyValueArr, onItemClick)
     }
 
     addMapControls(leafletMap, intl) {
@@ -78,9 +82,9 @@ export default class MapLayers {
     updateSelectedItem(item, geomertyPath, calcPopupKeyValueArr, onItemClick) {
         if(!item || !this.selectedItemLayer) return
 
-        console.log('updateSelectedItem:')
-        console.log('item: ', item);
-        console.log('geomertyPath: ', geomertyPath);
+        console.log('updateSelectedItem')
+        // console.log('item: ', item);
+        // console.log('geomertyPath: ', geomertyPath);
         console.log(" ")
 
         this.selectedItemLayer.leafletLayerGroup.clearLayers()
@@ -95,16 +99,16 @@ export default class MapLayers {
         else if(geomertyPath === "geojson"){
             const geojsonLayer = L.geoJSON({type: "Feature", geometry: item[geomertyPath], properties: item}, {
                 style: (feature) => {
-                    console.log('updateSelectedItem style:')
-                    console.log('layerConfig.style: ', layerConfig.style);
-                    console.log(" ")
+                    // console.log('updateSelectedItem style:')
+                    // console.log('layerConfig.style: ', layerConfig.style);
+                    // console.log(" ")
                     return layerConfig.style
                 },
                 onEachFeature: (feature, layer) => {
-                    console.log('updateSelectedItem onEachFeature:')
-                    console.log('feature: ', feature);
-                    console.log('layer: ', layer);
-                    console.log(" ")
+                    // console.log('updateSelectedItem onEachFeature:')
+                    // console.log('feature: ', feature);
+                    // console.log('layer: ', layer);
+                    // console.log(" ")
                     const popupString = this._buildPopupString(calcPopupKeyValueArr, feature.properties)
                     if(!isEmpty(popupString))
                         layer.bindPopup(popupString);
@@ -114,18 +118,21 @@ export default class MapLayers {
                         })                    
                     }                
                 }
-            })            
+            })
+            console.log('mapLayers.updateSelectedItem')            
+            console.log('geojsonLayer: ', geojsonLayer);
+            console.log(' ')
             this.selectedItemLayer.leafletLayerGroup.addLayer(geojsonLayer)
         }
     }
 
     _addGeojsonLayer(key, items, geomertyPath, calcStyleCallBack, calcPopupKeyValueArr, onItemClick) {
         
-        console.log('_addGeoJsonLayer:')
-        console.log('key: ', key);
-        console.log('items: ', items);
-        console.log('geomertyPath: ', geomertyPath);
-        console.log(" ")
+        console.log('mapLayers._addGeoJsonLayer:')
+        // console.log('key: ', key);
+        // console.log('items: ', items);
+        // console.log('geomertyPath: ', geomertyPath);
+        // console.log(" ")
 
         const layerConfig = this.layersConfigMapByKey[key]
         const geoJsonItems = flow([
@@ -138,25 +145,27 @@ export default class MapLayers {
           ])(items)
         const geojsonLayer = L.geoJSON(geoJsonItems, {
             style: (feature) => {
-                console.log('_addGeojsonLayer style:')
+                // console.log('feature: ', feature);
+                // console.log('_addGeojsonLayer style:')
                 if (isNil(calcStyleCallBack)) {
-                    console.log('no calcStyleCallBack for this feature. layConfig.style is used:')
-                    console.log('layerConfig.style: ', layerConfig.style);
+                    // console.log('no calcStyleCallBack for this feature. layConfig.style is used:')
+                    // console.log('layerConfig.style: ', layerConfig.style);
                     return layerConfig.style
                 } else {
-                    console.log('calcStyleCallBack exists for this feature:')
-                    console.log('feature.properties: ', feature.properties);
+                    // console.log('calcStyleCallBack exists for this feature:')
+                    // console.log('feature.properties: ', feature.properties);
                     const style = calcStyleCallBack(feature.properties)
-                    console.log('calcStyleCallBack(feature.properties): ', style);
-                    console.log(" ")
+                    // console.log('calcStyleCallBack(feature.properties): ', style);
+                    // console.log(" ")
                     return style
                 }
             },
             onEachFeature: (feature, layer) => {
-                console.log('_addGeojsonLayer onEachFeature:')
-                console.log('feature: ', feature);
-                console.log('layer: ', layer);
-                console.log(" ")      
+                // console.log('feature, layer: ', feature, layer);
+                // console.log('_addGeojsonLayer onEachFeature:')
+                // console.log('feature: ', feature);
+                // console.log('layer: ', layer);
+                // console.log(" ")      
                 const popupString = this._buildPopupString(calcPopupKeyValueArr, feature.properties)
                 if(!isEmpty(popupString))
                     layer.bindPopup(popupString);
@@ -167,27 +176,30 @@ export default class MapLayers {
                 }                
             }
         })
+        console.log('geojsonLayer: ', geojsonLayer);
+        console.log(' ')
         this._addLayerToGroup(geojsonLayer, key)
     }
 
-    _addMarkersLayer(key, items, geomertyPath, calcIconCallBack, calcPopupKeyValueArr) {
-        const layerConfig = this.layersConfigMapByKey[key]
-        const markersArray = flow([
-            map((item) => {
-                const iconUrl = calcIconCallBack ? calcIconCallBack(item) : layerConfig.iconUrl
-                const markerOptions = {icon: L.icon({iconUrl, iconSize: [layerConfig.iconSize, layerConfig.iconSize], iconAnchor: [layerConfig.iconAnchorX, layerConfig.iconAnchorY]})}
-                const marker = L.marker(item[geomertyPath], markerOptions)
-                const popupString = this._buildPopupString(calcPopupKeyValueArr, item)
-                if(!isEmpty(popupString))
-                    marker.bindPopup(popupString)
-                return marker
-            })
-        ])(items)
-        const markersLayer = L.conditionalMarkers(markersArray, {maxMarkers: items.length})
-        this._addLayerToGroup(markersLayer, key)
-    }
+    // _addMarkersLayer(key, items, geomertyPath, calcIconCallBack, calcPopupKeyValueArr) {
+    //     console.log('mapLayers._addMarkersLayer')
+    //     console.log('key, items, geomertyPath: ', key, items, geomertyPath);
+    //     const markersArray = flow([
+    //         map((item) => {
+    //             const marker = L.marker(item[geomertyPath]).on('mouseover', () => {alert('hover 2')})
+    //             const popupString = this._buildPopupString(calcPopupKeyValueArr, item)
+    //             if(!isEmpty(popupString))
+    //                 marker.bindPopup(popupString)
+    //             return marker
+    //         })
+    //     ])(items)
+    //     const markersLayer = L.conditionalMarkers(markersArray, {maxMarkers: items.length})
+    //     this._addLayerToGroup(markersLayer, key)
+    // }
 
     _addLayerToGroup(leafletLayer, groupKey) {
+        console.log('mapLayers._addLayerToGroup')
+        console.log('leafletLayer, groupKey: ', leafletLayer, groupKey);
         const layerGroupWrapper = find({key: groupKey}, this.layerGroupWrrapers)
         layerGroupWrapper.leafletLayerGroup.addLayer(leafletLayer)
     }

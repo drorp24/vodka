@@ -109,6 +109,9 @@ const loadItemsLoadingActionHandler = (state, action) => {
 
 const loadItemsSuccessActionHandler = (state, action) => {
   // const selectedDomainItemID = getOr(null, "full_id", find({full_id: state.selectedDomainItemID}, action.payload.tasks_data))
+  console.log(' ')
+  console.log('action.payload.tasks_data: ', action.payload.tasks_data);
+  console.log(' ')
   const items = convertToDomainItems(state, getOr([], "payload.tasks_data", action), state.weights)
   const itemsAmount = getOr(0, "length", items)
   return {
