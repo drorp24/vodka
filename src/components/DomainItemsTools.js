@@ -58,10 +58,9 @@ const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
                     <Popup
                         open={choosePresetIsOpen}
                         position={`bottom ${locale === LOCALES.HEBREW ? "right" : "left"}`}
-                        on='click'
-                        basic
+                        on='click'                        
                         flowing
-                        trigger={<Button onClick={() => setChoosePresetIsOpen(!choosePresetIsOpen)} basic color={theme["secondaryButtonColor"]} content={translate("choose_presets", true)}/>}>
+                        trigger={<Button basic={!choosePresetIsOpen} onClick={() => setChoosePresetIsOpen(!choosePresetIsOpen)} color={theme["secondaryButtonColor"]} content={translate("choose_presets", true)}/>}>
                             <ChoosePresets close={onCloseReq}/>
                     </Popup>
                     <Button disabled={domainItemsAmount < 1} onClick={handleLoadMore}  basic color={theme["secondaryButtonColor"]}>
