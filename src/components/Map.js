@@ -33,13 +33,14 @@ class Map extends React.Component {
     }
 
     componentDidUpdate(){
-      console.log('componentDidUpdate')
       if(this.mapRequestScroll){
         this.mapRequestScroll = false
         return
       }
       if(this.leafletMap){
         this.mapLayers.updateLocale(this.props.locale)
+        console.log(' ')
+        console.log('componentDidUpdate calling refreshLayers')
         this.refreshLayers()
         let center = null
         const selectedId = getOr(null, "selectedDomainItemID", this.props)
@@ -68,16 +69,16 @@ class Map extends React.Component {
     }
 
     whenReadyCB = (obj) => {
-      console.log('whenReadyCB')
       this.leafletMap = obj.target
-      this.mapLayers.initialize(this.leafletMap)      
-      // this.refreshLayers()
+      this.mapLayers.initialize(this.leafletMap)  
+      console.log(' ')    
+      console.log('whenReadyCB calling refreshLayers')
+      this.refreshLayers()
     }
 
-    _calcWeightedAttrLayerItems = (top, attrName,includedItems) => {      
-      console.log('_calcWeightedAttrLayerItems')
-      console.log('top, attrName,includedItems: ', top, attrName,includedItems);
-      console.log(' ')
+    _calcWeightedAttrLayerItems = (top, attrName,includedItems) => {    
+      console.log(' ')  
+      console.log('_calcWeightedAttrLayerItems called for: ', attrName)
       return flow([
         filter((item) => {
           const weightedAttrValue = find(weightedAttr => weightedAttr.key === attrName, item.weightedAttributes).value
@@ -112,36 +113,35 @@ class Map extends React.Component {
     //   })
     // }
 
-    _buildPopup = (item) => {
-      // console.log('_buildPopup')
-      // console.log('item: ', item);
-      // console.log(' ')
-      const popupKeyValueArr = [
-        {key: this.props.intl.formatMessage({id: "name"}), value: item.name}, 
-        {key: this.props.intl.formatMessage({id: "score"}), value: item.score}, 
-        {key: this.props.intl.formatMessage({id: "priority"}), value: item.currIdx, countFromOne: true},
-      ]
-      this.props.weights.forEach((weight) => {
-        const weightedAttrScore = find(weightedAttr => weightedAttr.key === weight.key, item.weightedAttributes).value
-        const keyValue = {key: this.props.intl.formatMessage({id: weight.key}), value: weightedAttrScore}
-        popupKeyValueArr.push(keyValue)
-      })
-      return filter((item) => !isNil(item.value), popupKeyValueArr)
-    }
+    // _buildPopup = (item) => {
+      
+    //   const popupKeyValueArr = [
+    //     {key: this.props.intl.formatMessage({id: "name"}), value: item.name}, 
+    //     {key: this.props.intl.formatMessage({id: "score"}), value: item.score}, 
+    //     {key: this.props.intl.formatMessage({id: "priority"}), value: item.currIdx, countFromOne: true},
+    //   ]
+    //   this.props.weights.forEach((weight) => {
+    //     const weightedAttrScore = find(weightedAttr => weightedAttr.key === weight.key, item.weightedAttributes)?.value
+    //     const keyValue = {key: this.props.intl.formatMessage({id: weight.key}), value: weightedAttrScore}
+    //     popupKeyValueArr.push(keyValue)
+    //   })
+    //   return filter((item) => !isNil(item.value), popupKeyValueArr)
+    // }
 
-    _handlePolygonClicked = (e) => {
-      console.log('_handlePolygonClicked')
-      this.mapRequestScroll = true
-      const indexToScroll = getOr(null, "sourceTarget.feature.properties.currIdx", e)
-      const id = getOr(null, "sourceTarget.feature.properties.id", e)
-      this.props.scrollToIndexAction(indexToScroll, id, true)      
-    }
+    // _handlePolygonClicked = (e) => {
+    //   console.log('_handlePolygonClicked')
+    //   this.mapRequestScroll = true
+    //   const indexToScroll = getOr(null, "sourceTarget.feature.properties.currIdx", e)
+    //   const id = getOr(null, "sourceTarget.feature.properties.id", e)
+    //   this.props.scrollToIndexAction(indexToScroll, id, true)      
+    // }
 
     refreshLayers = () => {
-      console.log('refreshLayers ');
-      const layersConfigMapByKey = keyBy("key", layersConfig.layers)      
-      this.mapLayers.clearLayers()
-      this.mapLayers.removeMapControl(this.leafletMap)
+      console.log(' ');
+      console.log('refreshLayers called ');
+      const layersConfigMapByKey = keyBy("key", layersConfig.layers);      
+      this.mapLayers.clearLayers();
+      // this.mapLayers.removeMapControl(this.leafletMap)
       // Tasks layer
       const domainItemConf = layersConfigMapByKey["tasks"]
       const topItemsCount = this.calcItemsCountPerZoom(reveal_geolayer_zoom_threshold, this.props.domainItems)
@@ -180,24 +180,26 @@ class Map extends React.Component {
       // - bind one mouseover event handler for each layer, or one per marker, that will popup a graph upon hovering,
       //   using https://github.com/reactchartjs/react-chartjs-2.git 
 
-      // "mer" layer
-      const merConf = layersConfigMapByKey["mer"]
-      const topMerMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, this.props.domainItems)
-      const merItems = this._calcWeightedAttrLayerItems(topMerMarkersCount, merConf.by_attr, this.props.domainItems)
-      console.log('merItems: ', merItems);
-      // this._addAttrLayer(merConf.key, merItems, this.props.domainItems, merConf.by_attr, "tfi", "stars", 10)
+      if (this.props.selectedScenarioId && this.props.scenarioCurrentStepIdx > -1) {
+        // "mer" layer
+        const merConf = layersConfigMapByKey["mer"]
+        const topMerMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, this.props.domainItems)
+        const merItems = this._calcWeightedAttrLayerItems(topMerMarkersCount, merConf.by_attr, this.props.domainItems)
+        console.log('returning merItems: ', merItems);
+        // this._addAttrLayer(merConf.key, merItems, this.props.domainItems, merConf.by_attr, "tfi", "stars", 10)
 
-      // "nef" layer
-      const nefConf = layersConfigMapByKey["nef"]
-      const topNefMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, this.props.domainItems)
-      const nefItems = this._calcWeightedAttrLayerItems(topNefMarkersCount, nefConf.by_attr, this.props.domainItems)      
-      console.log('nefItems: ', nefItems);
+        // "nef" layer
+        const nefConf = layersConfigMapByKey["nef"]
+        const topNefMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, this.props.domainItems)
+        const nefItems = this._calcWeightedAttrLayerItems(topNefMarkersCount, nefConf.by_attr, this.props.domainItems)      
+        console.log('returning nefItems: ', nefItems);
       // this._addAttrLayer(nefConf.key, nefItems, this.props.domainItems, nefConf.by_attr, "tfi", "bars", 6)
+      }
 
       // selected layer
       const selectedDomainItem = find({id: this.props.selectedDomainItemID}, this.props.domainItems)
       this.mapLayers.updateSelectedItem(selectedDomainItem, "geojson", this._buildPopup, this._handlePolygonClicked)
-      this.mapLayers.addMapControls(this.leafletMap, this.props.intl)
+      // this.mapLayers.addMapControls(this.leafletMap, this.props.intl)
     }
 
     calcItemsCountPerZoom = (max_map_zoom, items) => {
@@ -209,7 +211,9 @@ class Map extends React.Component {
       return topItemsCount
     }
 
-    handleZoomEnd = (eventParams) => {      
+    handleZoomEnd = (eventParams) => { 
+      console.log(' ')
+      console.log('handleZoomEnd calling refreshLayers')     
       this.refreshLayers()
     }
     
@@ -240,7 +244,9 @@ class Map extends React.Component {
     weights: state.domainItems.weights,
     neighbors: state.domainItems.neighbors,
     selectedDomainItemID: state.domainItems.selectedDomainItemID,
-    locale: state.ui.locale
+    locale: state.ui.locale,
+    selectedScenarioId: state.simulation.selectedScenarioId,
+    scenarioCurrentStepIdx: state.simulation.scenarioCurrentStepIdx
   })
 
   export default connect(mapStateToProps, 

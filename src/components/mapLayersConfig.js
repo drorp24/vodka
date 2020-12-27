@@ -77,10 +77,13 @@ export default {
         style: {
             "stroke": true,
             "weight": 3,
-            "color": "white",
+            "color": purple.A400,
             "fill": true,
             "fillOpacity": 1,
-            "fillColor": purple.A400
         }
+    },
+    mapBubbles: {
+        minWidth: 200,
+        opacity: 1
     }
 }
