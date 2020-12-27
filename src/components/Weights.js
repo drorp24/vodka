@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from "react-redux"
-import { map, isEmpty, set, isNil, getOr } from 'lodash/fp'
+import { map, set, isNil, getOr } from 'lodash/fp'
 import { FlexRows } from './common/CommonComponents';
 import Weight from './Weight'
-import { weightUpdated, loadWeights } from '../redux/actions/actions'
+import { weightUpdated } from '../redux/actions/actions'
 import AsyncRestParams from '../types/asyncRestParams';
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
 
@@ -15,9 +15,7 @@ class Weights extends React.Component {
     this.weightsPopupRef = null
   }
 
-  componentDidMount() {
-    if (isEmpty(this.props.weights) || this.props.weights.length < 1)
-      this.props.loadWeightsAction(new AsyncRestParams("/config/weights", "GET"))    
+  componentDidMount() {    
     document.addEventListener("click", this.handleClick);    
   }
 
@@ -79,6 +77,5 @@ const mapStateToProps = state => ({
 })
 
 export default connect(mapStateToProps, {
-  weightUpdatedAction: weightUpdated,
-  loadWeightsAction: loadWeights
+  weightUpdatedAction: weightUpdated
 })(Weights);

@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from "react-redux"
 import {Popup, Button} from 'semantic-ui-react';
 import {withTheme} from 'styled-components';
-import {map} from 'lodash/fp'
+import {map, isEmpty} from 'lodash/fp'
 import {FlexColumns, FlexRows} from './common/CommonComponents';
-import { toggleCompareDomainItemsMode, clearAllSelectedItemsForComparison, loadMoreDomainItems } from '../redux/actions/actions'
+import { toggleCompareDomainItemsMode, clearAllSelectedItemsForComparison, loadMoreDomainItems, loadWeights } from '../redux/actions/actions'
 import ChoosePresets from './ChoosePresets'
 import translate from "../i18n/translate"
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
@@ -15,7 +15,12 @@ import LOCALES from "../i18n/locales"
 
 const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
     toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, theme, locale,
-    domainItems, scenarioId, scenarioStepIdx, weights, priorityPresetId, filterPresetId, geoPresetId, loadMoreDomainItemsAction, domainItemsAmount}) => {
+    domainItems, scenarioId, scenarioStepIdx, weights, priorityPresetId, filterPresetId, geoPresetId, loadMoreDomainItemsAction, domainItemsAmount, loadWeightsAction}) => {
+
+    React.useEffect(() => {
+        if (isEmpty(weights) || weights.length < 1)
+            loadWeightsAction(new AsyncRestParams("/config/weights", "GET"))
+    })
     
     const [choosePresetIsOpen, setChoosePresetIsOpen] = React.useState(false)
     const [weightsIsOpen, setWeightsIsOpen] = React.useState(false)
@@ -99,5 +104,6 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
         toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode,
         clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison,
-        loadMoreDomainItemsAction: loadMoreDomainItems
+        loadMoreDomainItemsAction: loadMoreDomainItems,
+        loadWeightsAction: loadWeights
 })(withTheme(DomainItemsTools));
