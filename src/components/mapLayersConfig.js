@@ -82,7 +82,7 @@ export default {
             "fillOpacity": 1,
         }
     },
-    mapBubbles: {
+    popup: {
         minWidth: 200,
         opacity: 1
     }

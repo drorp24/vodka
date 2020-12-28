@@ -133,9 +133,9 @@ export default class MapLayers {
             return layerConfig.style;
           },
             onEachFeature: (feature, layer) => {
-            const options = layersConfig.mapBubbles 
-            layer.bindPopup(htmlItemDetails(feature.properties), options);
-            layer.bindTooltip(htmlItemDetails(feature.properties), {className: 'tooltip'});
+              const popupOptions = layersConfig.popup 
+              layer.bindPopup(htmlItemDetails(feature.properties), popupOptions);
+              layer.bindTooltip(htmlItemDetails(feature.properties), {className: 'tooltip'});
             // console.log('updateSelectedItem onEachFeature:')
             // console.log('feature: ', feature);
             // console.log('layer: ', layer);
@@ -204,9 +204,9 @@ export default class MapLayers {
         // console.log('feature: ', feature);
         // console.log('layer: ', layer);
         // console.log(" ")
-        const options = layersConfig.mapBubbles 
-        layer.bindPopup(htmlItemDetails(feature.properties), options);
-        layer.bindTooltip(htmlItemDetails(feature.properties), {className: 'tooltip', permanent: true}, {minWidth: '900'});
+        const popupOptions = layersConfig.popup 
+        layer.bindPopup(htmlItemDetails(feature.properties), popupOptions);
+        layer.bindTooltip(htmlItemDetails(feature.properties), {className: 'tooltip'});
       },
     });
     console.log('returning geojsonLayer: ', geojsonLayer);

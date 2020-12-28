@@ -42,7 +42,7 @@
   }
 } */
 .tooltip {
-  min-width: 250px;
-  opacity: 1;
+  min-width: 237px;
+  opacity: 1 !important;
   border-radius: 10px;
 }
