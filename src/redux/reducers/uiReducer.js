@@ -1,8 +1,7 @@
 import {set, flow, concat, remove, find, isNil} from 'lodash/fp'
 import {
     TOGGLE_SIDE_BAR, 
-    DOMAIN_ITEM_PRESSED, 
-    MAP_CLICKED,
+    DOMAIN_ITEM_PRESSED,
     SWITCH_THEME,
     SELECT_DOMAIN_ITEM_FOR_COMPARISON,
     TOGGLE_COMPARE_DOMAIN_ITEMS_MODE,
@@ -33,9 +32,6 @@ export default function ui(ui = initialState, action) {
         }
         case SWITCH_THEME:{
             return set('themeId', action.payload.id, ui)
-        }
-        case MAP_CLICKED:{
-            return set('sideBarOpen', false, ui)
         }
         case DOMAIN_ITEM_PRESSED: { 
             return set('sideBarOpen', false, ui)

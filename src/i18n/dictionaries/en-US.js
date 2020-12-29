@@ -64,6 +64,8 @@ export default {
         "value": "value",
         "weight": "weight",
         "contribution": "contribution",
-        "total": "total"
+        "total": "total",
+        "attr_filters": "attributes filter",
+        "set_weights": "set weights"
     }
 }

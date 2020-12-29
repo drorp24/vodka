@@ -64,6 +64,8 @@ export default {
         "value": "ערך",
         "weight": "משקל",
         "contribution": "תרומה",
-        "total": 'סה"כ'
+        "total": 'סה"כ',
+        "attr_filters": "מסנני תכונות",
+        "set_weights": "קבע משקלים"
     }
 }

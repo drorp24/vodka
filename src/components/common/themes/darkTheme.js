@@ -19,7 +19,8 @@ export const iconButtonColorIcon = "rgba(0,0,0,.6)"
 export const primaryButtonColor = "orange"
 export const secondaryButtonColor = "orange"
 export const scenarioButtonColor = "black"
-export const topbarSliderButton = null
+export const topbarSliderButton = "grey"
+export const sidebarBackground = "rgba(255,255,255, 0.2)"
 
 
 // labels full styles

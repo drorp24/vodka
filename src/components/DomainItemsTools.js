@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from "react-redux"
 import {Popup, Button} from 'semantic-ui-react';
 import {withTheme} from 'styled-components';
-import {map, isEmpty} from 'lodash/fp'
+import {map, isEmpty, set, isNil} from 'lodash/fp'
 import {FlexColumns, FlexRows} from './common/CommonComponents';
-import { toggleCompareDomainItemsMode, clearAllSelectedItemsForComparison, loadMoreDomainItems, loadWeights } from '../redux/actions/actions'
+import { toggleCompareDomainItemsMode, clearAllSelectedItemsForComparison, loadMoreDomainItems, loadWeights, weightUpdated } from '../redux/actions/actions'
 import ChoosePresets from './ChoosePresets'
 import translate from "../i18n/translate"
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
@@ -14,8 +14,8 @@ import Weights from './Weights'
 import LOCALES from "../i18n/locales"
 
 const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
-    toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, theme, locale,
-    domainItems, scenarioId, scenarioStepIdx, weights, priorityPresetId, filterPresetId, geoPresetId, loadMoreDomainItemsAction, domainItemsAmount, loadWeightsAction}) => {
+    toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, theme, locale, loadingItems,
+    domainItems, scenarioId, scenarioStepIdx, weights, priorityPresetId, filterPresetId, geoPresetId, loadMoreDomainItemsAction, domainItemsAmount, loadWeightsAction, weightUpdatedAction}) => {
 
     React.useEffect(() => {
         if (isEmpty(weights) || weights.length < 1)
@@ -43,8 +43,29 @@ const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
         const ids = map((domainItem)=> domainItem.id, domainItems)
         const loadItemsRequestBody = getLoadItemsRequestBody({amount: domainItemsAmount + 10, priorityPresetId, filterPresetId, geoPresetId, weights, scenarioId, scenarioStepIdx, ids})
         loadMoreDomainItemsAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody, weights)
-    }    
+    }
+    
+    const handleWeightUpdate = (key, value) => {    
+        const actualWeights = map((weight) => {
+          if(key !== weight.key) return weight
+          return set('value', value, weight)
+        }, weights)
+        const ids = map((domainItem)=> domainItem.id, domainItems)
+        const loadItemsRequestBody = getLoadItemsRequestBody({
+          priorityPresetId: priorityPresetId,
+          filterPresetId: filterPresetId,
+          geoPresetId: geoPresetId,
+          weights: actualWeights, 
+          scenarioId: scenarioId,
+          scenarioStepIdx: scenarioStepIdx, 
+          ids})
+        weightUpdatedAction(new AsyncRestParams("/data/tasksAndNeighbors", "POST"), loadItemsRequestBody, actualWeights)
+    }
+
+    const noScorePresetChoosen = isNil(priorityPresetId)
+
     return (
+        
         <FlexRows>
             <FlexColumns width="100%" alignItems="center" justifyContent="space-around">
                 <DomainItemsSearch/>
@@ -55,7 +76,7 @@ const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
                     basic
                     flowing
                     trigger={<Button style={{margin: "0px 5px"}} basic={!weightsIsOpen} color={theme["topbarSliderButton"]} size="small" circular icon="options" onClick={() => setWeightsIsOpen(!weightsIsOpen)}/>}>
-                        <Weights close={onCloseWeightsReq}/>
+                        <Weights header={translate("set_weights", true)} width="10vw" disabled={loadingItems || noScorePresetChoosen} close={onCloseWeightsReq} weights={weights} handleWeightUpdate={handleWeightUpdate}/>
                 </Popup>
             </FlexColumns>            
             <FlexColumns alignItems="center" justifyContent="space-between">                
@@ -98,6 +119,7 @@ const mapStateToProps = state => {
         weights: state.domainItems.weights,
         scenarioId: state.simulation.selectedScenarioId,
         scenarioStepIdx: state.simulation.scenarioCurrentStepIdx,
+        loadingItems: state.domainItems.loadingItems
     }
 }
 
@@ -105,5 +127,6 @@ export default connect(mapStateToProps, {
         toggleCompareDomainItemsModeAction: toggleCompareDomainItemsMode,
         clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison,
         loadMoreDomainItemsAction: loadMoreDomainItems,
-        loadWeightsAction: loadWeights
+        loadWeightsAction: loadWeights,
+        weightUpdatedAction: weightUpdated
 })(withTheme(DomainItemsTools));

@@ -35,6 +35,7 @@ justify-content: ${({ justifyContent }) => justifyContent};
 align-content: ${({ alignContent }) => alignContent};
 white-space: ${({ whiteSpace }) => whiteSpace};
 direction: ${({ direction }) => direction};
+z-index: ${({ zIndex }) => zIndex};
 `;
 
 // Colors and Fonts attributes logicaly named and taken from active theme

@@ -69,6 +69,12 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
                         </Dropdown.Menu>
                     </Dropdown>
             </Div>
+            <FlexColumns>                	
+                <Div margin="0px 10px">	
+                    <Button disabled={compareDomainItemsMode ? true : false} color={theme["topbarSliderButton"]} circular icon={sideBarOpen ? `angle double ${locale === LOCALES.HEBREW ? 'left' : 'right'}` : `angle double ${locale === LOCALES.HEBREW ? 'right' : 'left'}`}
+                            onClick={() => toggleSideBarAction()}/>	
+                </Div>	
+            </FlexColumns>
             {createScenarioOpen && <CreateScenarioForm/>}
             <ScenariosModal open={scenariosIsOpen} closeCB={()=>setScenariosIsOpen(false)}/>
             

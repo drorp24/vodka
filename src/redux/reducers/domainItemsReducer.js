@@ -4,7 +4,7 @@ import PriorityPresetType from "../../types/priorityPresetType"
 import FilterPresetType from "../../types/filterPresetType"
 import GeoPresetType from "../../types/geoPresetType"
 import KeyValueType from "../../types/keyValueType"
-import { map, getOr, keyBy, flow, set, filter, reverse, sortBy, uniqBy } from 'lodash/fp'
+import { map, getOr, keyBy, flow, set, filter, reverse, sortBy, uniqBy, remove, isNil } from 'lodash/fp'
 import { WEIGHT_UPDATED,
   DOMAIN_ITEM_PRESSED, 
   LOAD_WEIGHTS,
@@ -18,9 +18,10 @@ import { WEIGHT_UPDATED,
   LOAD_FILTER_PRESETS,
   LOAD_GEO_PRESETS,
   LOAD_MORE_DOMAIN_ITEMS,
-  SCROLL_TO_INDEX_REQUEST} from "../actions/actionTypes"
+  SCROLL_TO_INDEX_REQUEST,
+  DYNAMIC_ATTR_FILTER_UPDATE} from "../actions/actionTypes"
 import LoadingSuccessFailureActionType from "../../types/loadingSuccessFailureActionType"
-import { isNil } from "lodash"
+import {dynamic_attr_keys} from "../../configLoader"
 
 /**INITIAL STATE */
 const initialState = {
@@ -47,7 +48,8 @@ const initialState = {
   loadingPriorityPresets: false,
   loadingFilterPresets: false,
   loadingGeoPresets: false,
-  requestedIndex: -1
+  requestedIndex: -1,
+  dynamicAttrFilter: map((key) => new KeyValueType(key, 0), dynamic_attr_keys)
 }
 
 /**HELPERS */
@@ -259,6 +261,15 @@ actionHandlers[SCROLL_TO_INDEX_REQUEST] = (state, action) => {
   return flow([
     set("requestedIndex", action.payload.indexToScroll),
     set("items", items)
+  ])(state)
+}
+
+actionHandlers[DYNAMIC_ATTR_FILTER_UPDATE] = (state, action) => {
+  const attrAsKeyValue = getOr(null, "payload.keyValue", action)
+  const updatedFilter = remove((filterItem) => filterItem.key === attrAsKeyValue.key, state.dynamicAttrFilter)
+  updatedFilter.push(new KeyValueType(attrAsKeyValue.key, attrAsKeyValue.value))
+  return flow([
+    set("dynamicAttrFilter", updatedFilter)
   ])(state)
 }
 

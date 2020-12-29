@@ -33,23 +33,31 @@ export default {
             },
             iconUrl: "polygon.svg"
         },
+        // {
+        //     key: "mer",
+        //     by_attr: "mer",
+        //     type: LAYER_TYPE.MARKERS,
+        //     iconUrl: "stars.svg",
+        //     iconSize: 45,
+        //     iconAnchorX: 25,
+        //     iconAnchorY: 45
+        // },
+        // {
+        //     key: "nef",
+        //     by_attr: "nef",
+        //     type: LAYER_TYPE.MARKERS,
+        //     iconUrl: "bars6.svg",
+        //     iconSize: 25,
+        //     iconAnchorX: 20,
+        //     iconAnchorY: 20
+        // }
         {
-            key: "mer",
-            by_attr: "mer",
+            key: "dynamicAttr",
             type: LAYER_TYPE.MARKERS,
-            iconUrl: "stars.svg",
-            iconSize: 45,
-            iconAnchorX: 25,
-            iconAnchorY: 45
-        },
-        {
-            key: "nef",
-            by_attr: "nef",
-            type: LAYER_TYPE.MARKERS,
-            iconUrl: "bars6.svg",
+            iconUrl: "signal.svg",
             iconSize: 25,
-            iconAnchorX: 20,
-            iconAnchorY: 20
+            iconAnchorX: 15,
+            iconAnchorY: 15
         }        
     ],
     // selected_item_layer: {

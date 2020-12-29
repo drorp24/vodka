@@ -20,6 +20,7 @@ export const primaryButtonColor = "orange"
 export const secondaryButtonColor = "black"
 export const scenarioButtonColor = "black"
 export const cancelButtonColor = "black"
+export const sidebarBackground = "rgba(255,255,255, 0.2)"
 
 
 // labels full styles
@@ -34,6 +35,10 @@ font-size: 20px;
 
 export const label3 = css`
 font-size: 16px;
+`;
+
+export const label4 = css`
+font-size: 14px;
 `;
 
 

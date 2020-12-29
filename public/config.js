@@ -12,5 +12,6 @@ window.__myapp = {
   logged_in: true,
   active_threshold: 0.5,
   task_colors: ["red", "yellow", "green"],
-  max_map_zoom: 18
+  max_map_zoom: 18,
+  dynamic_attr_keys: ["tfi", "nef", "mer"]
 }

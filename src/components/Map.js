@@ -8,11 +8,12 @@ import {Div} from './common/StyledElements';
 import { Map as LeafletMap, TileLayer, WMSTileLayer } from 'react-leaflet'
 import { CoordinatesControl } from 'react-leaflet-coordinates'
 import { connect } from "react-redux"
-import {getOr, find, filter, isNil, flow, map, max, min, keyBy, take, sortBy, reverse} from "lodash/fp"
-import {handleMapClicked, scrollToIndex} from '../redux/actions/actions'
-import {max_map_zoom, default_map_center, reveal_geolayer_zoom_threshold, reveal_markerlayer_zoom_threshold, active_threshold, task_colors} from '../configLoader';
+import {getOr, find, filter, isNil, flow, map, max, min, keyBy, take, sortBy, reverse, takeWhile, concat} from "lodash/fp"
+import {scrollToIndex} from '../redux/actions/actions'
+import {max_map_zoom, default_map_center, reveal_geolayer_zoom_threshold, task_colors} from '../configLoader';
 import MapLayers from "./mapLayers"
 import layersConfig from "./mapLayersConfig"
+import MapPopup from './MapPopup'
 
 const MIN_ZOOM = 1
 const INITIAL_ZOOM_LEVEL = 15
@@ -30,7 +31,7 @@ class Map extends React.Component {
         this.mapRequestScroll = false
     }
 
-    componentDidUpdate(){
+    componentDidUpdate(prevProps){
       if(this.mapRequestScroll){
         this.mapRequestScroll = false
         return
@@ -40,81 +41,63 @@ class Map extends React.Component {
         this.refreshLayers()
         let center = null
         const selectedId = getOr(null, "selectedDomainItemID", this.props)
+        const prevSelectedId = getOr(null, "selectedDomainItemID", prevProps)
+        const prevDomainItems = getOr(null, "domainItems", prevProps)
         if(!isNil(selectedId)){
+          if(selectedId === prevSelectedId) return
           center = find({id: selectedId}, this.props.domainItems).center          
           this.leafletMap.setZoom(max_map_zoom)
           this.leafletMap.flyTo(center)          
         }
-        else {
+        else if(prevDomainItems !== this.props.domainItems){
+          console.log("domain items changed")
           const layerGroupWrapper = getOr(null, "mapLayers.layerGroupWrrapers[0]", this)
           if(!isNil(layerGroupWrapper)){
             const bounds = layerGroupWrapper.leafletLayerGroup.getLayers()[0].getBounds()
-            if(bounds.isValid()){              
+            if(bounds.isValid()) {
               this.leafletMap.fitBounds(bounds)
             }
           }
           
-        }
+                  
+        }        
       }
   }
 
-    handleClick = () => {
-      if (this.leafletMap) {
-        this.props.handleMapClickedAction()
-      }
-    }
+  whenReadyCB = (obj) => {
+    this.leafletMap = obj.target
+    this.mapLayers.initialize(this.leafletMap)      
+    this.refreshLayers()
+  }
 
-    whenReadyCB = (obj) => {
-      this.leafletMap = obj.target
-      this.mapLayers.initialize(this.leafletMap)      
-      this.refreshLayers()
-    }
+  _calcWeightedAttrLayerItems = (top, attrName,includedItems) => {      
+    return flow([
+      filter((item) => {
+        const weightedAttrValue = find(weightedAttr => weightedAttr.key === attrName, item.weightedAttributes).value
+        return !isNil(weightedAttrValue)
+      }),
+      sortBy((item) => find(weightedAttr => weightedAttr.key === attrName,item.weightedAttributes).value),
+      reverse,
+      take(top)
+    ])(includedItems)
+  }    
 
-    _calcWeightedAttrLayerItems = (top, attrName,includedItems) => {      
-      return flow([
-        filter((item) => {
-          const weightedAttrValue = find(weightedAttr => weightedAttr.key === attrName, item.weightedAttributes).value
-          return !isNil(weightedAttrValue)
-        }),
-        sortBy((item) => find(weightedAttr => weightedAttr.key === attrName,item.weightedAttributes).value),
-        reverse,
-        take(top)
-      ])(includedItems)
-    }
-
-    _addAttrLayer = (layerKey, items, allItem, attrName, activeAttrName, iconName, levelsCount) => {
-      if(isNil(items) || items.length < 1) return
-      const attrScores = map((item) => find((attr)=> attr.key === attrName, item.weightedAttributes).value, allItem)
-      const maxAttrScore = max(attrScores)
-      const minAttrScore = min(attrScores)      
-      this.mapLayers.addLayer(layerKey, items, "center", (domainItem) => {
-        const itemAttrValue = find((attr)=> attr.key === attrName, domainItem.weightedAttributes).value
-        const relativScore = (itemAttrValue - minAttrScore) / (maxAttrScore - minAttrScore)        
-        let level = 1
-        while (level < levelsCount){          
-          if(relativScore <= level/levelsCount) break
-          level += 1
-        }
-        let useActiveIcons = false
-        if(find((attr)=> attr.key === activeAttrName, domainItem.weightedAttributes).value > active_threshold){
-          useActiveIcons = true
-        }          
-        return useActiveIcons ? `${iconName}${level}_active.svg` : `${iconName}${level}.svg`
-      })
-    }
-
-    _buildPopup = (item) => {
-      const popupKeyValueArr = [
-        {key: this.props.intl.formatMessage({id: "name"}), value: item.name}, 
-        {key: this.props.intl.formatMessage({id: "score"}), value: item.score}, 
-        {key: this.props.intl.formatMessage({id: "priority"}), value: item.currIdx, countFromOne: true},
-      ]
+    _createPopupData = (item, minScore, maxScore) => {
+      let weightedAttributes = []
       this.props.weights.forEach((weight) => {
         const weightedAttrScore = find(weightedAttr => weightedAttr.key === weight.key, item.weightedAttributes).value
         const keyValue = {key: this.props.intl.formatMessage({id: weight.key}), value: weightedAttrScore}
-        popupKeyValueArr.push(keyValue)
+        weightedAttributes.push(keyValue)
       })
-      return filter((item) => !isNil(item.value), popupKeyValueArr)
+      weightedAttributes = filter((item) => !isNil(item.value), weightedAttributes)
+      const relativeScore = (item.score - minScore) / (maxScore - minScore)
+      const popupData = {
+        name: item.name,
+        score: item.score,
+        weightedAttributes,
+        relativeScore
+      }
+      return popupData
     }
 
     _handlePolygonClicked = (e) => {
@@ -125,23 +108,23 @@ class Map extends React.Component {
     }
 
     refreshLayers = () => {
-      const layersConfigMapByKey = keyBy("key", layersConfig.layers)      
+      const layersConfigMapByKey = keyBy("key", layersConfig.layers)     
       this.mapLayers.clearLayers()
       this.mapLayers.removeMapControl(this.leafletMap)
       // Tasks layer
       const domainItemConf = layersConfigMapByKey["tasks"]
       const topItemsCount = this.calcItemsCountPerZoom(reveal_geolayer_zoom_threshold, this.props.domainItems)
       const taskItems = take(topItemsCount, this.props.domainItems)
+      const scores = map((item) => item.score, taskItems)
+      const maxScore = max(scores)
+      const minScore = min(scores)
       this.mapLayers.addLayer("tasks", taskItems, "geojson", (domainItem) => {
         if(isNil(domainItem)){
           return
-        }
-        const scores = map((item) => item.score, taskItems)
-        const maxScore = max(scores)
-        const minScore = min(scores)        
+        }        
         const relativeScore = (domainItem.score - minScore) / (maxScore - minScore)
         let level = 1
-        while (level < task_colors.length){          
+        while (level < task_colors.length){
           if(relativeScore <= level/task_colors.length) break
           level += 1
         }
@@ -150,25 +133,28 @@ class Map extends React.Component {
           "color": task_colors[level - 1]
         }        
       },
-        this._buildPopup, 
-        this._handlePolygonClicked      
-      )
+      (item) => {
+        const popupData = this._createPopupData(item, minScore, maxScore)
+        return MapPopup({...popupData, locale: this.props.locale})
+      },
+        this._handlePolygonClicked
+      )      
 
-      // "mer" layer
-      const merConf = layersConfigMapByKey["mer"]
-      const topMerMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, this.props.domainItems)
-      const merItems = this._calcWeightedAttrLayerItems(topMerMarkersCount, merConf.by_attr, this.props.domainItems)
-      this._addAttrLayer(merConf.key, merItems, this.props.domainItems, merConf.by_attr, "tfi", "stars", 10)
-
-      // "nef" layer
-      const nefConf = layersConfigMapByKey["nef"]
-      const topNefMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, this.props.domainItems)
-      const nefItems = this._calcWeightedAttrLayerItems(topNefMarkersCount, nefConf.by_attr, this.props.domainItems)      
-      this._addAttrLayer(nefConf.key, nefItems, this.props.domainItems, nefConf.by_attr, "tfi", "bars", 6)
+      // markers layer
+      const dynamicAttrConf = layersConfigMapByKey["dynamicAttr"]
+      const allItems = concat(this.props.domainItems, this.props.neighbors)
+      const dynamicLayerItems = this.calcItemsPerAttrValuesThreshold(allItems, this.props.dynamicAttrFilter)
+      this.mapLayers.addLayer(dynamicAttrConf.key, dynamicLayerItems, "center", null, (item) => {
+        const popupData = this._createPopupData(item, minScore, maxScore)
+        return MapPopup({...popupData, locale: this.props.locale})
+      }, null)
 
       // selected layer
       const selectedDomainItem = find({id: this.props.selectedDomainItemID}, this.props.domainItems)
-      this.mapLayers.updateSelectedItem(selectedDomainItem, "geojson", this._buildPopup, this._handlePolygonClicked)
+      this.mapLayers.updateSelectedItem(selectedDomainItem, "geojson", (item) => {
+        const popupData = this._createPopupData(item, minScore, maxScore)
+        return MapPopup({...popupData, locale: this.props.locale})
+      }, this._handlePolygonClicked)
       this.mapLayers.addMapControls(this.leafletMap, this.props.intl)
     }
 
@@ -181,14 +167,30 @@ class Map extends React.Component {
       return topItemsCount
     }
 
+    calcItemsPerAttrValuesThreshold = (items, attrValues) => {
+      return takeWhile((item) => {
+        let predicateFulfilled = false
+        const itemWeightedAttrMap = keyBy("key", item.weightedAttributes)
+        for (let index = 0; index < attrValues.length; index++) {
+          const keyValue = attrValues[index];
+          const weightedAttrValue = getOr(null, `${keyValue.key}.value`, itemWeightedAttrMap)
+          predicateFulfilled = !isNil(weightedAttrValue) && weightedAttrValue >= keyValue.value ? true : false
+          if(!predicateFulfilled){
+             break
+          }
+        }
+        return predicateFulfilled
+      }, items)            
+    }
+
     handleZoomEnd = (eventParams) => {      
       this.refreshLayers()
     }
     
     render() {
       return (
-        <Div height="calc(100vh - 60px)">
-            <LeafletMap  zoomControl={false} maxZoom={max_map_zoom} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} onClick={this.handleClick} style={{"height": "100%"}} center={[this.state.lat, this.state.lng]} zoom={INITIAL_ZOOM_LEVEL}>
+        <Div height="calc(100vh - 60px)" position="relative">
+            <LeafletMap zoomControl={false} maxZoom={max_map_zoom} onzoomend={this.handleZoomEnd} whenReady={this.whenReadyCB} style={{"height": "100%"}} center={[this.state.lat, this.state.lng]} zoom={INITIAL_ZOOM_LEVEL}>
                 {
                   map((tile)=> {
                     return tile.type === "wms" ? 
@@ -203,7 +205,6 @@ class Map extends React.Component {
     }
   }
 
-
   const mapStateToProps = state => ({
     // FOLOWING CAUSE PERFORMACE ISSUE SHOULD USE SELECTOR
     // domainItems: filter((item) => !isNil(getOr(null, "center[0]", item)) && !isNil(item.geojson), state.domainItems.items),
@@ -212,8 +213,48 @@ class Map extends React.Component {
     weights: state.domainItems.weights,
     neighbors: state.domainItems.neighbors,
     selectedDomainItemID: state.domainItems.selectedDomainItemID,
-    locale: state.ui.locale
+    locale: state.ui.locale,
+    dynamicAttrFilter: state.domainItems.dynamicAttrFilter
   })
 
   export default connect(mapStateToProps, 
-    {handleMapClickedAction: handleMapClicked, scrollToIndexAction: scrollToIndex})(injectIntl(Map));
+    {scrollToIndexAction: scrollToIndex})(injectIntl(Map));
+
+
+
+
+
+
+
+    // _addAttrLayer = (layerKey, items, allItem, attrName, activeAttrName, iconName, levelsCount) => {
+    //   if(isNil(items) || items.length < 1) return
+    //   const attrScores = map((item) => find((attr)=> attr.key === attrName, item.weightedAttributes).value, allItem)
+    //   const maxAttrScore = max(attrScores)
+    //   const minAttrScore = min(attrScores)      
+    //   this.mapLayers.addLayer(layerKey, items, "center", (domainItem) => {
+    //     const itemAttrValue = find((attr)=> attr.key === attrName, domainItem.weightedAttributes).value
+    //     const relativScore = (itemAttrValue - minAttrScore) / (maxAttrScore - minAttrScore)        
+    //     let level = 1
+    //     while (level < levelsCount){          
+    //       if(relativScore <= level/levelsCount) break
+    //       level += 1
+    //     }
+    //     let useActiveIcons = false
+    //     if(find((attr)=> attr.key === activeAttrName, domainItem.weightedAttributes).value > active_threshold){
+    //       useActiveIcons = true
+    //     }          
+    //     return useActiveIcons ? `${iconName}${level}_active.svg` : `${iconName}${level}.svg`
+    //   })
+    // }
+
+      // // "mer" layer
+      // const merConf = layersConfigMapByKey["mer"]
+      // const topMerMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, this.props.domainItems)
+      // const merItems = this._calcWeightedAttrLayerItems(topMerMarkersCount, merConf.by_attr, this.props.domainItems)
+      // this._addAttrLayer(merConf.key, merItems, this.props.domainItems, merConf.by_attr, "tfi", "stars", 10)
+
+      // // "nef" layer
+      // const nefConf = layersConfigMapByKey["nef"]
+      // const topNefMarkersCount = this.calcItemsCountPerZoom(reveal_markerlayer_zoom_threshold, this.props.domainItems)
+      // const nefItems = this._calcWeightedAttrLayerItems(topNefMarkersCount, nefConf.by_attr, this.props.domainItems)      
+      // this._addAttrLayer(nefConf.key, nefItems, this.props.domainItems, nefConf.by_attr, "tfi", "bars", 6)

@@ -23,7 +23,8 @@ import {
   LOAD_GEO_PRESETS,
   SELECT_LOCALE,
   LOAD_MORE_DOMAIN_ITEMS,
-  SCROLL_TO_INDEX_REQUEST } from "./actionTypes"
+  SCROLL_TO_INDEX_REQUEST,
+  DYNAMIC_ATTR_FILTER_UPDATE } from "./actionTypes"
 
 function makeActionCreator(type, ...argNames) {
   return function(...args) {
@@ -64,3 +65,4 @@ export const loadGeoPresets = makeActionCreator(LOAD_GEO_PRESETS, 'meta', 'body'
 export const selectLocale = makeActionCreator(SELECT_LOCALE, 'locale')
 export const loadMoreDomainItems = makeActionCreator(LOAD_MORE_DOMAIN_ITEMS, 'meta', 'body', 'origWeights')
 export const scrollToIndex = makeActionCreator(SCROLL_TO_INDEX_REQUEST, 'indexToScroll', 'id', 'keepSelectedExpanded')
+export const dynamicAttrFilterUpdate = makeActionCreator(DYNAMIC_ATTR_FILTER_UPDATE, 'keyValue')

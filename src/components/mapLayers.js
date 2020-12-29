@@ -1,7 +1,9 @@
+import ReactDOMServer from 'react-dom/server';
 import layersConfig, {LAYER_TYPE} from "./mapLayersConfig"
 import L from 'leaflet'
 import {keyBy, flow, map, find, isEmpty, omit, isNil} from 'lodash/fp'
 import LOCALES from "../i18n/locales"
+
 
 class LayerGroupWrapper {
     constructor(key, leafletLayerGroup){
@@ -53,15 +55,15 @@ export default class MapLayers {
     }
 
     addMapControls(leafletMap, intl) {
-        const overlayers = {}
-        layersConfig.layers.forEach(layerConfig => {
-            const layerNameAndIconHtml = `<div><i class="circle icon outline unselected"></i> <i class="check circle icon outline selected"></i> <img style="margin: 0px 10px 0px 0px" src="${layerConfig.iconUrl}" width="20" height="20"> &nbsp ${intl.formatMessage({id: layerConfig.key})}</div>`
-            const layerGroupWrrapers = find({key: layerConfig.key}, this.layerGroupWrrapers)
-            overlayers[layerNameAndIconHtml] = layerGroupWrrapers.leafletLayerGroup
-        });
-        //'topleft' | 'topright' | 'bottomleft' | 'bottomright'
-        this.layersControl = L.control.layers(null, overlayers, {collapsed:false, position: this.locale === LOCALES.HEBREW ? "topleft" : "topright"})
-        this.layersControl.addTo(leafletMap)
+        // const overlayers = {}
+        // layersConfig.layers.forEach(layerConfig => {
+        //     const layerNameAndIconHtml = `<div><i class="circle icon outline unselected"></i> <i class="check circle icon outline selected"></i> <img style="margin: 0px 10px 0px 0px" src="${layerConfig.iconUrl}" width="20" height="20"> &nbsp ${intl.formatMessage({id: layerConfig.key})}</div>`
+        //     const layerGroupWrrapers = find({key: layerConfig.key}, this.layerGroupWrrapers)
+        //     overlayers[layerNameAndIconHtml] = layerGroupWrrapers.leafletLayerGroup
+        // });
+        // //'topleft' | 'topright' | 'bottomleft' | 'bottomright'
+        // this.layersControl = L.control.layers(null, overlayers, {collapsed:false, position: this.locale === LOCALES.HEBREW ? "topleft" : "topright"})
+        // this.layersControl.addTo(leafletMap)
         this.zoomControl = L.control.zoom({position: this.locale === LOCALES.HEBREW ? "topright" : "topleft"});
         this.zoomControl.addTo(leafletMap)
     }
@@ -92,7 +94,7 @@ export default class MapLayers {
                     return layerConfig.style
                 },
                 onEachFeature: (feature, layer) => {
-                    const popupString = this._buildPopupString(calcPopupKeyValueArr, feature.properties)
+                    const popupString = this._buildPopup(calcPopupKeyValueArr, feature.properties)
                     if(!isEmpty(popupString))
                         layer.bindPopup(popupString);
                     if(!isNil(onItemClick)){
@@ -121,7 +123,7 @@ export default class MapLayers {
                 return isNil(calcStyleCallBack) ? layerConfig.style : calcStyleCallBack(feature.properties)
             },
             onEachFeature: (feature, layer) => {
-                const popupString = this._buildPopupString(calcPopupKeyValueArr, feature.properties)
+                const popupString = this._buildPopup(calcPopupKeyValueArr, feature.properties)
                 if(!isEmpty(popupString))
                     layer.bindPopup(popupString);
                 if(!isNil(onItemClick)){
@@ -141,9 +143,21 @@ export default class MapLayers {
                 const iconUrl = calcIconCallBack ? calcIconCallBack(item) : layerConfig.iconUrl
                 const markerOptions = {icon: L.icon({iconUrl, iconSize: [layerConfig.iconSize, layerConfig.iconSize], iconAnchor: [layerConfig.iconAnchorX, layerConfig.iconAnchorY]})}
                 const marker = L.marker(item[geomertyPath], markerOptions)
-                const popupString = this._buildPopupString(calcPopupKeyValueArr, item)
+                const popupString = this._buildPopup(calcPopupKeyValueArr, item)
                 if(!isEmpty(popupString))
-                    marker.bindPopup(popupString)
+                    marker.bindPopup(popupString, {autoPan: false})
+                    marker.on('mouseover', (e) => {
+                            if(!isNil(marker)){
+                                try {
+                                    marker.openPopup()                                
+                                } catch (error) {
+                                    console.log(error)
+                                }                            
+                            }                        
+                        });
+                    marker.on('mouseout', (e) => {
+                        marker.closePopup();
+                    });
                 return marker
             })
         ])(items)
@@ -156,15 +170,11 @@ export default class MapLayers {
         layerGroupWrapper.leafletLayerGroup.addLayer(leafletLayer)
     }
 
-    _buildPopupString(cb, item){
+    _buildPopup(cb, item){
         if(isNil(cb)){
             return ""
         }
-        const popupKeyValueArr = cb(item)
-        let popupString = ''
-        popupKeyValueArr.forEach(keyValue => {
-            popupString += `${keyValue.key}: ${keyValue.countFromOne ? keyValue.value + 1 : keyValue.value} <br/>`
-        });
-        return `<div style="text-align: ${this.locale === LOCALES.HEBREW ? 'right' : 'left'}"> ${popupString}</div>`
+        const popupComponent = cb(item)
+        return ReactDOMServer.renderToString(popupComponent)
     }
 }
