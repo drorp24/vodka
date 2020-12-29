@@ -3,7 +3,8 @@ import L from 'leaflet';
 import { keyBy, flow, map, find, isEmpty, omit, isNil } from 'lodash/fp';
 import LOCALES from '../i18n/locales';
 import htmlItemDetails from './htmlItemDetails';
-import './App.css'
+import './App.css';
+import { task_colors } from '../configLoader';
 
 class LayerGroupWrapper {
   constructor(key, leafletLayerGroup) {
@@ -100,7 +101,13 @@ export default class MapLayers {
   //     }
   // }
 
-  updateSelectedItem(item, geomertyPath, calcPopupKeyValueArr, onItemClick) {
+  updateSelectedItem(
+    item,
+    geomertyPath,
+    calcPopupKeyValueArr,
+    onItemClick,
+    level
+  ) {
     if (!item || !this.selectedItemLayer) return;
 
     console.log('updateSelectedItem');
@@ -130,12 +137,17 @@ export default class MapLayers {
             // console.log('updateSelectedItem style:')
             // console.log('layerConfig.style: ', layerConfig.style);
             // console.log(" ")
-            return layerConfig.style;
+            console.log('level(item): ', level(item));
+            return {
+              ...layerConfig.style,
+              fillColor: task_colors[level(item)],
+            };
           },
-            onEachFeature: (feature, layer) => {
-              const popupOptions = layersConfig.popup 
-              layer.bindPopup(htmlItemDetails(feature.properties), popupOptions);
-              layer.bindTooltip(htmlItemDetails(feature.properties), {className: 'tooltip'});
+          onEachFeature: (feature, layer) => {
+            const { properties } = feature;
+            const { popup, tooltip } = layersConfig;
+            layer.bindPopup(htmlItemDetails(properties), popup);
+            layer.bindTooltip(htmlItemDetails(properties), tooltip);
             // console.log('updateSelectedItem onEachFeature:')
             // console.log('feature: ', feature);
             // console.log('layer: ', layer);
@@ -204,9 +216,11 @@ export default class MapLayers {
         // console.log('feature: ', feature);
         // console.log('layer: ', layer);
         // console.log(" ")
-        const popupOptions = layersConfig.popup 
-        layer.bindPopup(htmlItemDetails(feature.properties), popupOptions);
-        layer.bindTooltip(htmlItemDetails(feature.properties), {className: 'tooltip'});
+        const { properties } = feature;
+        const { popup, tooltip } = layersConfig;
+        layer.bindPopup(htmlItemDetails(properties), popup);
+        layer.bindTooltip(htmlItemDetails(properties), tooltip);
+        layer.on('click', layer.closeTooltip);
       },
     });
     console.log('returning geojsonLayer: ', geojsonLayer);

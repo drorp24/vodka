@@ -14,9 +14,14 @@ export const DomainItemFlexColumns = styled(FlexColumns)`
     border-bottom: ${({theme}) => `1px solid ${theme["borderColor"]}`};
     :hover  {
         cursor: pointer;
-        background-color: ${({theme}) => `${theme["backgroudHoverColor"]}`};
+        background-color: ${({scoreColor}) => `${scoreColor}`};
+        color: #fff !important;
+        & * {
+          color: #fff !important;
+        }
       }
-    ${({scoreColor, locale}) => locale === LOCALES.HEBREW ? `border-left: 5px solid ${scoreColor}` : `border-right: 5px solid ${scoreColor}`};    
+    ${({scoreColor, locale}) => locale === LOCALES.HEBREW ? `border-left: 8px solid ${scoreColor}` : `border-right: 8px solid ${scoreColor}`}; 
+    border-radius: 10px;   
 `;
 
 export const DomainItemExpandedFlexRows = styled(FlexRows)`

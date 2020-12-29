@@ -85,5 +85,9 @@ export default {
     popup: {
         minWidth: 200,
         opacity: 1
+    },
+    tooltip: {
+        className: 'tooltip',
+        offset: [0, 0]
     }
 }
