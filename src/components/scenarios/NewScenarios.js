@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { loadScenarios } from '../redux/actions/actions';
+import { loadScenarios } from '../../redux/actions/actions';
 
-import Language from './Language';
-import LOCALES from '../i18n/locales';
-import translate from '../i18n/translate';
-import AsyncRestParams from '../types/asyncRestParams';
+import Language from '../Language';
+import LOCALES from '../../i18n/locales';
+import translate from '../../i18n/translate';
+import AsyncRestParams from '../../types/asyncRestParams';
 
 import ScenariosAppBar from './ScenariosAppBar';
 import NewScenario from './NewScenario';
-import { sideBarWidth } from './common/themes/defaultTheme';
+import { sideBarWidth } from '../common/themes/defaultTheme';
 import { Loader } from 'semantic-ui-react';
 
 import { makeStyles, useTheme, ThemeProvider } from '@material-ui/core/styles';

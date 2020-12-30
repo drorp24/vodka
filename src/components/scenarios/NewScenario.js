@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectScenario } from '../redux/actions/actions';
+import { selectScenario } from '../../redux/actions/actions';
 
-import translate from '../i18n/translate';
+import translate from '../../i18n/translate';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -13,7 +13,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import CheckedIcon from '@material-ui/icons/CheckCircleRounded';
-import { scenarios } from './common/themes/defaultTheme';
+import { scenarios } from '../common/themes/defaultTheme';
 
 const useStyles = makeStyles(theme => ({
   scenario: {

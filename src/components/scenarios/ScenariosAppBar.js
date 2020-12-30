@@ -1,18 +1,17 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateScenariosFilter } from '../redux/actions/actions';
-
-import translate from '../i18n/translate';
+import { updateScenariosFilter } from '../../redux/actions/actions';
+import LOCALES from '../../i18n/locales';
 
 import NewScenarioPlayer from './NewScenarioPlayer';
+import ScenarioHeader from './ScenarioHeader';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
-import { sideBarWidth, scenarios } from './common/themes/defaultTheme';
+import { sideBarWidth, scenarios } from '../common/themes/defaultTheme';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -31,6 +30,7 @@ const useStyles = makeStyles(theme => ({
   },
   scenariosPlayer: {
     height: '50%',
+    overflow: ({ locale }) => (locale === LOCALES.HEBREW ? 'hidden' : 'auto'),
     backgroundColor: fade(theme.palette.common.white, 0.15),
     '&:hover': {
       backgroundColor: fade(theme.palette.common.white, 0.25),
@@ -41,14 +41,7 @@ const useStyles = makeStyles(theme => ({
       color: theme.palette.primary.contrastText,
     },
   },
-  title: {
-    flexGrow: 1,
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
-    },
-    textAlign: 'center',
-  },
+
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -97,8 +90,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const MyAppBar = () => {
-  const classes = useStyles();
   const { scenariosFilter } = useSelector(store => store.simulation);
+  const { locale } = useSelector(store => store.ui);
+  const classes = useStyles({ locale });
   const dispatch = useDispatch();
 
   const handleSearchInput = ({ target: { value } }) => {
@@ -109,9 +103,7 @@ const MyAppBar = () => {
     <AppBar position="static" className={classes.appBar}>
       <Toolbar className={classes.toolbar}>
         <NewScenarioPlayer className={classes.scenariosPlayer} />
-        <Typography className={classes.title} variant="h6" noWrap>
-          {translate('selectScenario', true)}
-        </Typography>
+        <ScenarioHeader />
         <div className={classes.search}>
           <div className={classes.searchIcon}>
             <SearchIcon />
@@ -121,7 +113,6 @@ const MyAppBar = () => {
               root: classes.inputRoot,
               input: classes.inputInput,
             }}
-            inputProps={{ 'aria-label': 'search' }}
             onChange={handleSearchInput}
             value={scenariosFilter || ''}
           />

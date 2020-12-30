@@ -1,16 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import translate from '../i18n/translate';
-
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
-import { scenarios } from './common/themes/defaultTheme';
+import { scenarios } from '../common/themes/defaultTheme';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -85,7 +81,6 @@ const NewScenarioPlayer = ({ className }) => {
           disabled={activeStep < 1}
           className={classes.backButton}
         >
-          {/* {translate('Back', true)} */}
           {theme.direction === 'rtl' ? (
             <SkipPreviousIcon
               className={`${classes.playIcon} ${classes.backIcon}`}
@@ -113,7 +108,6 @@ const NewScenarioPlayer = ({ className }) => {
               className={`${classes.playIcon} ${classes.nextIcon}`}
             />
           )}
-          {/* {translate('Next', true)} */}
         </Button>
       }
     />
