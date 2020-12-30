@@ -1,13 +1,26 @@
 import React from 'react';
 import 'rc-slider/assets/index.css'
-import { Label as LabelSem, Divider } from 'semantic-ui-react';
+import { Label, Divider } from 'semantic-ui-react';
 import {withTheme} from 'styled-components';
 import "semantic-ui-css/semantic.min.css";
+import styled from 'styled-components';
+import Slider from "rc-slider"
 import { get, getOr } from 'lodash/fp'
 import { FlexRows, FlexColumns, SemanticSlider } from './common/CommonComponents';
-import { Label } from './common/StyledElements';
 import translate from '../i18n/translate'
 
+export const MapSlider = styled(Slider)`
+    .rc-slider-track {
+        background-color: white;
+    }
+    .rc-slider-rail {
+        background-color: rgb(205 205 205 / 0.7);
+    }
+    .rc-slider-handle {
+        border: 0px;
+        background-color: white;
+    }
+`
 
 class Weight extends React.Component {
 
@@ -43,11 +56,15 @@ class Weight extends React.Component {
 
     return (
       <FlexRows margin="5px">
-          <FlexColumns marginBottom="5px" justifyContent="space-between">
-              <Label styleType="label4" marginLeft="10px">{translate(this.props.weight.key, true)}</Label>
-              <LabelSem color={this.props.theme["weightLabel"]} circular>{this.getValue()}</LabelSem>
+          <FlexColumns direction="rtl" marginBottom="5px" justifyContent="space-between">
+              <Label basic color="black" circular>{this.getValue()}</Label>
+              <Label basic color="black" marginLeft="10px">{translate(this.props.weight.key, true)}</Label>              
           </FlexColumns>
-          <SemanticSlider disabled={this.props.disabled} value={this.getValue()} min={min} max={max} step={step} onChange={this.handleSliderChanging} onAfterChange={this.handleSliderDoneChanging}/>
+          {
+            this.props.mapSlider ? 
+            <MapSlider  disabled={this.props.disabled} value={this.getValue()} min={min} max={max} step={step} onChange={this.handleSliderChanging} onAfterChange={this.handleSliderDoneChanging}/> :
+            <SemanticSlider disabled={this.props.disabled} value={this.getValue()} min={min} max={max} step={step} onChange={this.handleSliderChanging} onAfterChange={this.handleSliderDoneChanging}/>
+          }          
           <Divider color={this.props.theme["secondaryButtonColor"]}/>
         </FlexRows>
     )

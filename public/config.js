@@ -11,7 +11,9 @@ window.__myapp = {
   use_redux_toolkit: true,
   logged_in: true,
   active_threshold: 0.5,
-  task_colors: ["red", "yellow", "green"],
+  // task_colors: ["#db2828", "#fbbd08", "#21ba45"],
+  task_colors: ["red", "yellow", "#1bef5c"],
+  popup_colors: ["red", "yellow", "green"],
   max_map_zoom: 18,
   dynamic_attr_keys: ["tfi", "nef", "mer"]
 }

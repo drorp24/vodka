@@ -3,7 +3,7 @@ import { Label } from 'semantic-ui-react';
 import {map} from 'lodash/fp'
 import {FlexColumns, FlexRows} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
-import {task_colors} from '../configLoader';
+import {popup_colors} from '../configLoader';
 import LOCALES from "../i18n/locales"
 
 const MapPopup = ({relativeScore, score, name, locale, weightedAttributes}) => {
@@ -14,8 +14,8 @@ const MapPopup = ({relativeScore, score, name, locale, weightedAttributes}) => {
     }
     const imgUrl = `stars${level}.svg`
     let taskLevel = 1
-    while (taskLevel < task_colors.length){
-        if(relativeScore <= taskLevel/task_colors.length) break
+    while (taskLevel < popup_colors.length){
+        if(relativeScore <= taskLevel/popup_colors.length) break
         taskLevel += 1
     }
     return (
@@ -24,7 +24,7 @@ const MapPopup = ({relativeScore, score, name, locale, weightedAttributes}) => {
             <Div>
                 <img src={imgUrl} width="80" height="40" alt="star"/>
             </Div>
-            <Label style={{margin: 0}} horizontal color={task_colors[taskLevel - 1]}>{score.toFixed(3)}</Label>
+            <Label style={{margin: 0}} horizontal color={popup_colors[taskLevel - 1]}>{score.toFixed(3)}</Label>
             <Div marginTop="5px">
             {
                 map((attr) => <FlexColumns style={{display: "flex", justifyContent: "space-between"}}>

@@ -41,6 +41,12 @@ export const label4 = css`
 font-size: 14px;
 `;
 
+export const label4MapWeight = css`
+font-size: 14px;
+color: white;
+background-color: black;
+`;
+
 
 export const label3disabled = css`
 font-size: 16px;

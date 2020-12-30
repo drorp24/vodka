@@ -6,21 +6,20 @@ export const LAYER_TYPE = {
 
 export default {
     tiles: [
-        // {
-        //     type: "wms",
-        //     name: "wms",
-        //     attribution: null,
-        //     url: "http://ows.mundialis.de/services/service?",
-        //     layers: "TOPO-OSM-WMS",
-        //     format: "image/jpeg",
-        //     crs: L.CRS.EPSG4326
-        // },
         {
-            type: "vector",
-            name: "osm",
-            attribution: '&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        }
+            type: "wms",
+            name: "wms",
+            attribution: null,
+            url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",            
+            format: "image/jpeg",
+            crs: L.CRS.EPSG4326
+        },
+        // {
+        //     type: "vector",
+        //     name: "osm",
+        //     attribution: '&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+        //     url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        // }
     ],
     layers: [
         {
@@ -54,8 +53,8 @@ export default {
         {
             key: "dynamicAttr",
             type: LAYER_TYPE.MARKERS,
-            iconUrl: "signal.svg",
-            iconSize: 25,
+            iconUrl: "map-marker.svg",
+            iconSize: 35,
             iconAnchorX: 15,
             iconAnchorY: 15
         }        

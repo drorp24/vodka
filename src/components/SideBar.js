@@ -18,7 +18,7 @@ const SideBar =  ({sideBarOpen, locale, dynamicAttrFilter, dynamicAttrFilterUpda
   return (	
     <Sidebar backgroundColor="transparent" style={{backgroundColor: "transparent"}} direction={locale === LOCALES.HEBREW ? "left" : "right"} visible={sideBarOpen} animation='overlay' as={Div} vertical width="thin">
       <FlexRows padding="10px 5px" height="100%" width="100%" themedbackgroundcolor="sidebarBackground">      
-      <Weights header={translate("attr_filters", true)} close={() => {}} handleWeightUpdate={handleDynamicAttrUpdate} weights={
+      <Weights mapSlider labelStyleType="label4MapWeight" header={translate("attr_filters", true)} close={() => {}} handleWeightUpdate={handleDynamicAttrUpdate} weights={
         flow([
           map((dynamicAttr)=> new WeightType(dynamicAttr.key, dynamicAttr.value, 0, 100)),
           sortBy(["key"])
