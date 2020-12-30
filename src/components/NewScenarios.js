@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     right: ({ locale }) => (locale === LOCALES.HEBREW ? 'unset' : 0),
     width: `${100 - sideBarWidth}vw`,
     height: '100vh',
-    zIndex: 1,
+    zIndex: 1001,
     visibility: ({ open }) => (open ? 'visible' : 'hidden'),
     flexWrap: 'wrap',
     justifyContent: 'space-around',
@@ -62,7 +62,6 @@ const NewScenarios = ({ open }) => {
   const direction = locale === LOCALES.HEBREW ? 'rtl' : 'ltr';
   let theme = useTheme();
   theme = { ...theme, direction };
-  console.log('theme: ', theme);
   const classes = useStyles({ open, locale });
 
   const { scenariosLoading, scenarios } = useSelector(
@@ -70,7 +69,11 @@ const NewScenarios = ({ open }) => {
   );
   const { scenariosFilter } = useSelector(store => store.simulation);
   const filteredScenarios = scenariosFilter
-    ? scenarios.filter(scenario => scenario.name.includes(scenariosFilter))
+    ? scenarios.filter(
+        scenario =>
+          scenario.name.includes(scenariosFilter) ||
+          scenario.name.toLowerCase().includes(scenariosFilter)
+      )
     : scenarios;
 
   const dispatch = useDispatch();
@@ -90,7 +93,10 @@ const NewScenarios = ({ open }) => {
           ) : (
             <div className={classes.scenariosGrid}>
               {filteredScenarios.map(scenario => (
-                <NewScenario scenario={scenario} key={scenario.id} />
+                <NewScenario
+                  scenario={scenario}
+                  key={scenario.id || scenario.name + Math.random().toString()} // ToDo: remove; for testing only
+                />
               ))}
             </div>
           )}

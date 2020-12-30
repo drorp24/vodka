@@ -2,8 +2,8 @@ import LOCALES from "../locales"
 
 export default {
     [LOCALES.HEBREW] : {
-        "Back": "אחורה בזמן", 
-        "Next": "קדימה בזמן",
+        "Back": "אחורה", 
+        "Next": "קדימה",
         "selectScenario": "בחר תרחיש",
         "noScenarios": "לא נמצאו תרחישים",      
         "choose_presets": "בחר חוקים",

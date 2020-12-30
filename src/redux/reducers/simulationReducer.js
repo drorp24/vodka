@@ -8,6 +8,7 @@ import { SELECT_SCENARIO, SELECT_SCENARIO_STEP, CREATE_SCENARIO, LOAD_SCENARIOS,
 const initialState = {
     selectedScenarioId: null,
     scenarioCurrentStepIdx: -1,
+    scenarioStepsCount: null,
     scenariosLoading: false,
     createScenariosProcessing: false,
     scenarios: [],
@@ -25,7 +26,8 @@ export default function simulation(simulation = initialState, action) {
         case SELECT_SCENARIO: {
             return flow([
                 set("selectedScenarioId", simulation.selectedScenarioId === action.payload.id ? null : action.payload.id),
-                set("scenarioCurrentStepIdx", -1)
+                set("scenarioCurrentStepIdx", -1),
+                set("scenarioStepsCount", action.payload.stepsCount)
             ])(simulation)
         }
         case selectScenarioStep.success: {

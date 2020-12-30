@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectScenario } from '../redux/actions/actions';
 
 import translate from '../i18n/translate';
-import { task_colors } from '../configLoader';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -13,7 +12,8 @@ import IconButton from '@material-ui/core/IconButton';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+import CheckedIcon from '@material-ui/icons/CheckCircleRounded';
+import { scenarios } from './common/themes/defaultTheme';
 
 const useStyles = makeStyles(theme => ({
   scenario: {
@@ -24,6 +24,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: '1rem',
   },
   action: {
+    position: 'absolute',
     margin: 0,
     alignSelf: 'unset',
   },
@@ -31,14 +32,27 @@ const useStyles = makeStyles(theme => ({
     padding: 0,
   },
   cardContent: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: scenarios.cardBackground,
+  },
+  cardHeaderAvatar: {
+    marginLeft: 0,
   },
   avatar: {
     fontSize: '1rem',
   },
   checkedIcon: {
-    transition: 'font-size 0.2s',
-    color: task_colors[3],
+    color: scenarios.checked,
+    transition: 'width 0.3s, margin-left 0.3s, margin-right 0.3s',
+  },
+  selected: {
+    width: '40px',
+    height: '40px',
+    marginLeft: 0,
+  },
+  unselected: {
+    width: 0,
+    height: 0,
+    marginLeft: '20px',
   },
   line: {
     display: 'flex',
@@ -50,63 +64,65 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NewScenario = ({
-  scenario: { id, name, description, creator, ...rest },
+  scenario: { id, name, description, creator, stepsCount, ...rest },
 }) => {
   const classes = useStyles();
   const { scenariosFilter } = useSelector(store => store.simulation);
   const { selectedScenarioId } = useSelector(store => store.simulation);
   const dispatch = useDispatch();
 
-  const markSelected = id => () => {
-    dispatch(selectScenario(id));
+  const markSelected = (id, stepsCount) => () => {
+    dispatch(selectScenario(id, stepsCount));
   };
 
   // ToDo: fix useMemo, or use React.memo
-  const highlightSubstring = useMemo(
-    () =>
-      function (str, sub) {
-        console.log('entered highlightSubstring with');
-        console.log('str, sub: ', str, sub);
-        if (!sub) return <span>{str}</span>;
+  const highlightSubstring = (str, sub) => {
+    if (!sub) return <span>{str}</span>;
 
-        const strlength = str.length;
-        const sublength = sub.length;
+    const strlength = str.length;
+    const sublength = sub.length;
 
-        const i = str.indexOf(sub);
-        if (i === -1) return <span>{str}</span>;
+    let i = str.toLowerCase().indexOf(sub);
+    if (i === -1) i = str.indexOf(sub);
+    if (i === -1) return <span>{str}</span>;
 
-        const prefix = str.substring(0, i);
-        const highlighted = str.substring(i, sublength);
-        const suffix =
-          i + sublength + 1 < strlength
-            ? str.substring(i + sublength, strlength)
-            : '';
+    const prefix = str.substring(0, i);
+    const highlighted = str.substring(i, i + sublength);
+    const suffix =
+      i + sublength + 1 <= strlength
+        ? str.substring(i + sublength, strlength)
+        : '';
 
-        return (
-          <span>
-            {prefix}
-            <strong style={{ color: task_colors[3] }}>{highlighted}</strong>
-            {suffix}
-          </span>
-        );
-      },
-    []
-  );
+    return (
+      <span>
+        {prefix}
+        <strong style={{ color: scenarios.match }}>{highlighted}</strong>
+        {suffix}
+      </span>
+    );
+  };
+
+  const title = scenariosFilter
+    ? highlightSubstring(name, scenariosFilter)
+    : name;
+
+  const selected = selectedScenarioId && id === selectedScenarioId;
+  const className =
+    classes.checkedIcon +
+    ' ' +
+    (selected ? classes.selected : classes.unselected);
 
   return (
-    <Card elevation={5} className={classes.scenario} onClick={markSelected(id)}>
+    <Card elevation={5} className={classes.scenario} onClick={markSelected(id, stepsCount)}>
       <CardHeader
         className={classes.cardHeader}
-        classes={{ action: classes.action }}
+        classes={{ action: classes.action, avatar: classes.cardHeaderAvatar }}
         avatar={<Avatar className={classes.avatar}>{creator}</Avatar>}
-        title={highlightSubstring(name, scenariosFilter)}
+        title={title}
         subheader={description}
         action={
           <IconButton className={classes.iconButton}>
-            <RadioButtonCheckedIcon
-              className={classes.checkedIcon}
-              style={{ fontSize: id === selectedScenarioId ? '3rem' : '0' }}
-            />
+            <CheckedIcon className={className} />
           </IconButton>
         }
       />
@@ -117,11 +133,7 @@ const NewScenario = ({
             <Typography className={classes.fieldName}>
               {translate(field, true)}
             </Typography>
-            <Typography>
-              {field === 'name'
-                ? highlightSubstring(value, scenariosFilter)
-                : value}
-            </Typography>
+            <Typography>{value}</Typography>
           </div>
         ))}
       </CardContent>

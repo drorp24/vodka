@@ -27,7 +27,7 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
         dispatch(logout());
       };
 
-    const itemByLocaleStyle = {"text-align": locale === LOCALES.HEBREW ? "right" : "left"}
+    const itemByLocaleStyle = {"textAlign": locale === LOCALES.HEBREW ? "right" : "left"}
     return (
         <TopBarContainer minHeight="60px" alignItems="center"  width="100%" position="relative" justifyContent="space-between">
             <Div  margin="0px 10px">
