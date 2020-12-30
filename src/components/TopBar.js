@@ -8,7 +8,7 @@ import {Div} from './common/StyledElements';
 import {toggleSideBar, switchTheme, toggleCreateScenario, selectLocale} from '../redux/actions/actions'
 import CreateScenarioForm from './CreateScenarioForm'
 import ScenariosModal from './ScenariosModal'
-import NewScenarios from './NewScenarios'
+import NewScenarios from './scenarios/NewScenarios'
 import translate from '../i18n/translate'
 import LOCALES from "../i18n/locales"
 import { logout } from '../redux/reducers/usersReducer';

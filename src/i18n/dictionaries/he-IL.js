@@ -1,7 +1,9 @@
 import LOCALES from "../locales"
 
 export default {
-    [LOCALES.HEBREW] : {
+    [LOCALES.HEBREW]: {
+        "scnNei": "שכנים",
+        "scnTasks": "משימות",
         "Back": "אחורה", 
         "Next": "קדימה",
         "selectScenario": "בחר תרחיש",
