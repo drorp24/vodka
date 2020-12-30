@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import translate from '../i18n/translate';
 
@@ -7,20 +8,53 @@ import MobileStepper from '@material-ui/core/MobileStepper';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
+import SkipNextIcon from '@material-ui/icons/SkipNext';
+import { scenarios } from './common/themes/defaultTheme';
 
 const useStyles = makeStyles(theme => ({
-  nextBackButtons: {
-    fontSize: '1rem',
+  root: {
+    flexDirection: 'row-reverse',
+  },
+  nextBackButtons: {},
+  playIcon: {
+    width: '2.2rem',
+    height: '2.2rem',
+  },
+  nextButton: {
+    justifyContent: 'flex-start',
+  },
+  backButton: {
+    justifyContent: 'flex-end',
+  },
+  nextIcon: {
+    color: ({ activeStep, maxSteps, selectedScenarioId }) =>
+      !selectedScenarioId || activeStep === maxSteps - 1
+        ? scenarios.disabled
+        : scenarios.progress,
+  },
+  backIcon: {
+    color: ({ activeStep }) =>
+      activeStep < 1 ? scenarios.disabled : scenarios.progress,
+  },
+  linearProgressRoot: {
+    transform: 'scaleX(-1)',
+  },
+  progressBar: {
+    backgroundColor: scenarios.progress,
   },
 }));
 
 const NewScenarioPlayer = ({ className }) => {
-  const classes = useStyles();
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
-  const maxSteps = 5;
+  console.log(' ');
+  console.log('activeStep: ', activeStep);
+  const { selectedScenarioId, scenarioStepsCount } = useSelector(
+    store => store.simulation
+  );
+  const maxSteps = selectedScenarioId ? scenarioStepsCount + 1 : 4;
+  const classes = useStyles({ activeStep, maxSteps, selectedScenarioId });
 
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
@@ -34,37 +68,52 @@ const NewScenarioPlayer = ({ className }) => {
     <MobileStepper
       steps={maxSteps}
       className={className}
+      style={{ flexDirection: 'row-reverse' }}
       position="static"
-      variant="text"
+      variant="progress"
+      LinearProgressProps={{
+        classes: {
+          root: classes.linearProgressRoot,
+          barColorPrimary: classes.progressBar,
+        },
+      }}
       activeStep={activeStep}
-      nextButton={
-        <Button
-          size="small"
-          onClick={handleBack}
-          disabled={activeStep === 0}
-          className={classes.nextBackButtons}
-        >
-          {translate('Back', true)}
-          {theme.direction === 'rtl' ? (
-            <KeyboardArrowLeft />
-          ) : (
-            <KeyboardArrowRight />
-          )}
-        </Button>
-      }
       backButton={
         <Button
           size="small"
+          onClick={handleBack}
+          disabled={activeStep < 1}
+          className={classes.backButton}
+        >
+          {/* {translate('Back', true)} */}
+          {theme.direction === 'rtl' ? (
+            <SkipPreviousIcon
+              className={`${classes.playIcon} ${classes.backIcon}`}
+            />
+          ) : (
+            <SkipNextIcon
+              className={`${classes.playIcon} ${classes.backIcon}`}
+            />
+          )}
+        </Button>
+      }
+      nextButton={
+        <Button
+          size="small"
           onClick={handleNext}
-          disabled={activeStep === maxSteps - 1}
-          className={classes.nextBackButtons}
+          disabled={!selectedScenarioId || activeStep === maxSteps - 1}
+          className={classes.nextButton}
         >
           {theme.direction === 'rtl' ? (
-            <KeyboardArrowRight />
+            <SkipNextIcon
+              className={`${classes.playIcon} ${classes.nextIcon}`}
+            />
           ) : (
-            <KeyboardArrowLeft />
+            <SkipPreviousIcon
+              className={`${classes.playIcon} ${classes.nextIcon}`}
+            />
           )}
-          {translate('Next', true)}
+          {/* {translate('Next', true)} */}
         </Button>
       }
     />

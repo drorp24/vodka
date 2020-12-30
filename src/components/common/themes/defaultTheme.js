@@ -1,4 +1,5 @@
 import { css } from 'styled-components';
+import blue from '@material-ui/core/colors/blue';
 
 // colors
 export const temporarySignalColor = `rgba(101, 100, 96, 0.3)`;
@@ -47,11 +48,11 @@ export const labelDefaultText = css`
 `;
 
 export const labelDefaultDisabled = css`
-color: gray;
-text-overflow: ellipsis;
-overflow: hidden;
-white-space: nowrap;
-line-height: normal;
+  color: gray;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  line-height: normal;
 `;
 
 export const scenarioLabelValue = css`
@@ -87,3 +88,12 @@ export const simPlayerBorderDisabled = css`
   border: 1px solid #777e7f;
 `;
 export const sideBarWidth = '25';
+export const scenarios = {
+  appBar: blue['500'],
+  checked: blue['500'],
+  match: blue['500'],
+  progress: blue['900'],
+  search: blue['900'],
+  disabled: 'rgba(90, 0, 0, 0.15)',
+  cardBackground: 'rgba(0, 0, 0, 0.04)',
+};

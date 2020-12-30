@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateScenariosFilter } from '../redux/actions/actions';
 
-import { task_colors } from '../configLoader';
 import translate from '../i18n/translate';
 
 import NewScenarioPlayer from './NewScenarioPlayer';
@@ -10,12 +9,10 @@ import NewScenarioPlayer from './NewScenarioPlayer';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
-import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import { sideBarWidth } from './common/themes/defaultTheme';
+import { sideBarWidth, scenarios } from './common/themes/defaultTheme';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -25,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    backgroundColor: task_colors[3],
+    backgroundColor: scenarios.appBar,
   },
   toolbar: {
     height: '100%',
@@ -75,9 +72,13 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    color: scenarios.search,
+    transform: 'scale(1.2)',
   },
   inputRoot: {
     color: 'inherit',
+    height: '100%',
+    fontSize: '1.3rem',
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
@@ -91,6 +92,7 @@ const useStyles = makeStyles(theme => ({
         width: '25vw',
       },
     },
+    color: scenarios.search,
   },
 }));
 
