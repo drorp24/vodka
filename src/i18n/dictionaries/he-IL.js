@@ -2,6 +2,7 @@ import LOCALES from "../locales"
 
 export default {
     [LOCALES.HEBREW]: {
+        "selectPresetFirst": "בחר חוקים תחילה",
         "scnNei": "שכנים",
         "scnTasks": "משימות",
         "Back": "אחורה", 

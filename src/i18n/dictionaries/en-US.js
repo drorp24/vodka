@@ -2,6 +2,7 @@ import LOCALES from "../locales"
 
 export default {
     [LOCALES.ENGLISH]: {
+        "selectPresetFirst": "Select presest first",
         "scnNei": "Neighbors",
         "scnTasks": "Tasks",
         "Back": "Back",

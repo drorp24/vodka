@@ -1,26 +1,35 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { scenarios } from '../common/themes/defaultTheme';
+
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import Chip from '@material-ui/core/Chip';
 import translate from '../../i18n/translate';
+import LOCALES from '../../i18n/locales';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
+    color: scenarios.header,
     flexGrow: 1,
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
   },
   headerTitle: {
     fontSize: '1.3rem',
   },
+  chip: {
+    margin: '0.5rem',
+    backgroundColor: scenarios.chips,
+    color: '#fff',
+  },
   headerDetails: {
     width: '100%',
     display: 'flex',
-    flexDirection: 'column',
     justifyContent: 'center',
     fontSize: '0.8rem',
   },
@@ -29,20 +38,23 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     lineHeight: 1.3,
     '& > span': {
-      marginLeft: '2rem',
+      marginLeft: '0.5rem',
     },
   },
   headerField: {
     fontWeight: '700',
+    margin: 0,
   },
   headerNumeric: {
     display: 'flex',
-    flexDirection: 'row-reverse',
+    flexDirection: ({ locale }) =>
+      locale === LOCALES.HEBREW ? 'row-reverse' : 'row',
   },
 }));
 
 const ScenarioHeader = () => {
-  const classes = useStyles();
+  const { locale } = useSelector(store => store.ui);
+  const classes = useStyles({ locale });
   const { scenarios, selectedScenarioId } = useSelector(
     store => store.simulation
   );
@@ -51,38 +63,44 @@ const ScenarioHeader = () => {
     : null;
   const { tarPer, nextSteptarPer, neiPer, neiRad } = scenario || {};
 
+  const Tasks = () => (
+    <div className={classes.headerLine}>
+      <span className={classes.headerField}>{translate('scnTasks', true)}</span>
+      <span className={classes.headerNumeric}>
+        <span>{tarPer}%</span>
+        <span>/</span>
+        <span>{nextSteptarPer}%</span>
+      </span>
+    </div>
+  );
+
+  const Neighbors = () => (
+    <div className={classes.headerLine}>
+      <span className={classes.headerField}>{translate('scnNei', true)}</span>
+      <span className={classes.headerNumeric}>
+        <span>{neiPer}%</span>
+        <span>/</span>
+        <span>{neiRad}km</span>
+      </span>
+    </div>
+  );
+
+  const Tasks1 = () => <div>Tasks</div>;
+
   return (
-    <Typography className={classes.root} variant="h6" noWrap>
+    <div className={classes.root}>
       {scenario ? (
         <>
           <div className={classes.headerTitle}>{scenario.name}</div>
           <div className={classes.headerDetails}>
-            <div className={classes.headerLine}>
-              <span className={classes.headerField}>
-                {translate('scnTasks', true)}
-              </span>
-              <span className={classes.headerNumeric}>
-                <span>{tarPer}%</span>
-                <span>/</span>
-                <span>{nextSteptarPer}%</span>
-              </span>
-            </div>
-            <div className={classes.headerLine}>
-              <span className={classes.headerField}>
-                {translate('scnNei', true)}
-              </span>
-              <span className={classes.headerNumeric}>
-                <span>{neiPer}%</span>
-                <span>/</span>
-                <span>{neiRad}km</span>
-              </span>
-            </div>
+            <Chip label={<Tasks />} size="small" className={classes.chip} />
+            <Chip label={<Neighbors />} size="small" className={classes.chip} />
           </div>
         </>
       ) : (
         translate('selectScenario', true)
       )}
-    </Typography>
+    </div>
   );
 };
 

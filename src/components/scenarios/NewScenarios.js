@@ -23,7 +23,9 @@ const useStyles = makeStyles(theme => ({
     width: `${100 - sideBarWidth}vw`,
     height: '100vh',
     zIndex: 1001,
-    visibility: ({ open }) => (open ? 'visible' : 'hidden'),
+    visibility: ({ scenariosSelection, selectedScenarioId }) => {
+      return scenariosSelection || selectedScenarioId ? 'visible' : 'hidden';
+    },
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -33,10 +35,6 @@ const useStyles = makeStyles(theme => ({
       display: 'none',
     },
     '-ms-overflow-style': 'none',
-    // backgroundColor: 'rgba(192, 192, 192, 0.7)',
-    backgroundColor: ({ open }) =>
-      open ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.0)',
-    transition: 'background-color 3s 0.5s',
   },
   message: {
     fontSize: '2rem',
@@ -50,24 +48,31 @@ const useStyles = makeStyles(theme => ({
     padding: '1rem',
     justifyContent: 'space-evenly',
     alignContent: 'space-evenly',
-    // backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    backgroundColor: ({ scenariosSelection }) =>
+      scenariosSelection ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.0)',
+    opacity: ({ scenariosSelection }) => (scenariosSelection ? 1 : 0),
+    transition: ' background-color 1s, opacity 1s',
   },
   cancelIcon: {
     fontSize: '3rem',
   },
 }));
 
-const NewScenarios = ({ open }) => {
+const NewScenarios = () => {
   const { locale } = useSelector(store => store.ui);
   const direction = locale === LOCALES.HEBREW ? 'rtl' : 'ltr';
   let theme = useTheme();
   theme = { ...theme, direction };
-  const classes = useStyles({ open, locale });
 
-  const { scenariosLoading, scenarios } = useSelector(
-    store => store.simulation
-  );
-  const { scenariosFilter } = useSelector(store => store.simulation);
+  const {
+    scenariosSelection,
+    scenariosFilter,
+    scenariosLoading,
+    scenarios,
+    selectedScenarioId,
+    scenarioCurrentStepIdx,
+  } = useSelector(store => store.simulation);
+
   const filteredScenarios = scenariosFilter
     ? scenarios.filter(
         scenario =>
@@ -80,6 +85,14 @@ const NewScenarios = ({ open }) => {
   useEffect(() => {
     dispatch(loadScenarios(new AsyncRestParams('/simulation/scenario', 'GET')));
   }, [dispatch]);
+
+  const classes = useStyles({
+    selectedScenarioId,
+    scenariosSelection,
+    scenarios,
+    locale,
+    scenarioCurrentStepIdx,
+  });
 
   return (
     <ThemeProvider theme={theme}>
@@ -95,7 +108,7 @@ const NewScenarios = ({ open }) => {
               {filteredScenarios.map(scenario => (
                 <NewScenario
                   scenario={scenario}
-                  key={scenario.id || scenario.name + Math.random().toString()} // ToDo: remove; for testing only
+                  key={scenario.id || scenario.name + Math.random().toString()} // ToDo: remove random (test)
                 />
               ))}
             </div>

@@ -1,5 +1,12 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  selectScenarioStep,
+  updateScenariosSelection,
+} from '../../redux/actions/actions';
+
+import getLoadItemsRequestBody from '../../types/loadItemsRequestBodyType';
+import AsyncRestParams from '../../types/asyncRestParams';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
@@ -42,23 +49,68 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NewScenarioPlayer = ({ className }) => {
-  const theme = useTheme();
-  const [activeStep, setActiveStep] = React.useState(0);
-  console.log(' ');
-  console.log('activeStep: ', activeStep);
-  const { selectedScenarioId, scenarioStepsCount } = useSelector(
-    store => store.simulation
-  );
+  const dispatch = useDispatch();
+
+  const {
+    scenariosSelection,
+    selectedScenarioId,
+    scenarioStepsCount,
+    scenarioCurrentStepIdx,
+  } = useSelector(store => store.simulation);
+
+  const {
+    items,
+    selectedPriorityPresetId,
+    selectedFilterPresetId,
+    selectedGeoPresetId,
+    weights,
+  } = useSelector(store => store.domainItems);
+
   const maxSteps = selectedScenarioId ? scenarioStepsCount + 1 : 4;
-  const classes = useStyles({ activeStep, maxSteps, selectedScenarioId });
+
+  const handleScenarionStepRequest = scenarioStepIdx => {
+    const ids = items.map(item => item.id);
+    console.log(' ')
+    console.log('ids: ', ids);
+
+    const loadItemsRequestBody = getLoadItemsRequestBody({
+      priorityPresetId: selectedPriorityPresetId,
+      filterPresetId: selectedFilterPresetId,
+      geoPresetId: selectedGeoPresetId,
+      weights,
+      scenarioId: selectedScenarioId,
+      scenarioStepIdx,
+      ids,
+    });
+
+    dispatch(
+      selectScenarioStep(
+        new AsyncRestParams('/data/tasksAndNeighbors', 'POST'),
+        loadItemsRequestBody,
+        weights
+      )
+    );
+  };
 
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
+    if (scenariosSelection) dispatch(updateScenariosSelection(false));
+
+    setTimeout(() => {
+      handleScenarionStepRequest(scenarioCurrentStepIdx + 1);
+    }, 700);
   };
 
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
+    setTimeout(() => {
+      handleScenarionStepRequest(scenarioCurrentStepIdx - 1);
+    }, 700);
   };
+
+  const theme = useTheme();
+  const [activeStep, setActiveStep] = React.useState(0);
+  const classes = useStyles({ activeStep, maxSteps, selectedScenarioId });
 
   return (
     <MobileStepper

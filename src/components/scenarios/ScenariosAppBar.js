@@ -15,6 +15,7 @@ import { sideBarWidth, scenarios } from '../common/themes/defaultTheme';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
+    display: ({ scenarios }) => (scenarios.length ? 'flex' : 'none'),
     position: 'fixed',
     height: '10vh',
     width: `${100 - sideBarWidth}vw`,
@@ -89,10 +90,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const MyAppBar = () => {
-  const { scenariosFilter } = useSelector(store => store.simulation);
+const ScenariosAppBar = () => {
+  const { scenariosFilter, scenarios } = useSelector(store => store.simulation);
   const { locale } = useSelector(store => store.ui);
-  const classes = useStyles({ locale });
+  const classes = useStyles({ locale, scenarios });
   const dispatch = useDispatch();
 
   const handleSearchInput = ({ target: { value } }) => {
@@ -122,4 +123,4 @@ const MyAppBar = () => {
   );
 };
 
-export default MyAppBar;
+export default ScenariosAppBar;
