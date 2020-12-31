@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateScenariosFilter } from '../../redux/actions/actions';
 import LOCALES from '../../i18n/locales';
 
-import NewScenarioPlayer from './NewScenarioPlayer';
+import ScenarioPlayer from './ScenarioPlayer';
 import ScenarioHeader from './ScenarioHeader';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
@@ -108,7 +108,7 @@ const ScenariosAppBar = () => {
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar className={classes.toolbar}>
-        <NewScenarioPlayer className={classes.scenariosPlayer} />
+        <ScenarioPlayer className={classes.scenariosPlayer} />
         <ScenarioHeader />
         <div className={classes.search}>
           <div className={classes.searchIcon}>
