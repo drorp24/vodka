@@ -4,7 +4,7 @@ import {Popup, Button} from 'semantic-ui-react';
 import {withTheme} from 'styled-components';
 import {map, isEmpty, set, isNil} from 'lodash/fp'
 import {FlexColumns, FlexRows} from './common/CommonComponents';
-import { toggleCompareDomainItemsMode, clearAllSelectedItemsForComparison, loadMoreDomainItems, loadWeights, weightUpdated } from '../redux/actions/actions'
+import { toggleCompareDomainItemsMode, clearAllSelectedItemsForComparison, loadMoreDomainItems, loadWeights, weightUpdated, updateScenariosSelection } from '../redux/actions/actions'
 import ChoosePresets from './ChoosePresets'
 import translate from "../i18n/translate"
 import getLoadItemsRequestBody from '../types/loadItemsRequestBodyType'
@@ -13,7 +13,7 @@ import DomainItemsSearch from './DomainItemsSearch'
 import Weights from './Weights'
 import LOCALES from "../i18n/locales"
 
-const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
+const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode, updateScenariosSelectionAction,
     toggleCompareDomainItemsModeAction, clearAllSelectedItemsForComparisonAction, theme, locale, loadingItems,
     domainItems, scenarioId, scenarioStepIdx, weights, priorityPresetId, filterPresetId, geoPresetId, loadMoreDomainItemsAction, domainItemsAmount, loadWeightsAction, weightUpdatedAction}) => {
 
@@ -86,10 +86,13 @@ const DomainItemsTools = ({selectedDomainItemsIdsForCmp, compareDomainItemsMode,
                         position={`bottom ${locale === LOCALES.HEBREW ? "right" : "left"}`}
                         on='click'                        
                         flowing
-                        trigger={<Button basic={!choosePresetIsOpen} onClick={() => setChoosePresetIsOpen(!choosePresetIsOpen)} color={theme["secondaryButtonColor"]} content={translate("choose_presets", true)}/>}>
+                        trigger={<Button basic={!choosePresetIsOpen} onClick={() => setChoosePresetIsOpen(!choosePresetIsOpen)} color={theme["secondaryButtonColor"]} content={translate("choose_presets", true)} style={{padding: '0.5rem'}}/>}>
                             <ChoosePresets close={onCloseReq}/>
                     </Popup>
-                    <Button disabled={domainItemsAmount < 1} onClick={handleLoadMore}  basic color={theme["secondaryButtonColor"]}>
+                    <Button disabled={!priorityPresetId} onClick={()=>updateScenariosSelectionAction(true)}  basic color={theme["secondaryButtonColor"]}  style={{padding: '0.5rem'}}>
+                        {translate("selectScenario", true)}
+                    </Button>
+                    <Button disabled={domainItemsAmount < 1} onClick={handleLoadMore}  basic color={theme["secondaryButtonColor"]}  style={{padding: '0.5rem'}}>
                         {domainItemsAmount} {translate("items", true)}, {translate("load_more", true)}
                     </Button>
                 </FlexColumns>
@@ -128,5 +131,6 @@ export default connect(mapStateToProps, {
         clearAllSelectedItemsForComparisonAction: clearAllSelectedItemsForComparison,
         loadMoreDomainItemsAction: loadMoreDomainItems,
         loadWeightsAction: loadWeights,
-        weightUpdatedAction: weightUpdated
+        weightUpdatedAction: weightUpdated,
+        updateScenariosSelectionAction: updateScenariosSelection
 })(withTheme(DomainItemsTools));
