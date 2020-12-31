@@ -31,7 +31,12 @@ const useStyles = makeStyles(theme => ({
   },
   scenariosPlayer: {
     height: '50%',
-    overflow: ({ locale }) => (locale === LOCALES.HEBREW ? 'hidden' : 'auto'),
+    overflow: ({ locale }) => (locale === LOCALES.HEBREW ? 'hidden' : 'scroll'),
+    scrollbarWidth: 'none',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+    '-ms-overflow-style': 'none',
     backgroundColor: fade(theme.palette.common.white, 0.15),
     '&:hover': {
       backgroundColor: fade(theme.palette.common.white, 0.25),

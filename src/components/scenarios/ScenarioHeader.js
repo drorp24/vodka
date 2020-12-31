@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   },
   headerField: {
     fontWeight: '700',
-    margin: 0,
+    margin: '0 !important',
   },
   headerNumeric: {
     display: 'flex',
