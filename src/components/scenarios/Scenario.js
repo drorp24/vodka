@@ -63,7 +63,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const NewScenario = ({
+const Scenario = ({
   scenario: { id, name, description, creator, stepsCount, ...rest },
 }) => {
   const classes = useStyles();
@@ -145,4 +145,4 @@ const NewScenario = ({
   );
 };
 
-export default NewScenario;
+export default Scenario;

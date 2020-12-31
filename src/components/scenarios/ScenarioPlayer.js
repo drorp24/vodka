@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const NewScenarioPlayer = ({ className }) => {
+const ScenarioPlayer = ({ className }) => {
   const dispatch = useDispatch();
 
   const {
@@ -101,6 +101,8 @@ const NewScenarioPlayer = ({ className }) => {
 
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
+    if (scenariosSelection) dispatch(updateScenariosSelection(false));
+    
     setTimeout(() => {
       handleScenarionStepRequest(scenarioCurrentStepIdx - 1);
     }, 700);
@@ -164,4 +166,4 @@ const NewScenarioPlayer = ({ className }) => {
   );
 };
 
-export default NewScenarioPlayer;
+export default ScenarioPlayer;

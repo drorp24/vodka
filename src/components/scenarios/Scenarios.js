@@ -8,7 +8,7 @@ import translate from '../../i18n/translate';
 import AsyncRestParams from '../../types/asyncRestParams';
 
 import ScenariosAppBar from './ScenariosAppBar';
-import NewScenario from './NewScenario';
+import Scenario from './Scenario';
 import { sideBarWidth } from '../common/themes/defaultTheme';
 import { Loader } from 'semantic-ui-react';
 
@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const NewScenarios = () => {
+const Scenarios = () => {
   const { locale } = useSelector(store => store.ui);
   const direction = locale === LOCALES.HEBREW ? 'rtl' : 'ltr';
   let theme = useTheme();
@@ -106,7 +106,7 @@ const NewScenarios = () => {
           ) : (
             <div className={classes.scenariosGrid}>
               {filteredScenarios.map(scenario => (
-                <NewScenario
+                <Scenario
                   scenario={scenario}
                   key={scenario.id || scenario.name + Math.random().toString()} // ToDo: remove random (test)
                 />
@@ -119,4 +119,4 @@ const NewScenarios = () => {
   );
 };
 
-export default NewScenarios;
+export default Scenarios;
