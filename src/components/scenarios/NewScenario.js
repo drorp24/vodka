@@ -113,7 +113,11 @@ const NewScenario = ({
     (selected ? classes.selected : classes.unselected);
 
   return (
-    <Card elevation={5} className={classes.scenario} onClick={markSelected(id, stepsCount)}>
+    <Card
+      elevation={5}
+      className={classes.scenario}
+      onClick={markSelected(id, stepsCount)}
+    >
       <CardHeader
         className={classes.cardHeader}
         classes={{ action: classes.action, avatar: classes.cardHeaderAvatar }}

@@ -1,5 +1,6 @@
 import { css } from 'styled-components';
 import blue from '@material-ui/core/colors/blue';
+import blueGrey from '@material-ui/core/colors/blueGrey';
 
 // colors
 export const temporarySignalColor = `rgba(101, 100, 96, 0.3)`
@@ -109,4 +110,6 @@ export const scenarios = {
   search: blue['900'],
   disabled: 'rgba(90, 0, 0, 0.15)',
   cardBackground: 'rgba(0, 0, 0, 0.04)',
+  header: blueGrey['100'],
+  chips: blue['700']
 };

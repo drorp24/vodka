@@ -5,7 +5,7 @@ import {Button, Dropdown} from 'semantic-ui-react';
 import { useDispatch } from 'react-redux';
 import {FlexColumns} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
-import {toggleSideBar, switchTheme, toggleCreateScenario, selectLocale} from '../redux/actions/actions'
+import {toggleSideBar, switchTheme, toggleCreateScenario, selectLocale, updateScenariosSelection} from '../redux/actions/actions'
 import CreateScenarioForm from './CreateScenarioForm'
 import ScenariosModal from './ScenariosModal'
 import NewScenarios from './scenarios/NewScenarios'
@@ -18,9 +18,8 @@ export const TopBarContainer = styled(FlexColumns)`
     background-color: ${({ theme }) => theme["topbarBackground"]};    
 `;
 
-const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme, 
-                switchThemeAction, compareDomainItemsMode, toggleCreateScenarioAction, selectLocaleAction, locale}) => {
-    const [scenariosIsOpen, setScenariosIsOpen] = React.useState(false)
+const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme, selectedPriorityPresetId,
+                switchThemeAction, compareDomainItemsMode, toggleCreateScenarioAction, selectLocaleAction, locale, updateScenariosSelectionAction}) => {
     const dispatch = useDispatch();
     
     const handleLogout = () => {
@@ -43,8 +42,8 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
                             <Dropdown.Item style={itemByLocaleStyle} icon='filter' text={translate("rules_preset", true)}/>
                             <Dropdown.Header  content={translate("open", true)} />
                             <Dropdown.Divider/>
-                            <Dropdown.Item style={itemByLocaleStyle} text={translate("scenarios", true)} onClick={()=>setScenariosIsOpen(true)} icon="film"/>
-                            <Dropdown.Header  content={translate("simulation", true)} />
+                            <Dropdown.Item disabled={!selectedPriorityPresetId} style={itemByLocaleStyle} text={translate("scenarios", true)} onClick={()=>updateScenariosSelectionAction(true)} icon="film"/>
+                            <Dropdown.Header  content={translate(`${selectedPriorityPresetId ? "simulation" : "selectPresetFirst"}`, true)} />
                             <Dropdown.Divider/>
                             <Dropdown.Item style={itemByLocaleStyle} icon='film' text={translate("create_scenario", true)} onClick={()=>{toggleCreateScenarioAction()}}/>
                             <Dropdown.Header  content={translate("settings", true)} />
@@ -77,13 +76,14 @@ const TopBar = ({sideBarOpen, createScenarioOpen, toggleSideBarAction, theme,
                 </Div>	
             </FlexColumns>
             {createScenarioOpen && <CreateScenarioForm/>}
-            <NewScenarios open={scenariosIsOpen} closeCB={()=>setScenariosIsOpen(false)}/>
+            <NewScenarios />
             
         </TopBarContainer>
     )
 }
 
 const mapStateToProps = state => ({
+    selectedPriorityPresetId: state.domainItems.selectedPriorityPresetId,
     sideBarOpen: state.ui.sideBarOpen,
     createScenarioOpen: state.ui.createScenarioOpen,
     locale: state.ui.locale,
@@ -95,5 +95,6 @@ export default connect(mapStateToProps,
         toggleSideBarAction: toggleSideBar, 
         switchThemeAction: switchTheme,
         toggleCreateScenarioAction: toggleCreateScenario,
-        selectLocaleAction: selectLocale
+        selectLocaleAction: selectLocale,
+        updateScenariosSelectionAction: updateScenariosSelection,
     })(withTheme(TopBar));
