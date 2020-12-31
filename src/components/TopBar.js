@@ -1,13 +1,12 @@
 import React from 'react';
 import { connect } from "react-redux"
 import styled, {withTheme} from 'styled-components';
-import {Button, Dropdown} from 'semantic-ui-react';
+import {Dropdown} from 'semantic-ui-react';
 import { useDispatch } from 'react-redux';
 import {FlexColumns} from './common/CommonComponents';
 import {Div} from './common/StyledElements';
 import {toggleSideBar, switchTheme, toggleCreateScenario, selectLocale, updateScenariosSelection} from '../redux/actions/actions'
 import CreateScenarioForm from './CreateScenarioForm'
-import ScenariosModal from './ScenariosModal'
 import NewScenarios from './scenarios/NewScenarios'
 import translate from '../i18n/translate'
 import LOCALES from "../i18n/locales"

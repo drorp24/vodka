@@ -70,8 +70,6 @@ const NewScenarioPlayer = ({ className }) => {
 
   const handleScenarionStepRequest = scenarioStepIdx => {
     const ids = items.map(item => item.id);
-    console.log(' ')
-    console.log('ids: ', ids);
 
     const loadItemsRequestBody = getLoadItemsRequestBody({
       priorityPresetId: selectedPriorityPresetId,
