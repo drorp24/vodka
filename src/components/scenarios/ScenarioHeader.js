@@ -19,8 +19,15 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     height: '100%',
   },
+  pageTitle: {
+    fontSize: '1.5rem',
+    textTransform: 'uppercase',
+    color: '#fff',
+  },
   headerTitle: {
-    fontSize: '1.3rem',
+    fontSize: '1rem',
+    textTransform: 'uppercase',
+    color: '#fff',
   },
   chip: {
     margin: '0.5rem',
@@ -85,7 +92,6 @@ const ScenarioHeader = () => {
     </div>
   );
 
-  const Tasks1 = () => <div>Tasks</div>;
 
   return (
     <div className={classes.root}>
@@ -98,7 +104,9 @@ const ScenarioHeader = () => {
           </div>
         </>
       ) : (
-        translate('selectScenario', true)
+        <div className={classes.pageTitle}>
+          {translate('selectScenario', true)}
+        </div>
       )}
     </div>
   );
