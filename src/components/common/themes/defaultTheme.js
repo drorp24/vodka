@@ -103,7 +103,7 @@ export const simPlayerBorderDisabled = css`
 `;
 export const sideBarWidth = '25';
 export const scenarios = {
-  appBar: blue['500'],
+  appBar: `linear-gradient(${blue['600']}, ${blue['500']})`,
   checked: blue['500'],
   match: blue['500'],
   progress: blue['900'],
@@ -111,5 +111,5 @@ export const scenarios = {
   disabled: 'rgba(90, 0, 0, 0.15)',
   cardBackground: 'rgba(0, 0, 0, 0.04)',
   header: blueGrey['100'],
-  chips: blue['700']
+  chips: blue['800']
 };

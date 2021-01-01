@@ -8,7 +8,6 @@ import Chip from '@material-ui/core/Chip';
 import translate from '../../i18n/translate';
 import LOCALES from '../../i18n/locales';
 
-
 const useStyles = makeStyles(theme => ({
   root: {
     color: scenarios.header,
@@ -25,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     color: '#fff',
   },
   headerTitle: {
-    fontSize: '1rem',
+    fontSize: '1.2rem',
     textTransform: 'uppercase',
     color: '#fff',
   },
@@ -92,7 +91,6 @@ const ScenarioHeader = () => {
       </span>
     </div>
   );
-
 
   return (
     <div className={classes.root}>

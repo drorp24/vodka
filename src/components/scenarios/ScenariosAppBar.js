@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    backgroundColor: scenarios.appBar,
+    backgroundImage: scenarios.appBar,
   },
   toolbar: {
     height: '100%',
