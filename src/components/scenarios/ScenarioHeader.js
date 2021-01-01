@@ -47,9 +47,10 @@ const useStyles = makeStyles(theme => ({
     '& > span': {
       marginLeft: '0.5rem',
     },
+    fontWeight: '100',
   },
   headerField: {
-    fontWeight: '700',
+    fontWeight: '400',
     margin: '0 !important',
   },
   headerNumeric: {

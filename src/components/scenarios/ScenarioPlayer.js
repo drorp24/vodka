@@ -95,7 +95,8 @@ const ScenarioPlayer = ({ className }) => {
     if (scenariosSelection) dispatch(updateScenariosSelection(false));
 
     setTimeout(() => {
-      handleScenarionStepRequest(scenarioCurrentStepIdx + 1);
+      const step = scenarioCurrentStepIdx === null ? -1 :  scenarioCurrentStepIdx //overcome setting to null 
+      handleScenarionStepRequest(step + 1);
     }, 700);
   };
 
